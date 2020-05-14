@@ -31,7 +31,7 @@
             android:layout_marginBottom="5dip"
             android:background="@drawable/roundedrec"
             android:gravity="center"
-            android:text="随机阅读"
+            android:text="随 机 阅 读"
             android:textSize="25dp" />
 
         <include layout="@layout/bottombar" />
