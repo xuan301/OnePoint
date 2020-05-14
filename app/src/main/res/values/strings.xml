@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">OnePoint</string>
+    <string name="read">已读</string>
+    <string name="like">收藏</string>
+    <string name="comment">收藏</string>
+    <string name="search">搜索</string>
+    <string name="rank">排序</string>
+    <string name="randomreading">随即阅读</string>
+    <string name="randomknowledge">随即阅读</string>
+</resources>
