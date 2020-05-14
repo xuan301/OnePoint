@@ -11,7 +11,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:drawableTop="@drawable/ic_read_black_24dp"
-        android:background="?android:attr/selectableItemBackground"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:text="@string/read"
         android:textColor="#737373"/>
 
@@ -25,7 +25,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:drawableTop="@drawable/ic_like_black_24dp"
-        android:background="?android:attr/selectableItemBackground"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:text="@string/like"
         android:textColor="#737373"/>
 
@@ -39,7 +39,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:drawableTop="@drawable/ic_comment_black_24dp"
-        android:background="?android:attr/selectableItemBackground"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:text="评论"
         android:textColor="#737373"/>
 
@@ -53,7 +53,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:drawableTop="@drawable/ic_search_black_24dp"
-        android:background="?android:attr/selectableItemBackground"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:text="@string/search"
         android:textColor="#737373"/>
 
@@ -67,7 +67,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:drawableTop="@drawable/ic_rank_black_24dp"
-        android:background="?android:attr/selectableItemBackground"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:text="@string/rank"
         android:textColor="#737373"/>
 
