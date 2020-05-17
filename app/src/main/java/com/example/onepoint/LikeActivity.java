@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,9 +23,9 @@ public class LikeActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
 
     private Knowledge[] knowledges = {
-            new Knowledge("figure 1", R.drawable.fig1),
+            new Knowledge("figure 1 9817326948712364热3987345092874093582304987503294857她47695876985734698576234985", R.drawable.fig1),
             new Knowledge("figure 2", R.drawable.fig2),
-            new Knowledge("figure 3", R.drawable.fig3),
+            new Knowledge("figure 3 oh我的天哪", R.drawable.fig3),
             new Knowledge("figure 4", R.drawable.fig4),
             new Knowledge("figure 5", R.drawable.fig5),
             new Knowledge("figure 6", R.drawable.fig6)
@@ -57,7 +58,7 @@ public class LikeActivity extends AppCompatActivity {
         });
         initKnowledges();
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         adapter = new KnowledgeAdapter(knowledgeList);
         recyclerView.setAdapter(adapter);
