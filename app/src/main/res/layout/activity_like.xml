@@ -5,58 +5,58 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LikeActivity">
-
-    <Button
-        android:id="@+id/setting"
-        android:layout_width="50dp"
-        android:layout_height="38dp"
-        android:layout_margin="10dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginRight="4dp"
-        android:background="@android:color/transparent"
-        android:drawableBottom="@drawable/ic_more_black_24dp"
-        android:gravity="bottom"
-        android:textColor="#737373"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
-
-    <Button
-        android:id="@+id/like"
-        android:layout_width="47dp"
-        android:layout_height="30dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="24dp"
-        android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:drawableTop="@drawable/ic_like_black_24dp"
-        android:textColor="#737373"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/home"
-        android:layout_width="44dp"
-        android:layout_height="30dp"
-        android:layout_gravity="bottom"
-        android:layout_marginTop="24dp"
-        android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:drawableTop="@drawable/ic_home_black_24dp"
-        android:textColor="#737373"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.043"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintTop_toBottomOf="@+id/like"
-        tools:layout_editor_absoluteX="-2dp" />
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/topBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/background_light">
+
+            <Button
+                android:id="@+id/home"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:drawableBottom="@drawable/ic_home_black_24dp"
+                android:gravity="center"
+                android:layout_margin="8dp"
+                android:textColor="#737373" />
+
+            <Button
+                android:id="@+id/like"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:drawableBottom="@drawable/ic_like_black_24dp"
+                android:gravity="center"
+                android:textColor="#737373" />
+
+            <Button
+                android:id="@+id/setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:drawableBottom="@drawable/ic_more_black_24dp"
+                android:textColor="#737373" />
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toBottomOf="@+id/topBar"
+            tools:layout_editor_absoluteX="-2dp" />
+
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
