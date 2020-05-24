@@ -12,13 +12,13 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
 public class RandomKnowledgeActivity extends AppCompatActivity {
-    private Button bt;
+    private Button favorite;
+    private Button comment;
     private ImageView img_of_knowledge;
     private TextView title_of_knowledge;
     private TextView author_of_knowledge;
@@ -47,9 +47,9 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
             title_of_knowledge.setText(null);
         }
 
-        bt=this.findViewById(R.id.like);
+        favorite =this.findViewById(R.id.like);
 
-        bt.setOnClickListener(new View.OnClickListener()
+        favorite.setOnClickListener(new View.OnClickListener()
         {//收藏按钮的切换
             boolean isActive = false;
             @Override
@@ -59,16 +59,25 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
 
                 if(! isActive) {
                     liked.setBounds(0,0,liked.getMinimumWidth(),liked.getMinimumHeight());
-                    bt.setCompoundDrawables(null, liked, null, null);
-                    bt.setText(getResources().getString(R.string.liked));
+                    favorite.setCompoundDrawables(null, liked, null, null);
+                    favorite.setText(getResources().getString(R.string.liked));
                 }
                 else{
                     tolike.setBounds(0,0,tolike.getMinimumWidth(),tolike.getMinimumHeight());
-                    bt.setCompoundDrawables(null, tolike, null, null);
-                    bt.setText(getResources().getString(R.string.like));
+                    favorite.setCompoundDrawables(null, tolike, null, null);
+                    favorite.setText(getResources().getString(R.string.like));
                 }
 
                 isActive = ! isActive;
+            }
+        });
+
+        comment = this.findViewById(R.id.comment);
+        comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RandomKnowledgeActivity.this, CommentActivity.class);
+                startActivity(intent);
             }
         });
 
