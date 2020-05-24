@@ -54,26 +54,28 @@ public class KnowledgeAdapter extends RecyclerView.Adapter<KnowledgeAdapter.View
         View view = LayoutInflater.from(mContext).inflate(R.layout.knowledge_item_cardview,
                 parent, false);
         final ViewHolder holder = new ViewHolder(view);
-        holder.cardView.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                //int position = holder.getAdapterPosition();
-                //Knowledge knowledge = mKnowledgeList.get(position);
-                Intent intent = new Intent(mContext, RandomKnowledgeActivity.class);
-                //put extra info here, e.g.
-                //intent.putExtra(RandomKnowledgeActivity.KNOWLEDGE_TITLE, knowledge.getTitle());
-                mContext.startActivity(intent);
-            }
-        });
         return new ViewHolder(view);
     }
 
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         Knowledge knowledge = mKnowledgeList.get(position);
         holder.knowledgeTitle.setText(knowledge.getTitle());
         Glide.with(mContext).load(knowledge.getImageSrc()).into(holder.knowledgeImage);
+        holder.cardView.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                int position = holder.getAdapterPosition();
+                if(position<0) return;
+                Knowledge knowledge = mKnowledgeList.get(position);
+                Intent intent = new Intent(mContext, RandomKnowledgeActivity.class);
+                //put extra info here, e.g.
+                intent.putExtra("title", knowledge.getTitle());
+                intent.putExtra("imageSrc", knowledge.getImageSrc());
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override

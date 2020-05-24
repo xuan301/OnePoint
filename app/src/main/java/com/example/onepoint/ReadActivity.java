@@ -71,10 +71,8 @@ public class ReadActivity extends AppCompatActivity {
 
     private void initKnowledges() {
         knowledgeList.clear();
-        for(int i = 0; i < 50; i++) {
-            Random random = new Random();
-            int index = random.nextInt(knowledges.length);
-            knowledgeList.add(knowledges[index]);
+        for(int i = 0; i < knowledges.length; i++) {
+            knowledgeList.add(knowledges[i]);
         }
     }
     /**
