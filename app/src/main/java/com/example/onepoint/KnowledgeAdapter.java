@@ -1,7 +1,12 @@
 package com.example.onepoint;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +19,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
 public class KnowledgeAdapter extends RecyclerView.Adapter<KnowledgeAdapter.ViewHolder> {
@@ -64,7 +73,7 @@ public class KnowledgeAdapter extends RecyclerView.Adapter<KnowledgeAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Knowledge knowledge = mKnowledgeList.get(position);
         holder.knowledgeTitle.setText(knowledge.getTitle());
-        Glide.with(mContext).load(knowledge.getImageId()).into(holder.knowledgeImage);
+        Glide.with(mContext).load(knowledge.getImageSrc()).into(holder.knowledgeImage);
     }
 
     @Override

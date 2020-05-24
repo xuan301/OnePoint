@@ -2,18 +2,18 @@ package com.example.onepoint;
 
 public class Knowledge {
     private String title;
-    private int imageId;
+    private String imageSrc;
 
-    public Knowledge(String title, int imageId){
+    public Knowledge(String title, String imageSrc){
         this.title = title;
-        this.imageId = imageId;
+        this.imageSrc = imageSrc;
     }
 
     public String getTitle(){
         return title;
     }
-    public int getImageId(){
-        return imageId;
+    public String getImageSrc(){
+        return imageSrc;
     }
 
 }
