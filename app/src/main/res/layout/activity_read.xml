@@ -24,7 +24,6 @@
                 android:background="@android:color/transparent"
                 android:drawableBottom="@drawable/ic_home_black_24dp"
                 android:gravity="center"
-                android:layout_margin="8dp"
                 android:textColor="#737373" />
 
             <Button
@@ -33,6 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
+                android:layout_margin="8dp"
                 android:background="@android:color/transparent"
                 android:drawableBottom="@drawable/ic_already_read_blue"
                 android:gravity="center"
