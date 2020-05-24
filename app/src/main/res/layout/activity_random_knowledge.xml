@@ -9,19 +9,21 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
 
         <ScrollView
+            android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginRight="0dp"
             android:layout_weight="20"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -35,7 +37,7 @@
 
                 <ImageView
                     android:id="@+id/imageView"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="237dp"
                     android:contentDescription="配图"
                     android:scaleType="centerCrop"
@@ -45,16 +47,48 @@
                     app:srcCompat="@drawable/fig5"
                     tools:srcCompat="@tools:sample/backgrounds/scenic[4]" />
 
-                <TextView
-                    android:id="@+id/textView"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sampleknowledge"
-                    tools:text="@string/sampleknowledge" />
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/title"
+                        android:textColor="@android:color/primary_text_light_nodisable"
+                        android:textSize="36sp"
+                        android:typeface="monospace" />
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/author"
+                        android:textColor="@android:color/primary_text_light_nodisable"
+                        android:textSize="24sp"
+                        android:typeface="sans" />
+
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="10dp"
+                        android:lineSpacingMultiplier="1.2"
+                        android:text="@string/sampleknowledge"
+                        android:textColor="@android:color/primary_text_light_nodisable"
+                        android:textSize="18sp"
+                        android:typeface="normal"
+                        tools:text="@string/sampleknowledge" />
+                </LinearLayout>
 
             </LinearLayout>
         </ScrollView>
-
 
         <View
             android:id="@+id/divider"

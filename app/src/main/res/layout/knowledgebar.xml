@@ -3,32 +3,18 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/read"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_weight="1"
-        android:background="?android:attr/selectableItemBackground"
-        android:drawableTop="@drawable/ic_like"
-        android:text="@string/realLike"
-        android:textColor="#737373" />
-
-    <Button
         android:id="@+id/like"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:layout_gravity="bottom"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:drawableTop="@drawable/ic_like_black_24dp"
+        android:layout_weight="1"
         android:background="?android:attr/selectableItemBackground"
+        android:drawableTop="@drawable/ic_like_black_24dp"
         android:text="@string/like"
-        android:textColor="#737373"/>
+        android:textColor="#737373" />
 
     <Button
         android:id="@+id/comment"
