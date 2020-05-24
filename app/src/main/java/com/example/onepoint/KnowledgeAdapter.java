@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,8 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,7 +65,27 @@ public class KnowledgeAdapter extends RecyclerView.Adapter<KnowledgeAdapter.View
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         Knowledge knowledge = mKnowledgeList.get(position);
         holder.knowledgeTitle.setText(knowledge.getTitle());
-        Glide.with(mContext).load(knowledge.getImageSrc()).into(holder.knowledgeImage);
+
+//        RequestListener mRequestListener  = new RequestListener() {
+//            @Override
+//            public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
+//                Log.e("Glide report:"," onException: "+ e.toString() + " model: "+ model.toString() + " isFirstResource: "+ isFirstResource);
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache, boolean isFirstResource) {
+//                return false;
+//            }
+//        };
+//
+//  Glide的RequestListener，用于检查图片加载时的错误。
+//  典型报错：java.net.SocketException: socket failed: EPERM (Operation not permitted)。原因是创建App时未添加网络权限，现在已经添加，但需要刷新。
+//  在模拟器的设置中卸载App后重新运行即可恢复
+
+        Glide.with(mContext).load(knowledge.getImageSrc())
+                //.listener(mRequestListener)
+                .into(holder.knowledgeImage);
         holder.cardView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){

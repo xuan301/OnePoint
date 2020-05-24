@@ -11,20 +11,41 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ScrollView;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 public class RandomKnowledgeActivity extends AppCompatActivity {
     private Button bt;
+    private ImageView img_of_knowledge;
+    private TextView title_of_knowledge;
+    private TextView author_of_knowledge;
+    private TextView text_of_knowledge;
     GestureDetector Detector;
-    private ScrollView content;
     protected static final float FLIP_DISTANCE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_random_knowledge);
-        getSupportActionBar().hide();
+        if(getSupportActionBar() != null){ getSupportActionBar().hide(); }
         setHalfTransparent();
+
+        img_of_knowledge = this.findViewById(R.id.image_of_knowledge);
+        title_of_knowledge = this.findViewById(R.id.title_of_knowledge);
+        author_of_knowledge = this.findViewById(R.id.author_of_knowledge);
+        text_of_knowledge = this.findViewById(R.id.textView);
+        Intent intent = getIntent();
+        String title = intent.getStringExtra("title");
+        String imageSrc = intent.getStringExtra("imageSrc");
+        if(title != null && imageSrc != null){
+            Glide.with(img_of_knowledge.getContext()).load(imageSrc).into(img_of_knowledge);
+            text_of_knowledge.setText(title);
+            author_of_knowledge.setText(null);
+            title_of_knowledge.setText(null);
+        }
 
         bt=this.findViewById(R.id.like);
 
