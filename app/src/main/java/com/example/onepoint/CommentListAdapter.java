@@ -56,7 +56,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
             public void onClick(View v){
                 //int position = holder.getAdapterPosition();
                 //Knowledge knowledge = mKnowledgeList.get(position);
-                Intent intent = new Intent(mContext, LikeActivity.class);
+                Intent intent = new Intent(mContext, RandomKnowledgeActivity.class);
                 //put extra info here, e.g.
                 //intent.putExtra(RandomKnowledgeActivity.KNOWLEDGE_TITLE, knowledge.getTitle());
                 mContext.startActivity(intent);
