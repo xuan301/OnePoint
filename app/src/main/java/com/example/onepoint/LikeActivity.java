@@ -73,11 +73,13 @@ public class LikeActivity extends AppCompatActivity {
 
     private void initKnowledges() {
         Knowledge[] knowledges = {//不要把这个数组放在函数外面
-                new Knowledge("落霞与孤鹜齐飞，秋水共长天一色。——王勃《滕王阁序》", getString(R.string.fig1)),
-                new Knowledge("【徐志摩！你的落款又傲娇又风骚】徐志摩在写给陆小曼的书信集《爱曼小札》中的落款很肉麻风骚", getString(R.string.fig2)),
-                new Knowledge("晚安碎语【第十四话，私藏句子】我们常常不去想自己拥有的东西，却对得不到的东西念念不忘。——叔本华", getString(R.string.fig3)),
-                new Knowledge("人走茶凉伤感吗？不伤感！真正伤感的是：人走了，却把我的茶杯也骗走了。——王小波《王小波文集》", getString(R.string.fig4)),
-                new Knowledge("所有感情都没有过分夸大的必要，因为没有什么只开始不结束。小时候觉得一辈子都不会弄丢的东西，最后也毫不心疼地丢弃了。亲情，爱情，友情，都会慢慢失去，有的自然而然，有的姿势难看。但感情的事，不就是这个样子吗。——姚瑶《生活上瘾指南》", getString(R.string.fig5))
+                new Knowledge(getString(R.string.chanbu_title), getString(R.string.snow_img), getString(R.string.chanbu_content)),
+                new Knowledge(getString(R.string.cola_title), getString(R.string.cola_img), getString(R.string.cola_content)),
+                new Knowledge(getString(R.string.HCL_title), getString(R.string.HCL_img), getString(R.string.HCL_content)),
+                new Knowledge(getString(R.string.hug_title), getString(R.string.hug_img), getString(R.string.hug_content)),
+                new Knowledge(getString(R.string.seli_title), getString(R.string.seli_img), getString(R.string.seli_content)),
+                new Knowledge(getString(R.string.toubal_title), getString(R.string.toubal_img), getString(R.string.toubal_content)),
+                new Knowledge(getString(R.string.sanmiao_title), getString(R.string.sanmiao_img), getString(R.string.sanmiao_content))
         };
         knowledgeList.clear();
         for(int i = 0; i < 50; i++) {

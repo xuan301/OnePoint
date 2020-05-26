@@ -38,14 +38,30 @@
     <string name="fit8">https://wx3.sinaimg.cn/large/0067hdZuly1g709vq7b44g30rs0zu4qp.gif</string>
     <string name="fig9">https://wx1.sinaimg.cn/large/0067hdZuly1g70036dk5cj30u01hete1.jpg</string>
     <string name="fit10">https://wx2.sinaimg.cn/large/0067hdZuly1g6zzujshm3j30u01hcgxf.jpg</string>
-    <string name="title1">落霞与孤鹜齐飞，秋水共长天一色。——王勃《滕王阁序》</string>
-    <string name="title2">【徐志摩！你的落款又傲娇又风骚】徐志摩在写给陆小曼的书信集《爱曼小札》中的落款很肉麻风骚</string>
-    <string name="title3">晚安碎语【第十四话，私藏句子】我们常常不去想自己拥有的东西，却对得不到的东西念念不忘。——叔本华</string>
-    <string name="title4">人走茶凉伤感吗？不伤感！真正伤感的是：人走了，却把我的茶杯也骗走了。——王小波《王小波文集》</string>
-    <string name="title5">所有感情都没有过分夸大的必要，因为没有什么只开始不结束。小时候觉得一辈子都不会弄丢的东西，最后也毫不心疼地丢弃了。亲情，爱情，友情，都会慢慢失去，有的自然而然，有的姿势难看。但感情的事，不就是这个样子吗。——姚瑶《生活上瘾指南》</string>
-    <string name="title6">你还很年轻,将来你会遇到很多人,经历很多事,得到很多,也会失去很多,但无论如何,有两样东西,你绝不能丢弃,一个叫良心,另一个叫理想。能改的，叫做缺点，不能改的，叫做弱点。成功只有一个——按照自己的方式、去度过人生。 ——当年明月《明朝那些事》</string>
-    <string name="title7">谁不曾有过青春年少？谁不曾情窦初开？谁不曾在纯洁的少年时光里，偷偷地喜欢一个人？那样的喜欢，梗在胸口，不能言说，却无法停止。——心雯《君如陌上尘》</string>
-    <string name="title8">人生最痛苦的是梦醒了无路可走。做梦的人是幸福的；倘没有看出可走的路，最要紧的是不要去惊醒他。      ——鲁迅</string>
-    <string name="title9">很多人暗地里都对我有非议，说我圆滑，说我世故。可是我只知道一件事，如果我自己不保护自己，这个世界上就没有人会保护我。  ——独木舟《深海里的星星》</string>
-    <string name="title10">目的虽有，却无路可循；我们称之为路的，无非是踌躇。——卡夫卡《误入世界》</string>
+    <string name="hug_content">心理学认为，从背后主动拥抱对方代表一种保护，表示拥抱者愿意主动给予被拥抱者爱与关怀。所以采用这种姿势，就代表这个人愿意给你爱的承诺，这个人也会从这种主动呵护和疼爱中感到幸福。</string>
+    <string name="seli_content">塞里格曼效应是指人或动物接连不断地受到挫折，便会感到自己对于一切都无能为力，丧失信心，陷入一种无助的心理状态。因塞里格曼效应而产生的绝望、抑郁和意志消沉，是许多心理和行为问题产生的根源。所以要想让自己远离绝望，我们必须学会客观理性地为我们的成功和失败找到正确的归因。 
+</string>
+    <string name="toubal_content">服用头孢药物后喝酒可出现双硫仑样反应。从而引起心率快、血压低等表现，重者可致呼吸抑制、心肌梗死、急性心衰、惊厥及死亡。酒精，化学名称为乙醇，进入体内后，先在肝脏内经乙醇脱氢酶作用转化为乙醛，而头孢类抗菌素分子中含有的甲基硫代四唑基团（MTT），可抑制乙醛脱氢酶活性，使成乙醛无法降解，造成乙醛中毒现象，就是所谓的双硫仑样反应。 </string>
+    <string name="chanbu_content">这个成语很容易让人误解，从字面上来看，蝉，夏生秋死，看不到雪是正常的。而这个成语却是讽刺人难以衡量现状，不懂得变通。比如，你到了一个陌生的地方，好心人提醒你要走大道，别走山路，可你偏要走山路；等到真正上路后才发现，山路确实不好走。这个时候，旁边也许就会有人说你“蝉不知雪”了。所以，“蝉不知雪”这个成语形容的是不懂得衡量状况是见识浅薄的意思。 </string>
+    <string name="sanmiao_content">是指在搭讪时不能犹豫，必须要在三秒内做出行动，哪怕你只是上前去打一声招呼，说一句我想认识你，都比犹豫不前要好。犹豫的时间越长，越可能产生接近焦虑，搭讪的成功率就越低。 </string>
+    <string name="cola_content">可乐被冠上了“肥仔快乐水”的称号，不管你是百事可乐党还是可口可乐党，除了享受可乐滑过喉咙的快感，可能并不知道它别的用处吧？ 1. 印度的一些农民把可乐当“杀虫剂”，原理据说是利用可乐中的糖分吸引红蚂蚁来消灭害虫。 2. 可乐可以用来去除黏在头发上的口香糖。 3. 可乐可以去除厨房的污垢。 4. 可乐可以去除衣服上的汽油味儿。 5. 可乐可以给硬币除锈。 6. 可乐可以给马桶除垢。</string>
+    <string name="HCL_content">洁厕液一般是稀盐酸 HCl ，84的主要成分是次氯酸钠 NaClO，两者混合会产生氯气，剧毒！至于量的问题，根据实际发生的事件来看，日常清洁卫生间时，如果通风不理想，正常使用的量已足够导致中毒，若没有及时抢救，将会有生命危险，请一定牢记。
+</string>
+
+    <string name="hug_title">尝试从背后拥抱对方</string>
+    <string name="seli_title">塞利格曼效应</string>
+    <string name="toubal_title">双硫仑样反应：头孢加酒，说走就走</string>
+    <string name="chanbu_title">蝉不知雪</string>
+    <string name="sanmiao_title">三秒法则</string>
+    <string name="cola_title">可乐的妙用</string>
+    <string name="HCL_title">洁厕灵+84=毒药</string>
+
+    <string name="snow_img">https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1590505676113&amp;di=fbdb2e3f998e66548e09a8f703e87bcb&amp;imgtype=0&amp;src=http%3A%2F%2Fimg1.lotour.net%2FInspiration%2F2017%2F0222%2F20170222130602071771309_910.jpg"</string>
+    <string name="hug_img">https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1478208439,3405415706&amp;fm=26&amp;gp=0.jpg</string>
+    <string name="seli_img">https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=722543712,3924671090&amp;fm=26&amp;gp=0.jpg</string>
+    <string name="toubal_img">https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3963314208,2837283769&amp;fm=26&amp;gp=0.jpg</string>
+    <string name="sanmiao_img">https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1251167805,2157399383&amp;fm=26&amp;gp=0.jpg</string>
+    <string name="cola_img">https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1477944623,891818149&amp;fm=26&amp;gp=0.jpg</string>
+    <string name="HCL_img">https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1590505919584&amp;di=b7542b3d07bf143daae8928c7c8b2d55&amp;imgtype=0&amp;src=http%3A%2F%2Fimg1.cache.netease.com%2Fcatchpic%2FB%2FBA%2FBA6A21DC75FB6DC003C2505EF3DFBFE2.jpg</string>
+
 </resources>
