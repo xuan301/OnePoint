@@ -13,6 +13,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginLeft="-8dp"
+            android:layout_marginRight="-8dp"
             android:layout_marginBottom="65dp"
             android:orientation="vertical">
 
@@ -22,16 +24,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
-                android:layout_marginLeft="0dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="22dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginRight="0dp"
-                android:layout_weight="20"
                 android:fillViewport="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintBottom_toBottomOf="@id/divider"
+                app:layout_constraintEnd_toEndOf="@id/divider"
+                app:layout_constraintStart_toStartOf="@id/divider"
+                app:layout_constraintTop_toTopOf="@id/divider">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -59,32 +58,35 @@
                             android:id="@+id/title_of_knowledge"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
                             android:layout_marginTop="10dp"
                             android:text="@string/title"
                             android:textColor="@android:color/primary_text_light_nodisable"
-                            android:textSize="36sp"
-                            android:typeface="monospace" />
+                            android:textSize="30sp"
+                            android:typeface="monospace"
+                            android:layout_marginLeft="10dp" />
 
                         <TextView
                             android:id="@+id/author_of_knowledge"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginLeft="20dp"
                             android:text="@string/author"
-                            android:textColor="@android:color/primary_text_light_nodisable"
-                            android:textSize="24sp"
+                            android:textColor="@android:color/secondary_text_dark"
+                            android:textSize="18sp"
                             android:typeface="sans" />
 
                         <TextView
                             android:id="@+id/textView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
+                            android:layout_marginLeft="20dp"
                             android:layout_marginTop="10dp"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginRight="20dp"
                             android:lineSpacingMultiplier="1.2"
                             android:text="@string/sampleknowledge"
-                            android:textColor="@android:color/primary_text_light_nodisable"
+                            android:textColor="@android:color/tertiary_text_dark"
                             android:textSize="18sp"
                             android:typeface="normal"
                             tools:text="@string/title4" />
@@ -96,7 +98,7 @@
             <View
                 android:id="@+id/divider"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_height="0dp"
                 android:layout_weight="1"
                 android:background="?android:attr/listDivider" />
 

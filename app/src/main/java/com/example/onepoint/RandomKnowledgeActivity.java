@@ -12,19 +12,15 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
 public class RandomKnowledgeActivity extends AppCompatActivity {
     private Button favorite;
-    private Button comment;
-    private ImageView img_of_knowledge;
-    private TextView title_of_knowledge;
-    private TextView author_of_knowledge;
-    private TextView text_of_knowledge;
     GestureDetector Detector;
-    protected static final float FLIP_DISTANCE = 1;
+    protected static final float FLIP_DISTANCE = 150;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,18 +29,18 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
         if(getSupportActionBar() != null){ getSupportActionBar().hide(); }
         setHalfTransparent();
 
-        img_of_knowledge = this.findViewById(R.id.image_of_knowledge);
-        title_of_knowledge = this.findViewById(R.id.title_of_knowledge);
-        author_of_knowledge = this.findViewById(R.id.author_of_knowledge);
-        text_of_knowledge = this.findViewById(R.id.textView);
+        ImageView img_of_knowledge = this.findViewById(R.id.image_of_knowledge);
+        TextView title_of_knowledge = this.findViewById(R.id.title_of_knowledge);
+        TextView author_of_knowledge = this.findViewById(R.id.author_of_knowledge);
+        TextView text_of_knowledge = this.findViewById(R.id.textView);
         Intent intent = getIntent();
         String title = intent.getStringExtra("title");
         String imageSrc = intent.getStringExtra("imageSrc");
         if(title != null && imageSrc != null){
             Glide.with(img_of_knowledge.getContext()).load(imageSrc).into(img_of_knowledge);
             text_of_knowledge.setText(title);
-            author_of_knowledge.setText(null);
-            title_of_knowledge.setText(null);
+            author_of_knowledge.setText("来自网络");
+            title_of_knowledge.setText("每日一读");
         }
 
         favorite =this.findViewById(R.id.like);
@@ -72,7 +68,7 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
             }
         });
 
-        comment = this.findViewById(R.id.comment);
+        Button comment = this.findViewById(R.id.comment);
         comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,27 +105,53 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                if(e1.getX()-e2.getX()>FLIP_DISTANCE){
-                    Intent intent = new Intent(RandomKnowledgeActivity.this, RandomKnowledgeActivity.class);
-                    startActivity(intent);
-                    return true;
-                }
-                else if(e2.getX()-e1.getX()>FLIP_DISTANCE){
-                    Intent intent = new Intent(RandomKnowledgeActivity.this, RandomKnowledgeActivity.class);
-                    startActivity(intent);
-                    return true;
-                }
-
-                return false;
+                return left_or_right(e1,e2);
             }
         });
 
+        ScrollView content = findViewById(R.id.content);
+        content.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return Detector.onTouchEvent(event);
+            }
+        });
 
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return Detector.onTouchEvent(event);
+    public void finish()
+    {
+        Intent intent = getIntent();
+        boolean fromLeft = intent.getBooleanExtra("fromLeft",false);
+        boolean fromRight = intent.getBooleanExtra("fromRight",false);
+        super.finish();
+        if(fromLeft){
+            overridePendingTransition(R.anim.trans_blank,R.anim.trans_out_left);
+        }
+        else if(fromRight){
+            overridePendingTransition(R.anim.trans_blank,R.anim.trans_out_right);
+        }
+    }
+
+    private boolean left_or_right(MotionEvent e1, MotionEvent e2)
+    {
+        if(Math.abs(e1.getY()-e2.getY()) < FLIP_DISTANCE/2) {
+            if (e1.getX() - e2.getX() > FLIP_DISTANCE) {
+                Intent intent = new Intent(RandomKnowledgeActivity.this, RandomKnowledgeActivity.class);
+                intent.putExtra("fromRight",true);
+                startActivity(intent);
+                overridePendingTransition(R.anim.trans_in_right,R.anim.trans_blank);
+                return true;
+            } else if (e2.getX() - e1.getX() > FLIP_DISTANCE) {
+                Intent intent = new Intent(RandomKnowledgeActivity.this, RandomKnowledgeActivity.class);
+                intent.putExtra("fromLeft",true);
+                startActivity(intent);
+                overridePendingTransition(R.anim.trans_in_left,R.anim.trans_blank);
+                return true;
+            }
+        }
+        return false;
     }
 
     protected void setHalfTransparent() {
