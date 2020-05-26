@@ -123,14 +123,14 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
     public void finish()
     {
         Intent intent = getIntent();
-        boolean fromLeft = intent.getBooleanExtra("fromLeft",false);
-        boolean fromRight = intent.getBooleanExtra("fromRight",false);
+        boolean fromLeft = intent.getBooleanExtra("prev",false);
+        boolean fromRight = intent.getBooleanExtra("next",false);
         super.finish();
         if(fromLeft){
-            overridePendingTransition(R.anim.trans_blank,R.anim.trans_out_left);
+            overridePendingTransition(R.anim.trans_in_alpha,R.anim.trans_out_left);
         }
         else if(fromRight){
-            overridePendingTransition(R.anim.trans_blank,R.anim.trans_out_right);
+            overridePendingTransition(R.anim.trans_in_alpha,R.anim.trans_out_right);
         }
     }
 
@@ -139,15 +139,15 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
         if(Math.abs(e1.getY()-e2.getY()) < FLIP_DISTANCE/2) {
             if (e1.getX() - e2.getX() > FLIP_DISTANCE) {
                 Intent intent = new Intent(RandomKnowledgeActivity.this, RandomKnowledgeActivity.class);
-                intent.putExtra("fromRight",true);
+                intent.putExtra("next",true);
                 startActivity(intent);
-                overridePendingTransition(R.anim.trans_in_right,R.anim.trans_blank);
+                overridePendingTransition(R.anim.trans_in_right,R.anim.trans_out_alpha);
                 return true;
             } else if (e2.getX() - e1.getX() > FLIP_DISTANCE) {
                 Intent intent = new Intent(RandomKnowledgeActivity.this, RandomKnowledgeActivity.class);
-                intent.putExtra("fromLeft",true);
+                intent.putExtra("prev",true);
                 startActivity(intent);
-                overridePendingTransition(R.anim.trans_in_left,R.anim.trans_blank);
+                overridePendingTransition(R.anim.trans_in_left,R.anim.trans_out_alpha);
                 return true;
             }
         }
