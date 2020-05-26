@@ -79,7 +79,9 @@ public class LikeActivity extends AppCompatActivity {
                 new Knowledge(getString(R.string.hug_title), getString(R.string.hug_img), getString(R.string.hug_content)),
                 new Knowledge(getString(R.string.seli_title), getString(R.string.seli_img), getString(R.string.seli_content)),
                 new Knowledge(getString(R.string.toubal_title), getString(R.string.toubal_img), getString(R.string.toubal_content)),
-                new Knowledge(getString(R.string.sanmiao_title), getString(R.string.sanmiao_img), getString(R.string.sanmiao_content))
+                new Knowledge(getString(R.string.sanmiao_title), getString(R.string.sanmiao_img), getString(R.string.sanmiao_content)),
+                new Knowledge(getString(R.string.xigua_title), getString(R.string.xigua_img), getString(R.string.xigua_content)),
+                new Knowledge(getString(R.string.famei_title), getString(R.string.famei_img), getString(R.string.famei_content))
         };
         knowledgeList.clear();
         for(int i = 0; i < 50; i++) {

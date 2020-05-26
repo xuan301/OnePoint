@@ -47,6 +47,9 @@
     <string name="cola_content">可乐被冠上了“肥仔快乐水”的称号，不管你是百事可乐党还是可口可乐党，除了享受可乐滑过喉咙的快感，可能并不知道它别的用处吧？ 1. 印度的一些农民把可乐当“杀虫剂”，原理据说是利用可乐中的糖分吸引红蚂蚁来消灭害虫。 2. 可乐可以用来去除黏在头发上的口香糖。 3. 可乐可以去除厨房的污垢。 4. 可乐可以去除衣服上的汽油味儿。 5. 可乐可以给硬币除锈。 6. 可乐可以给马桶除垢。</string>
     <string name="HCL_content">洁厕液一般是稀盐酸 HCl ，84的主要成分是次氯酸钠 NaClO，两者混合会产生氯气，剧毒！至于量的问题，根据实际发生的事件来看，日常清洁卫生间时，如果通风不理想，正常使用的量已足够导致中毒，若没有及时抢救，将会有生命危险，请一定牢记。
 </string>
+    <string name="famei_content">黄曲霉毒素（AFT）是黄曲霉和寄生曲霉等某些菌株产生的双呋喃环类毒素。其衍生物有约20种，分别命名为 B1、B2、G1、G2、M1、M2 等。其中以 B1 的毒性最大，致癌性最强。1993年，黄曲霉毒素被世界卫生组织（WHO）癌症研究机构划定为一类天然存在的致癌物，是毒性极强的剧毒物质。除了食物外，发霉的筷子也要尽快更换，不要再使用。</string>
+    <string name="xigua_content">西瓜味道甘甜多汁，清爽解渴，是盛夏的佳果，那怎么挑选好西瓜呢？先看西瓜底部的圈圈，越小越好，相反的，底部圈圈越大，皮越厚，越难吃；颜色最好挑青绿色，不要雾雾白白的；西瓜头，就是所谓的蒂头，若是直直的一条线，就不要，但若是卷曲圈起来的，就很甜；西瓜纹路整齐就是好瓜。
+</string>
 
     <string name="hug_title">尝试从背后拥抱对方</string>
     <string name="seli_title">塞利格曼效应</string>
@@ -55,6 +58,8 @@
     <string name="sanmiao_title">三秒法则</string>
     <string name="cola_title">可乐的妙用</string>
     <string name="HCL_title">洁厕灵+84=毒药</string>
+    <string name="famei_title">发霉的花生和坚果一定不要吃</string>
+    <string name="xigua_title">你会挑选西瓜吗？</string>
 
     <string name="snow_img">https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1590505676113&amp;di=fbdb2e3f998e66548e09a8f703e87bcb&amp;imgtype=0&amp;src=http%3A%2F%2Fimg1.lotour.net%2FInspiration%2F2017%2F0222%2F20170222130602071771309_910.jpg"</string>
     <string name="hug_img">https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1478208439,3405415706&amp;fm=26&amp;gp=0.jpg</string>
@@ -63,5 +68,6 @@
     <string name="sanmiao_img">https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1251167805,2157399383&amp;fm=26&amp;gp=0.jpg</string>
     <string name="cola_img">https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1477944623,891818149&amp;fm=26&amp;gp=0.jpg</string>
     <string name="HCL_img">https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1590505919584&amp;di=b7542b3d07bf143daae8928c7c8b2d55&amp;imgtype=0&amp;src=http%3A%2F%2Fimg1.cache.netease.com%2Fcatchpic%2FB%2FBA%2FBA6A21DC75FB6DC003C2505EF3DFBFE2.jpg</string>
-
+    <string name="famei_img">https://5b0988e595225.cdn.sohucs.com/images/20181227/ceb2bf91923142208a1e69f92a6f740a.jpeg</string>
+    <string name="xigua_img">https://n.sinaimg.cn/sinacn11/533/w800h533/20180731/4c09-hhacrce1167436.jpg</string>
 </resources>

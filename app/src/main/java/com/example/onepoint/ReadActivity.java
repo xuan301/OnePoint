@@ -64,6 +64,8 @@ public class ReadActivity extends AppCompatActivity {
     private void initKnowledges() {
         knowledgeList.clear();
         Knowledge[] knowledges = {//不要把这个数组放在函数外面
+                new Knowledge(getString(R.string.xigua_title), getString(R.string.xigua_img), getString(R.string.xigua_content)),
+                new Knowledge(getString(R.string.famei_title), getString(R.string.famei_img), getString(R.string.famei_content)),
                 new Knowledge(getString(R.string.chanbu_title), getString(R.string.snow_img), getString(R.string.chanbu_content)),
                 new Knowledge(getString(R.string.cola_title), getString(R.string.cola_img), getString(R.string.cola_content)),
                 new Knowledge(getString(R.string.HCL_title), getString(R.string.HCL_img), getString(R.string.HCL_content)),
