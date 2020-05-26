@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.Constraints;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -20,12 +22,14 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
     private List<Comment> mCommentList;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        //CardView cardView;
+        CardView cardView;
         ImageView knowledgeImage;
         ImageView UserImage;
         TextView knowledgeTitle;
         TextView UserName;
         TextView Comment;
+        TextView delete;
+
 
 
         public ViewHolder(View view){
@@ -36,6 +40,8 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
             UserName = view.findViewById(R.id.username);
             Comment = view.findViewById(R.id.comment);
             knowledgeTitle = (TextView) view.findViewById(R.id.knowledge_title);
+            cardView = view.findViewById(R.id.knowledge);
+            delete = view.findViewById(R.id.delete);
         }
     }
 
@@ -51,29 +57,48 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
         View view = LayoutInflater.from(mContext).inflate(R.layout.comment_item,
                 parent, false);
         final ViewHolder holder = new ViewHolder(view);
-        holder.knowledgeImage.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                //int position = holder.getAdapterPosition();
-                //Knowledge knowledge = mKnowledgeList.get(position);
-                Intent intent = new Intent(mContext, RandomKnowledgeActivity.class);
-                //put extra info here, e.g.
-                //intent.putExtra(RandomKnowledgeActivity.KNOWLEDGE_TITLE, knowledge.getTitle());
-                mContext.startActivity(intent);
-            }
-        });
         return new ViewHolder(view);
     }
 
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         Comment comment = mCommentList.get(position);
-        holder.knowledgeTitle.setText(comment.getTitle());
+        String title = comment.getTitle();
+        if (title.length()>8){
+            holder.knowledgeTitle.setText(title.substring(0,8)+"...");
+        }
+        else {
+            holder.knowledgeTitle.setText(title);
+        }
         holder.UserName.setText(comment.getUser());
         holder.Comment.setText(comment.getComment());
-        Glide.with(mContext).load("https://wx2.sinaimg.cn/large/0067hdZuly1g7szjhsld7j30u01901kz.jpg").into(holder.knowledgeImage);
+        Glide.with(mContext).load(comment.getKnowledgeImagesrc()).into(holder.knowledgeImage);
         Glide.with(mContext).load(comment.getUserImageId()).into(holder.UserImage);
+        holder.cardView.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                int position = holder.getAdapterPosition();
+                if (position<0) return;
+                Comment comment = mCommentList.get(position);
+                Intent intent = new Intent(mContext, RandomKnowledgeActivity.class);
+                //put extra info here, e.g.
+                intent.putExtra("title", comment.getTitle());
+                intent.putExtra("imageSrc", comment.getKnowledgeImagesrc());
+                mContext.startActivity(intent);
+            }
+        });
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = holder.getAdapterPosition();
+                if (position<0) return;
+                mCommentList.remove(position);
+                notifyItemRemoved(position);
+                //Intent intent = new Intent(mContext,CommentActivity.class);
+                //mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override
