@@ -22,18 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static com.example.onepoint.R.string.xigua_title;
+
 public class CommentActivity extends AppCompatActivity {
 
     //private DrawerLayout mDrawerLayout;
 
-    private Comment[] comments = {
-            new Comment("落霞与孤鹜齐飞，秋水共长天一色。——王勃《滕王阁序》",
-                    "https://wx2.sinaimg.cn/large/0067hdZuly1g7szjhsld7j30u01901kz.jpg",R.drawable.fig1,"wulala2580","啊这"),
-            new Comment("【徐志摩！你的落款又傲娇又风骚】徐志摩在写给陆小曼的书信集《爱曼小札》中的落款很肉麻风骚",
-                    "https://wx3.sinaimg.cn/large/0067hdZugy1g7ssvg877pj30j60j675i.jpg",R.drawable.fig2,"jlsnb","啊吧啊吧啊吧"),
-            new Comment("晚安碎语【第十四话，私藏句子】我们常常不去想自己拥有的东西，却对得不到的东西念念不忘。——叔本华",
-                    "https://wx3.sinaimg.cn/large/0067hdZugy1g7ss38x252j30yi0yitau.jpg",R.drawable.fig3,"mihu","不会真有人以为..."),
-    };
 
     private List<Comment> commentList = new ArrayList<>();
 
@@ -75,6 +69,14 @@ public class CommentActivity extends AppCompatActivity {
 
     private void initComments() {
         commentList.clear();
+         Comment[] comments = {
+                new Comment(getString(xigua_title),
+                        getString(R.string.xigua_img),R.drawable.fig1,"wulala2580","啊这",getString(R.string.xigua_content)),
+                new Comment(getString(R.string.famei_title),
+                        getString(R.string.famei_img),R.drawable.fig1,"wulala2580","啊吧啊吧啊吧",getString(R.string.famei_content)),
+                new Comment(getString(R.string.chanbu_title),
+                        getString(R.string.snow_img),R.drawable.fig1,"wulala2580","不会真有人以为...",getString(R.string.chanbu_content)),
+        };
         for(int i = 0; i < comments.length; i++) {
             commentList.add(comments[i]);
         }

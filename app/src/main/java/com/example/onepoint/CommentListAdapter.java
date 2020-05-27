@@ -1,7 +1,14 @@
 package com.example.onepoint;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,16 +17,23 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.Constraints;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.ViewHolder> {
     private Context mContext;
     private List<Comment> mCommentList;
+    private List<Knowledge> knowledgeList= new ArrayList<>();
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
@@ -83,8 +97,12 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                 Comment comment = mCommentList.get(position);
                 Intent intent = new Intent(mContext, RandomKnowledgeActivity.class);
                 //put extra info here, e.g.
+                //intent.putExtra("index",position);
+                //intent.putParcelableArrayListExtra("list", (ArrayList<? extends Parcelable>) mCommentList);
+              //  intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 intent.putExtra("title", comment.getTitle());
                 intent.putExtra("imageSrc", comment.getKnowledgeImagesrc());
+                intent.putExtra("content",comment.getContent());
                 mContext.startActivity(intent);
             }
         });
