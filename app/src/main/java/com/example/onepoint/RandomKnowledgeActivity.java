@@ -41,22 +41,26 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
         TextView author_of_knowledge = this.findViewById(R.id.author_of_knowledge);
         TextView text_of_knowledge = this.findViewById(R.id.textView);
         Intent intent = getIntent();
-//        String title = intent.getStringExtra("title");
-//        String imageSrc = intent.getStringExtra("imageSrc");
-//        String text = intent.getStringExtra("content");
         index = intent.getIntExtra("index",0);
         knowledge_list = intent.getParcelableArrayListExtra("list");
-        assert knowledge_list != null;
-        Knowledge knowledge = knowledge_list.get(index);
-        String title = knowledge.getTitle();
-        String imageSrc = knowledge.getImageSrc();
-        String text = knowledge.getContent();
-        if(title != null && imageSrc != null && text != null){
-            Glide.with(img_of_knowledge.getContext()).load(imageSrc).into(img_of_knowledge);
-            text_of_knowledge.setText(text);
-            author_of_knowledge.setText(R.string.author);
-            title_of_knowledge.setText(title);
+        String title,imageSrc,text;
+        if(knowledge_list != null) {
+            Knowledge knowledge = knowledge_list.get(index);
+            title = knowledge.getTitle();
+            imageSrc = knowledge.getImageSrc();
+            text = knowledge.getContent();
         }
+        else{
+            title = intent.getStringExtra("title");
+            imageSrc = intent.getStringExtra("imageSrc");
+            text = intent.getStringExtra("content");
+        }
+            if (title != null && imageSrc != null && text != null) {
+                Glide.with(img_of_knowledge.getContext()).load(imageSrc).into(img_of_knowledge);
+                text_of_knowledge.setText(text);
+                author_of_knowledge.setText(R.string.author);
+                title_of_knowledge.setText(title);
+            }
 
         favorite =this.findViewById(R.id.like);
 
@@ -153,10 +157,10 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
     {
         if(Math.abs(e1.getY()-e2.getY()) < FLIP_DISTANCE/2) {
             if (e1.getX() - e2.getX() > FLIP_DISTANCE) {
-                if(index+1<knowledge_list.size()) {
+                if(knowledge_list!=null && index+1<knowledge_list.size()) {
                     Intent intent = new Intent(RandomKnowledgeActivity.this, RandomKnowledgeActivity.class);
 //                    intent.putExtra("next", true);
-                    intent.putExtra("index",index+1);
+                    intent.putExtra("index", index + 1);
                     intent.putParcelableArrayListExtra("list", (ArrayList<? extends Parcelable>) knowledge_list);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     startActivity(intent);
@@ -167,7 +171,7 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                 }
                 return true;
             } else if (e2.getX() - e1.getX() > FLIP_DISTANCE) {
-                if(index>0) {
+                if(knowledge_list!=null && index>0) {
                     Intent intent = new Intent(RandomKnowledgeActivity.this, RandomKnowledgeActivity.class);
 //                    intent.putExtra("prev", true);
                     intent.putExtra("index",index-1);
