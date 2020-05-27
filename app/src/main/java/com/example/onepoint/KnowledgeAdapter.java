@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class KnowledgeAdapter extends RecyclerView.Adapter<KnowledgeAdapter.ViewHolder> {
@@ -37,20 +39,21 @@ public class KnowledgeAdapter extends RecyclerView.Adapter<KnowledgeAdapter.View
         ImageView knowledgeImage;
         TextView knowledgeTitle;
 
-        public ViewHolder(View view){
+        ViewHolder(View view){
             super(view);
             cardView = (CardView) view;
-            knowledgeImage = (ImageView) view.findViewById(R.id.knowledge_image);
-            knowledgeTitle = (TextView) view.findViewById(R.id.knowledge_title);
+            knowledgeImage = view.findViewById(R.id.knowledge_image);
+            knowledgeTitle = view.findViewById(R.id.knowledge_title);
         }
     }
 
-    public KnowledgeAdapter(List<Knowledge> knowledgeList ){
+    KnowledgeAdapter(List<Knowledge> knowledgeList){
         mKnowledgeList = knowledgeList;
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder ( ViewGroup parent, int viewType){
+    public ViewHolder onCreateViewHolder (@NonNull ViewGroup parent, int viewType){
         if (mContext == null) {
             mContext = parent.getContext();
         }
@@ -91,11 +94,15 @@ public class KnowledgeAdapter extends RecyclerView.Adapter<KnowledgeAdapter.View
             public void onClick(View v){
                 int position = holder.getAdapterPosition();
                 if(position<0) return;
-                Knowledge knowledge = mKnowledgeList.get(position);
+//                Knowledge knowledge = mKnowledgeList.get(position);
                 Intent intent = new Intent(mContext, RandomKnowledgeActivity.class);
                 //put extra info here, e.g.
-                intent.putExtra("title", knowledge.getTitle());
-                intent.putExtra("imageSrc", knowledge.getImageSrc());
+//                intent.putExtra("title", knowledge.getTitle());
+//                intent.putExtra("imageSrc", knowledge.getImageSrc());
+//                intent.putExtra("content",knowledge.getContent());
+                intent.putExtra("index",position);
+                intent.putParcelableArrayListExtra("list", (ArrayList<? extends Parcelable>) mKnowledgeList);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 mContext.startActivity(intent);
             }
         });
