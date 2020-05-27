@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,12 +15,18 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RandomKnowledgeActivity extends AppCompatActivity {
     private Button favorite;
     GestureDetector Detector;
+    private List<Knowledge> knowledge_list;
+    private int index;
     protected static final float FLIP_DISTANCE = 150;
 
     @Override
@@ -34,13 +41,21 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
         TextView author_of_knowledge = this.findViewById(R.id.author_of_knowledge);
         TextView text_of_knowledge = this.findViewById(R.id.textView);
         Intent intent = getIntent();
-        String title = intent.getStringExtra("title");
-        String imageSrc = intent.getStringExtra("imageSrc");
-        if(title != null && imageSrc != null){
+//        String title = intent.getStringExtra("title");
+//        String imageSrc = intent.getStringExtra("imageSrc");
+//        String text = intent.getStringExtra("content");
+        index = intent.getIntExtra("index",0);
+        knowledge_list = intent.getParcelableArrayListExtra("list");
+        assert knowledge_list != null;
+        Knowledge knowledge = knowledge_list.get(index);
+        String title = knowledge.getTitle();
+        String imageSrc = knowledge.getImageSrc();
+        String text = knowledge.getContent();
+        if(title != null && imageSrc != null && text != null){
             Glide.with(img_of_knowledge.getContext()).load(imageSrc).into(img_of_knowledge);
-            text_of_knowledge.setText(title);
-            author_of_knowledge.setText("来自网络");
-            title_of_knowledge.setText("每日一读");
+            text_of_knowledge.setText(text);
+            author_of_knowledge.setText(R.string.author);
+            title_of_knowledge.setText(title);
         }
 
         favorite =this.findViewById(R.id.like);
@@ -119,35 +134,51 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public void finish()
-    {
-        Intent intent = getIntent();
-        boolean fromLeft = intent.getBooleanExtra("prev",false);
-        boolean fromRight = intent.getBooleanExtra("next",false);
-        super.finish();
-        if(fromLeft){
-            overridePendingTransition(R.anim.trans_in_alpha,R.anim.trans_out_left);
-        }
-        else if(fromRight){
-            overridePendingTransition(R.anim.trans_in_alpha,R.anim.trans_out_right);
-        }
-    }
+//    @Override
+//    public void finish()
+//    {
+//        Intent intent = getIntent();
+//        boolean fromLeft = intent.getBooleanExtra("prev",false);
+//        boolean fromRight = intent.getBooleanExtra("next",false);
+//        super.finish();
+//        if(fromLeft){
+//            overridePendingTransition(R.anim.trans_in_alpha,R.anim.trans_out_left);
+//        }
+//        else if(fromRight){
+//            overridePendingTransition(R.anim.trans_in_alpha,R.anim.trans_out_right);
+//        }
+//    }
 
     private boolean left_or_right(MotionEvent e1, MotionEvent e2)
     {
         if(Math.abs(e1.getY()-e2.getY()) < FLIP_DISTANCE/2) {
             if (e1.getX() - e2.getX() > FLIP_DISTANCE) {
-                Intent intent = new Intent(RandomKnowledgeActivity.this, RandomKnowledgeActivity.class);
-                intent.putExtra("next",true);
-                startActivity(intent);
-                overridePendingTransition(R.anim.trans_in_right,R.anim.trans_out_alpha);
+                if(index+1<knowledge_list.size()) {
+                    Intent intent = new Intent(RandomKnowledgeActivity.this, RandomKnowledgeActivity.class);
+//                    intent.putExtra("next", true);
+                    intent.putExtra("index",index+1);
+                    intent.putParcelableArrayListExtra("list", (ArrayList<? extends Parcelable>) knowledge_list);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.trans_in_right, R.anim.trans_out_alpha);
+                }
+                else{
+                    Toast.makeText(getApplicationContext(),"已经是最后一页了",Toast.LENGTH_SHORT).show();
+                }
                 return true;
             } else if (e2.getX() - e1.getX() > FLIP_DISTANCE) {
-                Intent intent = new Intent(RandomKnowledgeActivity.this, RandomKnowledgeActivity.class);
-                intent.putExtra("prev",true);
-                startActivity(intent);
-                overridePendingTransition(R.anim.trans_in_left,R.anim.trans_out_alpha);
+                if(index>0) {
+                    Intent intent = new Intent(RandomKnowledgeActivity.this, RandomKnowledgeActivity.class);
+//                    intent.putExtra("prev", true);
+                    intent.putExtra("index",index-1);
+                    intent.putParcelableArrayListExtra("list", (ArrayList<? extends Parcelable>) knowledge_list);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY); //返回时可以直接回到页面
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.trans_in_left, R.anim.trans_out_alpha);
+                }
+                else{
+                    Toast.makeText(getApplicationContext(),"已经是第一页了",Toast.LENGTH_SHORT).show();
+                }
                 return true;
             }
         }
