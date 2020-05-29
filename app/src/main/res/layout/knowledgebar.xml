@@ -28,6 +28,7 @@
         android:background="?android:attr/selectableItemBackground"
         android:drawableTop="@drawable/ic_comment_black_24dp"
         android:text="@string/comment"
+        android:onClick="doclick"
         android:textColor="#737373" />
 
     <Button
@@ -42,6 +43,7 @@
         android:background="?android:attr/selectableItemBackground"
         android:drawableTop="@drawable/ic_share"
         android:text="@string/share"
+        android:onClick="doclick"
         android:textColor="#737373" />
 
 </LinearLayout>

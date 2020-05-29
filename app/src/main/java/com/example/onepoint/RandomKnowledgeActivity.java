@@ -16,6 +16,10 @@ import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+
 
 import com.bumptech.glide.Glide;
 
@@ -28,6 +32,7 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
     private List<Knowledge> knowledge_list;
     private int index;
     protected static final float FLIP_DISTANCE = 150;
+    BottomSheetBehavior behavior;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,15 +91,20 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                 isActive = ! isActive;
             }
         });
-
-        Button comment = this.findViewById(R.id.comment);
-        comment.setOnClickListener(new View.OnClickListener() {
+        //以下为分享bottomsheet的代码
+       /* View bottomsheet = findViewById(R.id.bottom_sheet);
+        behavior = BottomSheetBehavior.from(bottomsheet);
+        behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(RandomKnowledgeActivity.this, CommentActivity.class);
-                startActivity(intent);
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                //这里是bottomsheet状态的改变
             }
-        });
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                //这里是拖拽中的回调，根据slideOffset可以做一些动画
+            }
+        });*/
 
         Detector = new GestureDetector(this, new GestureDetector.OnGestureListener() {
             @Override
@@ -136,6 +146,24 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
             }
         });
 
+    }
+    //以下为评论和分享dialog
+    public void doclick(View v)
+    {
+        switch (v.getId()) {
+            case R.id.share:
+                BottomSheetDialog mBottomSheetDialog1 = new BottomSheetDialog(this);
+                View view1 = getLayoutInflater().inflate(R.layout.share_dialog_bottom_sheet, null);
+                mBottomSheetDialog1.setContentView(view1);
+                mBottomSheetDialog1.show();
+                break;
+            case R.id.comment:
+                BottomSheetDialog mBottomSheetDialog2 = new BottomSheetDialog(this);
+                View view2 = getLayoutInflater().inflate(R.layout.comment_dialog_bottom_sheet, null);
+                mBottomSheetDialog2.setContentView(view2);
+                mBottomSheetDialog2.show();
+                break;
+        }
     }
 
 //    @Override
