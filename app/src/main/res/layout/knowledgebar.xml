@@ -17,7 +17,7 @@
         android:textColor="#737373" />
 
     <Button
-        android:id="@+id/comment"
+        android:id="@+id/add_comment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
@@ -27,8 +27,8 @@
         android:layout_weight="1"
         android:background="?android:attr/selectableItemBackground"
         android:drawableTop="@drawable/ic_comment_black_24dp"
-        android:text="@string/comment"
         android:onClick="doclick"
+        android:text="@string/comment"
         android:textColor="#737373" />
 
     <Button

@@ -1,6 +1,8 @@
 package com.example.onepoint;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -12,16 +14,17 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.annotation.NonNull;
+
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -145,23 +148,76 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                 return Detector.onTouchEvent(event);
             }
         });
+        /*//以下为评论和分享dialog
+        Button comment = findViewById(R.id.add_comment);
+        comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RandomKnowledgeActivity.this,AddCommentActivity.class);
+                startActivity(intent);
+            }
+        });
+        Button share = findViewById(R.id.share);
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(RandomKnowledgeActivity.this, ShareActivity.class);
+                startActivity(intent1);
+            }
+        });*/
+
 
     }
     //以下为评论和分享dialog
+    private AddCommentListAdapter adapter;
+    private List<Comment> commentList = new ArrayList<>();
     public void doclick(View v)
     {
         switch (v.getId()) {
             case R.id.share:
-                BottomSheetDialog mBottomSheetDialog1 = new BottomSheetDialog(this);
+                final BottomSheetDialog mBottomSheetDialog1 = new BottomSheetDialog(this);
                 View view1 = getLayoutInflater().inflate(R.layout.share_dialog_bottom_sheet, null);
                 mBottomSheetDialog1.setContentView(view1);
                 mBottomSheetDialog1.show();
+                ImageView share_close = view1.findViewById(R.id.share_close);
+                share_close.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mBottomSheetDialog1.dismiss();
+                    }
+                });
                 break;
-            case R.id.comment:
-                BottomSheetDialog mBottomSheetDialog2 = new BottomSheetDialog(this);
+            case R.id.add_comment:
                 View view2 = getLayoutInflater().inflate(R.layout.comment_dialog_bottom_sheet, null);
+                RecyclerView recyclerView = view2.findViewById(R.id.addcomment_recycler);
+                recyclerView.setHasFixedSize(true);//设置固定大小
+                LinearLayoutManager layoutManager = new LinearLayoutManager(this);//创建线性布局
+                layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                recyclerView.setLayoutManager(layoutManager);//给RecyclerView设置布局管理器
+                commentList.clear();
+                Comment[] comments = {
+                        new Comment(getString(R.string.xigua_title),
+                                getString(R.string.xigua_img),R.drawable.fig1,"wulala2580","啊这",getString(R.string.xigua_content)),
+                        new Comment(getString(R.string.famei_title),
+                                getString(R.string.famei_img),R.drawable.fig1,"wulala2580","啊吧啊吧啊吧",getString(R.string.famei_content)),
+                        new Comment(getString(R.string.chanbu_title),
+                                getString(R.string.snow_img),R.drawable.fig1,"wulala2580","不会真有人以为...",getString(R.string.chanbu_content)),
+                };
+                for(int i = 0; i < comments.length; i++) {
+                    commentList.add(comments[i]);
+                }
+                adapter = new AddCommentListAdapter(commentList);
+                recyclerView.setAdapter(adapter);
+                final BottomSheetDialog mBottomSheetDialog2 = new BottomSheetDialog(this);
                 mBottomSheetDialog2.setContentView(view2);
                 mBottomSheetDialog2.show();
+                ImageView comment_close = view2.findViewById(R.id.comment_close);
+                comment_close.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mBottomSheetDialog2.dismiss();
+                    }
+                });
                 break;
         }
     }
