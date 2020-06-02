@@ -1,33 +1,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <Button
-        android:id="@+id/read"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_gravity="bottom"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:drawableTop="@drawable/ic_read_black_24dp"
-        android:background="?android:attr/selectableItemBackground"
-        android:text="@string/read"
-        android:textColor="#000000"/>
 
     <Button
         android:id="@+id/like"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:layout_gravity="bottom"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:drawableTop="@drawable/ic_like_black_24dp"
+        android:layout_weight="1"
         android:background="?android:attr/selectableItemBackground"
+        android:drawableTop="@drawable/ic_like_black_24dp"
         android:text="@string/like"
-        android:textColor="#000000"/>
+        android:textColor="#737373" />
 
     <Button
         android:id="@+id/comment"
@@ -41,34 +28,22 @@
         android:background="?android:attr/selectableItemBackground"
         android:drawableTop="@drawable/ic_comment_black_24dp"
         android:text="@string/comment"
-        android:textColor="#000000" />
+        android:onClick="doclick"
+        android:textColor="#737373" />
 
     <Button
-        android:id="@+id/search"
+        android:id="@+id/share"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:layout_gravity="bottom"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:drawableTop="@drawable/ic_search_black_24dp"
-        android:background="?android:attr/selectableItemBackground"
-        android:text="@string/search"
-        android:textColor="#000000"/>
-
-    <Button
-        android:id="@+id/rank"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_gravity="bottom"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:drawableTop="@drawable/ic_rank_black_24dp"
         android:background="?android:attr/selectableItemBackground"
-        android:text="@string/rank"
-        android:textColor="#000000"/>
+        android:drawableTop="@drawable/ic_share"
+        android:text="@string/share"
+        android:onClick="doclick"
+        android:textColor="#737373" />
 
 </LinearLayout>
