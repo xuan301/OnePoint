@@ -8,7 +8,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@android:color/background_dark">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -16,7 +17,8 @@
             android:layout_marginLeft="-8dp"
             android:layout_marginRight="-8dp"
             android:layout_marginBottom="65dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@android:color/background_dark">
 
 
             <ScrollView
@@ -64,7 +66,7 @@
                             android:layout_marginRight="30dp"
                             android:lineSpacingMultiplier="1.2"
                             android:text="@string/cola_title"
-                            android:textColor="@android:color/primary_text_light_nodisable"
+                            android:textColor="@android:color/primary_text_dark_nodisable"
                             android:textSize="30sp"
                             android:typeface="normal"
                             tools:text="@string/cola_title" />
@@ -116,7 +118,8 @@
             android:layout_alignParentBottom="true"
             android:foregroundGravity="bottom"
             android:gravity="center"
-            android:paddingTop="5dp">
+            android:paddingTop="5dp"
+            android:background="@android:color/background_dark">
 
             <include layout="@layout/knowledgebar" />
         </LinearLayout>
