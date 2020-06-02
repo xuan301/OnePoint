@@ -30,7 +30,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.ViewHolder> {
+public class AddCommentListAdapter extends RecyclerView.Adapter<AddCommentListAdapter.ViewHolder> {
     private Context mContext;
     private List<Comment> mCommentList;
     //private List<Knowledge> knowledgeList= new ArrayList<>();
@@ -59,7 +59,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
         }
     }
 
-    public CommentListAdapter(List<Comment> commentList ){
+    public AddCommentListAdapter(List<Comment> commentList ){
         mCommentList = commentList;
     }
 
@@ -99,7 +99,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                 //put extra info here, e.g.
                 //intent.putExtra("index",position);
                 //intent.putParcelableArrayListExtra("list", (ArrayList<? extends Parcelable>) mCommentList);
-              //  intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                //  intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 intent.putExtra("title", comment.getTitle());
                 intent.putExtra("imageSrc", comment.getKnowledgeImagesrc());
                 intent.putExtra("content",comment.getContent());
