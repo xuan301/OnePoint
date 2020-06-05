@@ -26,10 +26,10 @@ public class Comment implements Parcelable{
     public String getComment(){return comment;}
     public String getContent(){return content;}
     //Parcel序列化所需函数
-    private Comment(Parcel in) {
-        title = in.readString();
-        knowledgeImagesrc = in.readString();
-        content = in.readString();
+    private Comment(Parcel in) {//作用是？？？
+        //title = in.readString();
+        //knowledgeImagesrc = in.readString();
+        //content = in.readString();
     }
 
     public static final Parcelable.Creator<Comment> CREATOR = new Parcelable.Creator<Comment>() {
@@ -51,8 +51,8 @@ public class Comment implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeString(knowledgeImagesrc);
-        dest.writeString(content);
+        //dest.writeString(title);
+        //dest.writeString(knowledgeImagesrc);
+        //dest.writeString(content);
     }
 }

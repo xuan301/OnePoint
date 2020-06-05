@@ -16,10 +16,12 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.onepoint.dialog.InputTextMsgDialog;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 
@@ -28,6 +30,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.example.onepoint.CommentActivity;
+import com.tencent.connect.share.QQShare;
+import com.tencent.tauth.IUiListener;
+import com.tencent.tauth.Tencent;
+import com.tencent.tauth.UiError;
 
 public class RandomKnowledgeActivity extends AppCompatActivity {
     private Button favorite;
@@ -165,17 +173,36 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                 startActivity(intent1);
             }
         });*/
+        //传入参数APPID
+        //mTencent = Tencent.createInstance(APP_ID, RandomKnowledgeActivity.this.getApplicationContext());
 
 
     }
     //以下为评论和分享dialog
+    //添加评论需要的变量
     private AddCommentListAdapter adapter;
     private List<Comment> commentList = new ArrayList<>();
+    private InputTextMsgDialog inputTextMsgDialog;
+    private int offsetY;
+    RecyclerView recyclerView;
+    //分享需要的变量
+    //private Tencent mTencent;
+    //private static final String APP_ID = "1105602574";
+
     public void doclick(View v)
     {
         switch (v.getId()) {
             case R.id.share:
-                final BottomSheetDialog mBottomSheetDialog1 = new BottomSheetDialog(this);
+                //调用系统的分享功能实现
+                Intent share_intent = new Intent();
+                share_intent.setAction(Intent.ACTION_SEND);//设置分享行为
+                share_intent.setType("text/plain");//设置分享内容的类型
+                share_intent.putExtra(Intent.EXTRA_SUBJECT,"这是一段分享的文字");//添加分享内容标题
+                share_intent.putExtra(Intent.EXTRA_TEXT,"分享");//添加分享内容
+                //创建分享的Dialog
+                share_intent =   Intent.createChooser(share_intent,"分享");
+                startActivity(share_intent);
+                /*final BottomSheetDialog mBottomSheetDialog1 = new BottomSheetDialog(this);
                 View view1 = getLayoutInflater().inflate(R.layout.share_dialog_bottom_sheet, null);
                 mBottomSheetDialog1.setContentView(view1);
                 mBottomSheetDialog1.show();
@@ -186,10 +213,32 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                         mBottomSheetDialog1.dismiss();
                     }
                 });
+                ImageView qqshare = view1.findViewById(R.id.qqshare);
+                qqshare.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent share_intent = new Intent();
+                        share_intent.setAction(Intent.ACTION_SEND);//设置分享行为
+                        share_intent.setType("text/plain");//设置分享内容的类型
+                        share_intent.putExtra(Intent.EXTRA_SUBJECT,"这是一段分享的文字");//添加分享内容标题
+                        share_intent.putExtra(Intent.EXTRA_TEXT,"分享");//添加分享内容
+                        //创建分享的Dialog
+                        share_intent =   Intent.createChooser(share_intent,"分享");
+                        startActivity(share_intent);
+                        final Bundle params = new Bundle();
+                        params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);//分享的类型
+                        params.putString(QQShare.SHARE_TO_QQ_TITLE, "然了个然CSDN博客");//分享标题
+                        params.putString(QQShare.SHARE_TO_QQ_SUMMARY,"不管是怎样的过程,最终目的还是那个理想的结果。");//要分享的内容摘要
+                        params.putString(QQShare.SHARE_TO_QQ_TARGET_URL,"http://blog.csdn.net/sandyran");//内容地址
+                        params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL,"http://avatar.csdn.net/B/3/F/1_sandyran.jpg");//分享的图片URL
+                        params.putString(QQShare.SHARE_TO_QQ_APP_NAME, "测试");//应用名称
+                        mTencent.shareToQQ(RandomKnowledgeActivity.this, params, new ShareUiListener());
+                    }
+                });*/
                 break;
             case R.id.add_comment:
                 View view2 = getLayoutInflater().inflate(R.layout.comment_dialog_bottom_sheet, null);
-                RecyclerView recyclerView = view2.findViewById(R.id.addcomment_recycler);
+                recyclerView = view2.findViewById(R.id.addcomment_recycler);
                 recyclerView.setHasFixedSize(true);//设置固定大小
                 LinearLayoutManager layoutManager = new LinearLayoutManager(this);//创建线性布局
                 layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -199,9 +248,9 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                         new Comment(getString(R.string.xigua_title),
                                 getString(R.string.xigua_img),R.drawable.fig1,"wulala2580","啊这",getString(R.string.xigua_content)),
                         new Comment(getString(R.string.famei_title),
-                                getString(R.string.famei_img),R.drawable.fig1,"wulala2580","啊吧啊吧啊吧",getString(R.string.famei_content)),
+                                getString(R.string.famei_img),R.drawable.fig2,"wulala2580","啊吧啊吧啊吧",getString(R.string.famei_content)),
                         new Comment(getString(R.string.chanbu_title),
-                                getString(R.string.snow_img),R.drawable.fig1,"wulala2580","不会真有人以为...",getString(R.string.chanbu_content)),
+                                getString(R.string.snow_img),R.drawable.fig3,"wulala2580","不会真有人以为...",getString(R.string.chanbu_content)),
                 };
                 for(int i = 0; i < comments.length; i++) {
                     commentList.add(comments[i]);
@@ -218,9 +267,89 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                         mBottomSheetDialog2.dismiss();
                     }
                 });
+                RelativeLayout inputText = view2.findViewById(R.id.rl_comment);
+                inputText.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        RandomKnowledgeActivity.this.initInputTextMsgDialog(null, false, null, -1);
+                    }
+                });
                 break;
         }
     }
+    private void initInputTextMsgDialog(View view, final boolean isReply, final String headImg, final int position) {
+        dismissInputDialog();
+        if (view != null) {
+            offsetY = view.getTop();
+            scrollLocation(offsetY);
+        }
+        if (inputTextMsgDialog == null) {
+            inputTextMsgDialog = new InputTextMsgDialog(this, R.style.dialog_center);
+            inputTextMsgDialog.setmOnTextSendListener(new InputTextMsgDialog.OnTextSendListener() {
+                @Override
+                public void onTextSend(String msg) {
+                    addComment(isReply,headImg,position,msg);
+                }
+
+                @Override
+                public void dismiss() {
+                    scrollLocation(-offsetY);
+                }
+            });
+        }
+        showInputTextMsgDialog();
+    }
+    public void addComment(boolean isReply, String headImg, final int position, String msg){
+        //首先在评论框内添加评论 有了服务器后要将信息发送给服务器 与相应的阅读知识id相关联
+        Comment comment = new Comment(getString(R.string.xigua_title),getString(R.string.xigua_img),R.drawable.fig4,"mihu",msg,getString(R.string.xigua_content));
+        commentList.add(comment);
+
+        //其次在我的评论界面要添加评论 这里需要先向服务器添加相关内容 然后我的评论界面在打开时再向服务器获取mcommentlist
+    }
+    private void dismissInputDialog() {
+        if (inputTextMsgDialog != null) {
+            if (inputTextMsgDialog.isShowing()) inputTextMsgDialog.dismiss();
+            inputTextMsgDialog.cancel();
+            inputTextMsgDialog = null;
+        }
+    }
+
+    private void showInputTextMsgDialog() {
+        inputTextMsgDialog.show();
+    }
+    // item滑动到原位
+    public void scrollLocation(int offsetY) {
+        try {
+            recyclerView.smoothScrollBy(0, offsetY);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    /**
+     * 自定义监听器实现IUiListener，需要3个方法
+     * onComplete完成 onError错误 onCancel取消
+     */
+    private class ShareUiListener implements IUiListener {
+
+        @Override
+        public void onComplete(Object response) {
+            //分享成功
+
+        }
+
+        @Override
+        public void onError(UiError uiError) {
+            //分享失败
+
+        }
+
+        @Override
+        public void onCancel() {
+            //分享取消
+
+        }
+    }
+
 
 //    @Override
 //    public void finish()
