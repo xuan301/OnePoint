@@ -5,15 +5,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,14 +42,46 @@ public class SearchActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) actionBar.hide();
 
+        Button button_back = (Button) findViewById(R.id.home);
+        button_back.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                finish();
+            }
+        });
+
+        Button button_setting = (Button) findViewById(R.id.setting);
+        button_setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SearchActivity.this, SettingActivity.class);
+                startActivity(intent);
+            }
+        });
+
         mSearchView = (SearchView) findViewById(R.id.searview);
-        mSearchView.setSubmitButtonEnabled(true);
+        mSearchView.setSubmitButtonEnabled(false);
         mSearchView.setIconifiedByDefault(false);
         mSearchView.setQueryHint("输入搜索内容");
 
         int magId = getResources().getIdentifier("android:id/search_mag_icon", null, null);
         ImageView magImage = (ImageView) mSearchView.findViewById(magId);
         magImage.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+
+        int id = getResources().getIdentifier("android:id/search_src_text", null, null);
+        EditText searchEditText = (EditText) mSearchView.findViewById(id);
+        if (searchEditText != null) {
+            searchEditText.setGravity(Gravity.CENTER);
+        }
+
+        int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        if(currentNightMode != Configuration.UI_MODE_NIGHT_NO){
+            int idd =mSearchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+            TextView textView = mSearchView.findViewById(idd);
+            textView.setTextColor(Color.WHITE);
+            mSearchView.setQueryHint(Html.fromHtml("<font color = #AAAAAA>" + "输入搜索内容" + "</font>"));
+        }
+
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
