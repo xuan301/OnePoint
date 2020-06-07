@@ -5,12 +5,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ContentUris;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -32,6 +39,7 @@ import com.example.onepoint.bean.FirstLevelBean;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -159,15 +167,37 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
     //private Tencent mTencent;
     //private static final String APP_ID = "1105602574";
 
+    public static Uri getImageContentUri(Context context, File imageFile) {
+        String filePath = imageFile.getAbsolutePath();
+        Cursor cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                new String[] { MediaStore.Images.Media._ID }, MediaStore.Images.Media.DATA + "=? ",
+                new String[] { filePath }, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            int id = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID));
+            Uri baseUri = Uri.parse("content://media/external/images/media");
+            return Uri.withAppendedPath(baseUri, "" + id);
+        } else {
+            if (imageFile.exists()) {
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.DATA, filePath);
+                return context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            } else {
+                return null;
+            }
+        }
+    }
+
     public void doclick(View v)
     {
         switch (v.getId()) {
             case R.id.share:
                 //调用系统的分享功能实现
                 Intent share_intent = new Intent();
-                share_intent.setAction(Intent.ACTION_SEND);//设置分享行为
-                share_intent.setType("text/plain");//设置分享内容的类型
-                share_intent.putExtra(Intent.EXTRA_SUBJECT,"这是一段分享的文字");//添加分享内容标题
+                share_intent.setAction(Intent.ACTION_SEND_MULTIPLE);//设置分享行为
+                share_intent.setType("*/*");//设置分享内容的类型
+                //share_intent.putExtra(Intent.EXTRA_SUBJECT,"这是一段分享的文字");//添加分享内容标题
+                //Uri uri = getImageContentUri(this,"C:\\Users\\97887\\Documents\\GitHub\\OnePoint\\app\\src\\main\\res\\drawable-v24\fig1.png");
+                //share_intent.putExtra(Intent.EXTRA_STREAM,uri);
                 share_intent.putExtra(Intent.EXTRA_TEXT,getString(R.string.toubal_content));//添加分享内容 这里可以为文章的id对应的网址
                 //创建分享的Dialog
                 share_intent =   Intent.createChooser(share_intent,"分享");

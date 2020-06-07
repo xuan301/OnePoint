@@ -1,56 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:background="@color/transparent"-->
+<!--    android:orientation="vertical">-->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="532dp"
+    android:layout_alignParentBottom="true"
+    android:orientation="vertical"
     android:background="#404040">
 
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="400dp"
+        android:id="@+id/addcomment_recycler"
+        android:layout_marginTop="50dp"
+        android:background="#404040" />
 
-        <LinearLayout
+    <RelativeLayout
+        android:id="@+id/dialog_bottomsheet_rl_title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#404040">
+
+        <ImageView
+            android:id="@+id/comment_close"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:padding="7dp"
+            android:src="@mipmap/ic_close_black" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="10dp"
+            android:text="评论"
+            android:textColor="@color/black_21"
+            android:textSize="@dimen/text_size_13"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_comment"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_below="@+id/addcomment_recycler"
+        android:background="#404040">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="1dp"
+            android:text="留下你的精彩评论吧~~"
+            android:textColor="@color/color_6f"
+            android:textSize="@dimen/text_size_15" />
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:padding="5dp"
+            android:src="@mipmap/ic_send_comment" />
+
+        <View
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="0.3dp"
+            android:background="@color/gray_d8" />
 
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="290dp"
-                android:layout_height="75dp"
-                android:layout_weight="1"
-                android:text="评论"
-                android:gravity="center"
-                android:textSize="20sp" />
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:layout_weight="1"
-                app:srcCompat="@drawable/ic_close_black_24dp" />
-        </LinearLayout>
+    </RelativeLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/editText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:inputType="textPersonName"
-                android:text="说点什么吧。。。"
-                android:textColor="@android:color/darker_gray" />
-        </LinearLayout>
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+</RelativeLayout><!--</RelativeLayout>-->
