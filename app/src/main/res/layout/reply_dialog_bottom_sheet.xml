@@ -7,14 +7,14 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="532dp"
+    android:layout_height="700dp"
     android:layout_alignParentBottom="true"
     android:orientation="vertical">
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="500dp"
         android:id="@+id/reply_recycler"
         android:layout_marginTop="50dp"
         android:background="@color/white" />
