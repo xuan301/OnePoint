@@ -1,14 +1,17 @@
 package com.example.onepoint;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.onepoint.dialog.InputTextMsgDialog;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.example.onepoint.bean.FirstLevelBean;
 
 
 import com.bumptech.glide.Glide;
@@ -102,20 +106,6 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                 isActive = ! isActive;
             }
         });
-        //以下为分享bottomsheet的代码
-       /* View bottomsheet = findViewById(R.id.bottom_sheet);
-        behavior = BottomSheetBehavior.from(bottomsheet);
-        behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                //这里是bottomsheet状态的改变
-            }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                //这里是拖拽中的回调，根据slideOffset可以做一些动画
-            }
-        });*/
 
         Detector = new GestureDetector(this, new GestureDetector.OnGestureListener() {
             @Override
@@ -140,7 +130,6 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
 
             @Override
             public void onLongPress(MotionEvent e) {
-
             }
 
             @Override
@@ -156,35 +145,16 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                 return Detector.onTouchEvent(event);
             }
         });
-        /*//以下为评论和分享dialog
-        Button comment = findViewById(R.id.add_comment);
-        comment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(RandomKnowledgeActivity.this,AddCommentActivity.class);
-                startActivity(intent);
-            }
-        });
-        Button share = findViewById(R.id.share);
-        share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent1 = new Intent(RandomKnowledgeActivity.this, ShareActivity.class);
-                startActivity(intent1);
-            }
-        });*/
-        //传入参数APPID
-        //mTencent = Tencent.createInstance(APP_ID, RandomKnowledgeActivity.this.getApplicationContext());
-
-
     }
+
     //以下为评论和分享dialog
     //添加评论需要的变量
     private AddCommentListAdapter adapter;
-    private List<Comment> commentList = new ArrayList<>();
+    private List<FirstLevelBean> commentList = new ArrayList<>();
     private InputTextMsgDialog inputTextMsgDialog;
     private int offsetY;
     RecyclerView recyclerView;
+    private float slideOffset = 0;
     //分享需要的变量
     //private Tencent mTencent;
     //private static final String APP_ID = "1105602574";
@@ -198,7 +168,7 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                 share_intent.setAction(Intent.ACTION_SEND);//设置分享行为
                 share_intent.setType("text/plain");//设置分享内容的类型
                 share_intent.putExtra(Intent.EXTRA_SUBJECT,"这是一段分享的文字");//添加分享内容标题
-                share_intent.putExtra(Intent.EXTRA_TEXT,"分享");//添加分享内容
+                share_intent.putExtra(Intent.EXTRA_TEXT,getString(R.string.toubal_content));//添加分享内容 这里可以为文章的id对应的网址
                 //创建分享的Dialog
                 share_intent =   Intent.createChooser(share_intent,"分享");
                 startActivity(share_intent);
@@ -244,21 +214,40 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                 layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                 recyclerView.setLayoutManager(layoutManager);//给RecyclerView设置布局管理器
                 commentList.clear();
-                Comment[] comments = {
-                        new Comment(getString(R.string.xigua_title),
-                                getString(R.string.xigua_img),R.drawable.fig1,"wulala2580","啊这",getString(R.string.xigua_content)),
-                        new Comment(getString(R.string.famei_title),
-                                getString(R.string.famei_img),R.drawable.fig2,"wulala2580","啊吧啊吧啊吧",getString(R.string.famei_content)),
-                        new Comment(getString(R.string.chanbu_title),
-                                getString(R.string.snow_img),R.drawable.fig3,"wulala2580","不会真有人以为...",getString(R.string.chanbu_content)),
+                FirstLevelBean[] comments = {
+                        new FirstLevelBean(getString(R.string.cola_img),"wulala2580","啊这",System.currentTimeMillis(),10,0),
+                        new FirstLevelBean(getString(R.string.famei_img),"jizhe","abababa",System.currentTimeMillis(),20,0),
+                        new FirstLevelBean( getString(R.string.snow_img),"mihu","你们说的都对",System.currentTimeMillis(),100,0)
                 };
                 for(int i = 0; i < comments.length; i++) {
                     commentList.add(comments[i]);
                 }
                 adapter = new AddCommentListAdapter(commentList);
                 recyclerView.setAdapter(adapter);
-                final BottomSheetDialog mBottomSheetDialog2 = new BottomSheetDialog(this);
+                final BottomSheetDialog mBottomSheetDialog2 = new BottomSheetDialog(this,R.style.dialog);
                 mBottomSheetDialog2.setContentView(view2);
+                mBottomSheetDialog2.setCanceledOnTouchOutside(true);
+                final BottomSheetBehavior mDialogBehavior = BottomSheetBehavior.from((View) view2.getParent());
+                mDialogBehavior.setPeekHeight(getWindowHeight());
+                mDialogBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                    @Override
+                    public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                        if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+//                    bottomSheetDialog.dismiss();
+                            mDialogBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                        } else if (newState == BottomSheetBehavior.STATE_SETTLING) {
+                            if (slideOffset <= -0.28) {
+                                mBottomSheetDialog2.dismiss();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                        RandomKnowledgeActivity.this.slideOffset = slideOffset;
+
+                    }
+                });
                 mBottomSheetDialog2.show();
                 ImageView comment_close = view2.findViewById(R.id.comment_close);
                 comment_close.setOnClickListener(new View.OnClickListener() {
@@ -271,7 +260,7 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                 inputText.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        RandomKnowledgeActivity.this.initInputTextMsgDialog(null, false, null, -1);
+                        initInputTextMsgDialog(null, false, null, -1);
                     }
                 });
                 break;
@@ -301,8 +290,8 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
     }
     public void addComment(boolean isReply, String headImg, final int position, String msg){
         //首先在评论框内添加评论 有了服务器后要将信息发送给服务器 与相应的阅读知识id相关联
-        Comment comment = new Comment(getString(R.string.xigua_title),getString(R.string.xigua_img),R.drawable.fig4,"mihu",msg,getString(R.string.xigua_content));
-        commentList.add(comment);
+        FirstLevelBean firstLevelBean = new FirstLevelBean(getString(R.string.xigua_img),"liyifei",msg,System.currentTimeMillis(),0,0);
+        commentList.add(firstLevelBean);
 
         //其次在我的评论界面要添加评论 这里需要先向服务器添加相关内容 然后我的评论界面在打开时再向服务器获取mcommentlist
     }
@@ -349,7 +338,11 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
 
         }
     }
-
+    private int getWindowHeight() {
+        Resources res = getResources();
+        DisplayMetrics displayMetrics = res.getDisplayMetrics();
+        return displayMetrics.heightPixels;
+    }
 
 //    @Override
 //    public void finish()

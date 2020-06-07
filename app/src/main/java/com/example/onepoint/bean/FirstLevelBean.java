@@ -6,13 +6,13 @@ import android.os.Parcelable;
 
 public class FirstLevelBean implements Parcelable {
     //一级评论id
-    private String id;
+    //private String id;
     //一级评论头像
     private String headImg;
     //一级评论的用户名
     private String userName;
     //一级评论的用户id
-    private String userId;
+    //private String userId;
     //评论内容
     private String content;
     //创建时间
@@ -22,31 +22,31 @@ public class FirstLevelBean implements Parcelable {
     //是否点赞了  0没有 1点赞
     private int isLike;
     //当前评论的总条数（包括这条一级评论）ps:处于未使用状态
-    private long totalCount;
+    //private long totalCount;
     //当前一级评论的位置（下标）
-    private int position;
+    //private int position;
     //当前一级评论所在的位置(下标)
-    private int positionCount;
-    public FirstLevelBean(String id,String headImg,String userName,String userId,String content,long createTime,long likeCount,int isLike,long totalCount,int position,int positionCount){
-        this.id=id;
+    //private int positionCount;
+    public FirstLevelBean(/*String id,*/String headImg,String userName,/*String userId,*/String content,long createTime,long likeCount,int isLike/*,long totalCount,int position,int positionCount*/){
+        //this.id=id;
         this.headImg =headImg;
         this.userName = userName;
-        this.userId  =userId;
+        //this.userId  =userId;
         this.content = content;
         this.createTime = createTime;
         this.likeCount = likeCount;
         this.isLike  =isLike;
-        this.totalCount = totalCount;
-        this.position = position;
-        this.positionCount = positionCount;
+        //this.totalCount = totalCount;
+        //this.position = position;
+        //this.positionCount = positionCount;
     }
-    public String getUserId() {
+    /*public String getUserId() {
         return userId;
     }
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
+    }*/
 
     public String getUserName() {
         return userName;
@@ -56,13 +56,13 @@ public class FirstLevelBean implements Parcelable {
         this.userName = userName;
     }
 
-    public String getId() {
+    /*public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
-    }
+    }*/
 
     public String getHeadImg() {
         return headImg;
@@ -104,7 +104,7 @@ public class FirstLevelBean implements Parcelable {
         this.isLike = isLike;
     }
 
-    public long getTotalCount() {
+   /* public long getTotalCount() {
         return totalCount;
     }
 
@@ -126,7 +126,7 @@ public class FirstLevelBean implements Parcelable {
 
     public void setPositionCount(int positionCount) {
         this.positionCount = positionCount;
-    }
+    }*/
 
     protected FirstLevelBean(Parcel in) {
 
