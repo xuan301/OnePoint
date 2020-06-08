@@ -1,5 +1,6 @@
 package com.example.onepoint;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -16,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.StrictMode;
 import android.speech.RecognizerIntent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +26,10 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.GridLayout;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -31,15 +37,41 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Date;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.security.*;
+import java.security.spec.*;
+import javax.crypto.Cipher;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.KeyFactory;
+import java.security.PublicKey;
+import java.security.spec.X509EncodedKeySpec;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
+import java.util.Base64;
+import java.util.Base64.Decoder;
+import java.util.Base64.Encoder;
+import java.util.Random;
+import java.net.URLEncoder;
 
 public class LikeActivity extends AppCompatActivity {
 
+    public final String token = "75958514";
+    private final String USER_AGENT = "Mozilla/5.0";
     private DrawerLayout mDrawerLayout;
 
     private List<Knowledge> knowledgeList = new ArrayList<>();
 
     private KnowledgeAdapter adapter;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +94,20 @@ public class LikeActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        initKnowledges();
+
+        int SDK_INT = android.os.Build.VERSION.SDK_INT;
+        if (SDK_INT > 8)
+        {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                    .permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+            try {
+                getLike("username");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
@@ -73,15 +118,15 @@ public class LikeActivity extends AppCompatActivity {
 
     private void initKnowledges() {
         Knowledge[] knowledges = {//不要把这个数组放在函数外面
-                new Knowledge(getString(R.string.chanbu_title), getString(R.string.snow_img), getString(R.string.chanbu_content)),
-                new Knowledge(getString(R.string.cola_title), getString(R.string.cola_img), getString(R.string.cola_content)),
-                new Knowledge(getString(R.string.HCL_title), getString(R.string.HCL_img), getString(R.string.HCL_content)),
-                new Knowledge(getString(R.string.hug_title), getString(R.string.hug_img), getString(R.string.hug_content)),
-                new Knowledge(getString(R.string.seli_title), getString(R.string.seli_img), getString(R.string.seli_content)),
-                new Knowledge(getString(R.string.toubal_title), getString(R.string.toubal_img), getString(R.string.toubal_content)),
-                new Knowledge(getString(R.string.sanmiao_title), getString(R.string.sanmiao_img), getString(R.string.sanmiao_content)),
-                new Knowledge(getString(R.string.xigua_title), getString(R.string.xigua_img), getString(R.string.xigua_content)),
-                new Knowledge(getString(R.string.famei_title), getString(R.string.famei_img), getString(R.string.famei_content))
+                new Knowledge(getString(R.string.chanbu_title), getString(R.string.snow_img), getString(R.string.chanbu_content), "网络|developer"),
+                new Knowledge(getString(R.string.cola_title), getString(R.string.cola_img), getString(R.string.cola_content),"网络|developer"),
+                new Knowledge(getString(R.string.HCL_title), getString(R.string.HCL_img), getString(R.string.HCL_content),"网络|developer"),
+                new Knowledge(getString(R.string.hug_title), getString(R.string.hug_img), getString(R.string.hug_content),"网络|developer"),
+                new Knowledge(getString(R.string.seli_title), getString(R.string.seli_img), getString(R.string.seli_content),"网络|developer"),
+                new Knowledge(getString(R.string.toubal_title), getString(R.string.toubal_img), getString(R.string.toubal_content),"网络|developer"),
+                new Knowledge(getString(R.string.sanmiao_title), getString(R.string.sanmiao_img), getString(R.string.sanmiao_content),"网络|developer"),
+                new Knowledge(getString(R.string.xigua_title), getString(R.string.xigua_img), getString(R.string.xigua_content),"网络|developer"),
+                new Knowledge(getString(R.string.famei_title), getString(R.string.famei_img), getString(R.string.famei_content),"网络|developer")
         };
         knowledgeList.clear();
         for(int i = 0; i < 50; i++) {
@@ -91,6 +136,66 @@ public class LikeActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void getLike(String username)throws Exception{
+        String url = "http://212.64.70.206:5000/getlike/";
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("User-Agent", USER_AGENT);
+        con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+        Date date=new Date();
+        byte[] cont=String.valueOf(date.getTime()).getBytes();
+        byte [] keyBytes=token.getBytes();
+        DESKeySpec keySpec = new DESKeySpec(keyBytes);
+        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+        SecretKey key = keyFactory.generateSecret(keySpec);
+        Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(keySpec.getKey()));
+        byte[] result = cipher.doFinal(cont);
+        String t = Base64.getEncoder().encodeToString(result);
+        String urlParameters = "username="+username+"&time=\""+t+"\"";
+        con.setDoOutput(true);
+        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+        wr.writeBytes(urlParameters);
+        wr.flush();
+        wr.close();
+        int responseCode = con.getResponseCode();
+        System.out.println("\nSending 'POST' request to URL : " + url);
+        System.out.println("Post parameters : " + urlParameters);
+        System.out.println("Response Code : " + responseCode);
+        BufferedReader in;
+        if(responseCode != 400)
+        {
+            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        }
+        else{
+            in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
+        }
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        System.out.println(response.toString());
+        JSONParse(response.toString());
+    }
+
+    private void JSONParse(String source) throws JSONException {
+        JSONArray objList = new JSONArray(source);
+        knowledgeList.clear();
+        for(int i = 0; i < objList.length(); i++ ){
+            JSONObject obj =  objList.getJSONObject(i);
+            knowledgeList.add(
+                    new Knowledge(
+                            obj.getString("TITLE"), obj.getString("URL"),
+                            obj.getString("CONTENT"), obj.getString("AUTHOR")
+                    )
+            );
+        }
+    }
 
     /**
      * 全透状态栏
