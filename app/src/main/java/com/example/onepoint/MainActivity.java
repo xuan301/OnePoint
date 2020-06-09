@@ -117,6 +117,16 @@ public class MainActivity extends AppCompatActivity {
             }
         })
         ;
+
+        Button button_addKnowledge = findViewById(R.id.addKnowledge);
+        button_addKnowledge.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, AddKnowledgeActivity.class);
+                startActivity(intent);
+            }
+        })
+        ;
     }
 
     private void initKnowledges() {

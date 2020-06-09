@@ -1,6 +1,7 @@
 package com.example.onepoint;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,8 +40,16 @@ import com.example.onepoint.bean.FirstLevelBean;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 
 import com.example.onepoint.CommentActivity;
@@ -49,7 +58,15 @@ import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
 
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
+import javax.crypto.spec.IvParameterSpec;
+
 public class RandomKnowledgeActivity extends AppCompatActivity {
+    public final String token = "75958514";
+    private final String USER_AGENT = "Mozilla/5.0";
     private Button favorite;
     GestureDetector Detector;
     private List<Knowledge> knowledge_list;
@@ -71,23 +88,25 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
         Intent intent = getIntent();
         index = intent.getIntExtra("index",0);
         knowledge_list = intent.getParcelableArrayListExtra("list");
-        String title,imageSrc,text;
+        String title,imageSrc,text,author;
         if(knowledge_list != null) {
             Knowledge knowledge = knowledge_list.get(index);
             title = knowledge.getTitle();
             imageSrc = knowledge.getImageSrc();
             text = knowledge.getContent();
+            author = knowledge.getAuthor();
         }
         else{
             title = intent.getStringExtra("title");
             imageSrc = intent.getStringExtra("imageSrc");
             text = intent.getStringExtra("content");
+            author = intent.getStringExtra("author");
         }
             if (title != null && imageSrc != null && text != null) {
                 Glide.with(img_of_knowledge.getContext()).load(imageSrc).into(img_of_knowledge);
                 text_of_knowledge.setText(text);
-                author_of_knowledge.setText(R.string.author);
                 title_of_knowledge.setText(title);
+                if(author != null){author_of_knowledge.setText(author);}else{author_of_knowledge.setText(R.string.author);}
             }
 
         favorite =this.findViewById(R.id.like);
@@ -95,20 +114,31 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
         favorite.setOnClickListener(new View.OnClickListener()
         {//收藏按钮的切换
             boolean isActive = false;
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View view){
                 Drawable liked = getResources().getDrawable(R.drawable.ic_liked);
                 Drawable tolike = getResources().getDrawable(R.drawable.ic_like_black_24dp);
 
                 if(! isActive) {
-                    liked.setBounds(0,0,liked.getMinimumWidth(),liked.getMinimumHeight());
-                    favorite.setCompoundDrawables(null, liked, null, null);
-                    favorite.setText(getResources().getString(R.string.liked));
+                    try {
+                        likeOne("username",10);
+                        liked.setBounds(0,0,liked.getMinimumWidth(),liked.getMinimumHeight());
+                        favorite.setCompoundDrawables(null, liked, null, null);
+                        favorite.setText(getResources().getString(R.string.liked));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 else{
-                    tolike.setBounds(0,0,tolike.getMinimumWidth(),tolike.getMinimumHeight());
-                    favorite.setCompoundDrawables(null, tolike, null, null);
-                    favorite.setText(getResources().getString(R.string.like));
+                    try {
+                        likeOne("username",10);
+                        tolike.setBounds(0,0,tolike.getMinimumWidth(),tolike.getMinimumHeight());
+                        favorite.setCompoundDrawables(null, tolike, null, null);
+                        favorite.setText(getResources().getString(R.string.like));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 isActive = ! isActive;
@@ -153,6 +183,53 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                 return Detector.onTouchEvent(event);
             }
         });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void likeOne(String username, int id)throws Exception {
+        String url = "http://212.64.70.206:5000/likeone/";
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("User-Agent", USER_AGENT);
+        con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+        Date date = new Date();
+        byte[] cont = String.valueOf(date.getTime()).getBytes();
+        byte[] keyBytes = token.getBytes();
+        DESKeySpec keySpec = new DESKeySpec(keyBytes);
+        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+        SecretKey key = keyFactory.generateSecret(keySpec);
+        Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(keySpec.getKey()));
+        byte[] result = cipher.doFinal(cont);
+        String t = Base64.getEncoder().encodeToString(result);
+        String urlParameters = "username=" + username + "&time=\"" + t + "\"" + "&id=" + id;
+        con.setDoOutput(true);
+        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+        wr.writeBytes(urlParameters);
+        wr.flush();
+        wr.close();
+        int responseCode = con.getResponseCode();
+        System.out.println("\nSending 'POST' request to URL : " + url);
+        System.out.println("Post parameters : " + urlParameters);
+        System.out.println("Response Code : " + responseCode);
+        BufferedReader in;
+        if (responseCode != 400) {
+            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        } else {
+            in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+        }
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        System.out.println(response.toString());
+        if (responseCode == 200) {
+            throw new Exception();
+        }
     }
 
     //以下为评论和分享dialog
@@ -249,9 +326,7 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                         new FirstLevelBean(getString(R.string.famei_img),"jizhe","abababa",System.currentTimeMillis(),20,0),
                         new FirstLevelBean( getString(R.string.snow_img),"mihu","你们说的都对",System.currentTimeMillis(),100,0)
                 };
-                for(int i = 0; i < comments.length; i++) {
-                    commentList.add(comments[i]);
-                }
+                commentList.addAll(Arrays.asList(comments));
                 adapter = new AddCommentListAdapter(commentList);
                 recyclerView.setAdapter(adapter);
                 final BottomSheetDialog mBottomSheetDialog2 = new BottomSheetDialog(this,R.style.dialog);
@@ -400,7 +475,7 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                     intent.putParcelableArrayListExtra("list", (ArrayList<? extends Parcelable>) knowledge_list);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     startActivity(intent);
-                    overridePendingTransition(R.anim.trans_in_right, R.anim.trans_out_alpha);
+                    overridePendingTransition(R.anim.trans_in_alpha, R.anim.trans_out_left);
                 }
                 else{
                     Toast.makeText(getApplicationContext(),"已经是最后一页了",Toast.LENGTH_SHORT).show();

@@ -1,7 +1,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="right">
+    android:gravity="end">
+
+    <Button
+        android:id="@+id/addKnowledge"
+        android:layout_width="36dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:drawableEnd="@drawable/ic_comment_black_24dp"
+        android:textColor="#737373"/>
 
     <Button
         android:id="@+id/nightmode"
@@ -9,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:background="?android:attr/selectableItemBackgroundBorderless"
-        android:drawableRight="@drawable/ic_moon_black_24dp"
+        android:drawableEnd="@drawable/ic_moon_black_24dp"
         android:textColor="#737373" />
 
     <Button
@@ -18,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:background="?android:attr/selectableItemBackgroundBorderless"
-        android:drawableRight="@drawable/ic_more_black_24dp"
+        android:drawableEnd="@drawable/ic_more_black_24dp"
         android:textColor="#737373" />
 
 </LinearLayout>

@@ -19,6 +19,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -77,9 +78,7 @@ public class CommentActivity extends AppCompatActivity {
                 new Comment(getString(R.string.chanbu_title),
                         getString(R.string.snow_img),R.drawable.fig1,"wulala2580","不会真有人以为...",getString(R.string.chanbu_content)),
         };
-        for(int i = 0; i < comments.length; i++) {
-            commentList.add(comments[i]);
-        }
+        commentList.addAll(Arrays.asList(comments));
     }
     /**
      * 全透状态栏
