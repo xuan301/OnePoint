@@ -32,6 +32,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -176,6 +177,7 @@ public class CommentActivity extends AppCompatActivity {
             commentList.add(comments[i]);
         }
     }*/
+
     /**
      * 全透状态栏
      */
