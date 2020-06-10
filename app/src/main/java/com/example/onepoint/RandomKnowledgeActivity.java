@@ -87,6 +87,9 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //dialog的new创建只能写在Oncreate中或之后
+        mBottomSheetDialog2 = new BottomSheetDialog(this,R.style.dialog);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_random_knowledge);
         if(getSupportActionBar() != null){ getSupportActionBar().hide(); }
@@ -245,8 +248,10 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
 
     //以下为评论和分享dialog
     //添加评论需要的变量
+
     private AddCommentListAdapter adapter;
     private List<FirstLevelBean> commentList = new ArrayList<>();
+    private BottomSheetDialog mBottomSheetDialog2;
     private InputTextMsgDialog inputTextMsgDialog;
     private int offsetY;
     RecyclerView recyclerView;
@@ -353,14 +358,12 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                         new FirstLevelBean(getString(R.string.famei_img),"jizhe","abababa",System.currentTimeMillis(),20,0),
                         new FirstLevelBean( getString(R.string.snow_img),"mihu","你们说的都对",System.currentTimeMillis(),100,0)
                 };
-<<<<<<< HEAD
                 for(int i = 0; i < comments.length; i++) {
                     commentList.add(comments[i]);
                 }*/
 
                 adapter = new AddCommentListAdapter(commentList);
                 recyclerView.setAdapter(adapter);
-                final BottomSheetDialog mBottomSheetDialog2 = new BottomSheetDialog(this,R.style.dialog);
                 mBottomSheetDialog2.setContentView(view2);
                 mBottomSheetDialog2.setCanceledOnTouchOutside(true);
                 final BottomSheetBehavior mDialogBehavior = BottomSheetBehavior.from((View) view2.getParent());
@@ -429,7 +432,9 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
     public void addComment(boolean isReply, String headImg, final int position, String msg) throws Exception {
         //首先在评论框内添加评论 有了服务器后要将信息发送给服务器 与相应的阅读知识id相关联
         FirstLevelBean firstLevelBean = new FirstLevelBean(getString(R.string.xigua_img),"username",msg,"刚刚",0,0,null);
-        commentList.add(firstLevelBean);
+        commentList.add(0,firstLevelBean);
+        adapter.notifyDataSetChanged();
+        recyclerView.scrollToPosition(0);
         commentOne("username",10,msg);
 
         //其次在我的评论界面要添加评论 这里需要先向服务器添加相关内容 然后我的评论界面在打开时再向服务器获取mcommentlist

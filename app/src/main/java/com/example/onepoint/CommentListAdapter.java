@@ -19,7 +19,6 @@ import java.util.List;
 public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.ViewHolder> {
     private Context mContext;
     private List<Comment> mCommentList;
-    //private List<Knowledge> knowledgeList= new ArrayList<>();
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
