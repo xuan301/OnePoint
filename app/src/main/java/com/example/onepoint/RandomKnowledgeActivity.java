@@ -100,7 +100,7 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
         index = intent.getIntExtra("index",0);
         knowledge_list = intent.getParcelableArrayListExtra("list");
         String title,imageSrc,text,author;
-        if(knowledge_list != null) {
+        if(knowledge_list != null && knowledge_list.size() != 0) {
             Knowledge knowledge = knowledge_list.get(index);
             title = knowledge.getTitle();
             imageSrc = knowledge.getImageSrc();
@@ -238,9 +238,6 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
         }
         in.close();
         System.out.println(response.toString());
-        if (responseCode == 200) {
-            throw new Exception();
-        }
     }
 
     //以下为评论和分享dialog

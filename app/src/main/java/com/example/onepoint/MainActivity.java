@@ -3,20 +3,42 @@ package com.example.onepoint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.os.StrictMode;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
+import javax.crypto.spec.IvParameterSpec;
 
 public class MainActivity extends AppCompatActivity {
 
+    public final String token = "75958514";
+    private final String USER_AGENT = "Mozilla/5.0";
     private List<Knowledge> knowledgeList= new ArrayList<>();
 
     @Override
@@ -37,10 +59,22 @@ public class MainActivity extends AppCompatActivity {
 
         Button button_randomknowledge = findViewById(R.id.randomknowledge);
         button_randomknowledge.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
+                int SDK_INT = android.os.Build.VERSION.SDK_INT;
+                if (SDK_INT > 8) {
+                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                            .permitAll().build();
+                    StrictMode.setThreadPolicy(policy);
+                    try {
+                        Know know = new Know();
+                        JSONParse(know.getKnow("username", 10));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
                 Intent intent = new Intent(MainActivity.this, RandomKnowledgeActivity.class);
-                initKnowledges();
                 intent.putParcelableArrayListExtra("list", (ArrayList<? extends Parcelable>) knowledgeList);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 startActivity(intent);
@@ -127,6 +161,20 @@ public class MainActivity extends AppCompatActivity {
             }
         })
         ;
+    }
+
+    private void JSONParse(String source) throws JSONException {
+        JSONArray objList = new JSONArray(source);
+        knowledgeList.clear();
+        for(int i = 0; i < objList.length(); i++ ){
+            JSONObject obj =  objList.getJSONObject(i);
+            knowledgeList.add(
+                    new Knowledge(
+                            obj.getString("TITLE"), obj.getString("URL"),
+                            obj.getString("CONTENT"), obj.getString("AUTHOR")
+                    )
+            );
+        }
     }
 
     private void initKnowledges() {
