@@ -116,7 +116,7 @@ public class LikeActivity extends AppCompatActivity {
 
     }
 
-    private void initKnowledges() {
+    /*private void initKnowledges() {
         Knowledge[] knowledges = {//不要把这个数组放在函数外面
                 new Knowledge(getString(R.string.chanbu_title), getString(R.string.snow_img), getString(R.string.chanbu_content), "网络|developer"),
                 new Knowledge(getString(R.string.cola_title), getString(R.string.cola_img), getString(R.string.cola_content),"网络|developer"),
@@ -134,7 +134,7 @@ public class LikeActivity extends AppCompatActivity {
             int index = random.nextInt(knowledges.length);
             knowledgeList.add(knowledges[index]);
         }
-    }
+    }*/
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void getLike(String username)throws Exception{
@@ -191,7 +191,8 @@ public class LikeActivity extends AppCompatActivity {
             knowledgeList.add(
                     new Knowledge(
                             obj.getString("TITLE"), obj.getString("URL"),
-                            obj.getString("CONTENT"), obj.getString("AUTHOR")
+                            obj.getString("CONTENT"), obj.getString("AUTHOR"),
+                            obj.getInt("ID")
                     )
             );
         }
