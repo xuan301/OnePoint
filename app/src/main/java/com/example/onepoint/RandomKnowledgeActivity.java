@@ -287,14 +287,16 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
             case R.id.share:
                 //调用系统的分享功能实现
                 Intent share_intent = new Intent();
-                share_intent.setAction(Intent.ACTION_SEND_MULTIPLE);//设置分享行为
-                share_intent.setType("*/*");//设置分享内容的类型
-                //share_intent.putExtra(Intent.EXTRA_SUBJECT,"这是一段分享的文字");//添加分享内容标题
+                share_intent.setAction(Intent.ACTION_SEND);//设置分享行为
+                share_intent.setType("text/plain");//设置分享内容的类型
+                share_intent.putExtra(Intent.EXTRA_SUBJECT,"这是一段分享的文字");//添加分享内容标题
                 //Uri uri = getImageContentUri(this,"C:\\Users\\97887\\Documents\\GitHub\\OnePoint\\app\\src\\main\\res\\drawable-v24\fig1.png");
                 //share_intent.putExtra(Intent.EXTRA_STREAM,uri);
                 Knowledge knowledge = knowledge_list.get(index);
                 String content = knowledge.getContent();
-                share_intent.putExtra(Intent.EXTRA_TEXT,content);//添加分享内容 这里可以为文章的id对应的网址
+                String title  = knowledge.getTitle();
+                String author = knowledge.getAuthor();
+                share_intent.putExtra(Intent.EXTRA_TEXT,"【One Point分享】"+"\n"+title+"\n"+author+"\n"+content);//添加分享内容 这里可以为文章的id对应的网址
                 //创建分享的Dialog
                 share_intent =   Intent.createChooser(share_intent,"分享");
                 startActivity(share_intent);
