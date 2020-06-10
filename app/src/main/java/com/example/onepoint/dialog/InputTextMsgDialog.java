@@ -43,7 +43,7 @@ public class InputTextMsgDialog extends AppCompatDialog {
 
     public interface OnTextSendListener {
 
-        void onTextSend(String msg);
+        void onTextSend(String msg) throws Exception;
 
         void dismiss();
     }
@@ -108,7 +108,11 @@ public class InputTextMsgDialog extends AppCompatDialog {
                     return;
                 }
                 if (!TextUtils.isEmpty(msg)) {
-                    mOnTextSendListener.onTextSend(msg);
+                    try {
+                        mOnTextSendListener.onTextSend(msg);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     imm.showSoftInput(messageTextView, InputMethodManager.SHOW_FORCED);
                     imm.hideSoftInputFromWindow(messageTextView.getWindowToken(), 0);
                     messageTextView.setText("");

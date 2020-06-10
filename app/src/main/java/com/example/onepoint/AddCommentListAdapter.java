@@ -35,7 +35,6 @@ public class AddCommentListAdapter extends RecyclerView.Adapter<AddCommentListAd
     private InputTextMsgDialog inputTextMsgDialog;
     private int offsetY;
     private float slideOffset=0;
-    //private List<SecondLevelBean> replyList = new ArrayList<>();
     private ReplyCommentListAdpater adapter;
     private BottomSheetDialog reply_dialog;
 
@@ -46,6 +45,7 @@ public class AddCommentListAdapter extends RecyclerView.Adapter<AddCommentListAd
         ImageView like;
         TextView like_cout;
         ImageView reply;
+        TextView time;
 
 
         public ViewHolder(View view){
@@ -57,6 +57,7 @@ public class AddCommentListAdapter extends RecyclerView.Adapter<AddCommentListAd
             like = view.findViewById(R.id.iv_like);
             like_cout = view.findViewById(R.id.tv_like_count);
             reply = view.findViewById(R.id.reply);
+            time = view.findViewById(R.id.tv_time);
         }
     }
 
@@ -82,6 +83,7 @@ public class AddCommentListAdapter extends RecyclerView.Adapter<AddCommentListAd
         //final int islike = firstLevelBean.getIsLike();
         holder.UserName.setText(firstLevelBean.getUserName());
         holder.Comment.setText(firstLevelBean.getContent());
+        holder.time.setText(firstLevelBean.getCreateTime());
         holder.like_cout.setText(firstLevelBean.getLikeCount()+"");
         Glide.with(mContext).load(firstLevelBean.getHeadImg()).into(holder.UserImage);
         holder.like.setOnClickListener(new View.OnClickListener() {

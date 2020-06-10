@@ -1,5 +1,6 @@
 package com.example.onepoint;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -12,27 +13,47 @@ import android.drm.DrmStore;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
+import javax.crypto.spec.IvParameterSpec;
 
 import static com.example.onepoint.R.string.xigua_title;
 
 public class CommentActivity extends AppCompatActivity {
 
     //private DrawerLayout mDrawerLayout;
-
+    public final String token = "75958514";
+    private final String USER_AGENT = "Mozilla/5.0";
 
     private List<Comment> commentList = new ArrayList<>();
 
     private CommentListAdapter adapter;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,8 +76,21 @@ public class CommentActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        if (commentList.size()==0){
+        /*if (commentList.size()==0){
             initComments();
+        }*/
+        int SDK_INT = android.os.Build.VERSION.SDK_INT;
+        if (SDK_INT > 8)
+        {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                    .permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+            try {
+                getComment("username",10);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);//开始设置RecyclerView
         recyclerView.setHasFixedSize(true);//设置固定大小
@@ -67,7 +101,68 @@ public class CommentActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
-    private void initComments() {
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void getComment(String username, int id)throws Exception{
+        String url = "http://212.64.70.206:5000/getcomment/";
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("User-Agent", USER_AGENT);
+        con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+        Date date=new Date();
+        byte[] cont=String.valueOf(date.getTime()).getBytes();
+        byte [] keyBytes=token.getBytes();
+        DESKeySpec keySpec = new DESKeySpec(keyBytes);
+        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+        SecretKey key = keyFactory.generateSecret(keySpec);
+        Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(keySpec.getKey()));
+        byte[] result = cipher.doFinal(cont);
+        String t = Base64.getEncoder().encodeToString(result);
+        String urlParameters = "username="+username+"&time=\""+t+"\""+"&id="+id;
+        con.setDoOutput(true);
+        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+        wr.writeBytes(urlParameters);
+        wr.flush();
+        wr.close();
+        int responseCode = con.getResponseCode();
+        System.out.println("\nSending 'POST' request to URL : " + url);
+        System.out.println("Post parameters : " + urlParameters);
+        System.out.println("Response Code : " + responseCode);
+        BufferedReader in;
+        if(responseCode != 400)
+        {
+            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        }
+        else{
+            in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
+        }
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        System.out.println(response.toString());
+        //JSONParse(response.toString());
+    }
+
+    /*private void JSONParse(String source) throws JSONException {
+        JSONArray objList = new JSONArray(source);
+        commentList.clear();
+        for(int i = 0; i < objList.length(); i++ ){
+            JSONObject obj =  objList.getJSONObject(i);
+            commentList.add(
+                    new Comment(
+                            obj.getString("TITLE"), obj.getString("URL"),R.drawable.fig1,
+                            obj.getString("CONTENT"), obj.getString("AUTHOR")
+                    )
+            );
+        }
+    }*/
+
+    /*private void initComments() {
         commentList.clear();
          Comment[] comments = {
                 new Comment(getString(xigua_title),
@@ -80,7 +175,7 @@ public class CommentActivity extends AppCompatActivity {
         for(int i = 0; i < comments.length; i++) {
             commentList.add(comments[i]);
         }
-    }
+    }*/
     /**
      * 全透状态栏
      */
