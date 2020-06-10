@@ -8,12 +8,14 @@ public class Knowledge implements Parcelable {
     private String imageSrc;
     private String content;
     private  String author;
+    private int id;
 
-    Knowledge(String title, String imageSrc, String content, String author){
+    Knowledge(String title, String imageSrc, String content, String author, int id){
         this.title = title;
         this.imageSrc = imageSrc;
         this.content = content;
         this.author = author;
+        this.id = id;
     }
     String getTitle(){
         return title;
@@ -23,6 +25,7 @@ public class Knowledge implements Parcelable {
     }
     public String getContent(){ return content;}
     public String getAuthor(){ return author;}
+    public int getId(){return id;}
 
 
 
@@ -32,6 +35,7 @@ public class Knowledge implements Parcelable {
         imageSrc = in.readString();
         content = in.readString();
         author = in.readString();
+        id = in.readInt();
     }
 
     public static final Creator<Knowledge> CREATOR = new Creator<Knowledge>() {
@@ -57,6 +61,7 @@ public class Knowledge implements Parcelable {
         dest.writeString(imageSrc);
         dest.writeString(content);
         dest.writeString(author);
+        dest.writeInt(id);
     }
 
 
