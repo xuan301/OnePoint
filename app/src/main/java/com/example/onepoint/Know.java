@@ -31,7 +31,7 @@ import java.net.URLEncoder;
   
 public class Know {
     private final String USER_AGENT = "Mozilla/5.0";
-    public static void main(String args[]) throws Exception {
+    public static void main(String[] args) throws Exception {
         Know know=new Know();
         //know.addKnow("username","这是一个我写的垃圾","这是简单的内容","http://testurl","1");
         //know.getAudit("username");
