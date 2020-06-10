@@ -108,7 +108,7 @@ public class ReadActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
-    private void initKnowledges() {
+    /*private void initKnowledges() {
         knowledgeList.clear();
         Knowledge[] knowledges = {//不要把这个数组放在函数外面
                 new Knowledge(getString(R.string.xigua_title), getString(R.string.xigua_img), getString(R.string.xigua_content),"网络|developer"),
@@ -124,7 +124,7 @@ public class ReadActivity extends AppCompatActivity {
         for(int i = 0; i < knowledges.length; i++) {
             knowledgeList.add(knowledges[i]);
         }
-    }
+    }*/
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void getView(String username)throws Exception{
@@ -181,7 +181,8 @@ public class ReadActivity extends AppCompatActivity {
             knowledgeList.add(
                     new Knowledge(
                             obj.getString("TITLE"), obj.getString("URL"),
-                            obj.getString("CONTENT"), obj.getString("AUTHOR")
+                            obj.getString("CONTENT"), obj.getString("AUTHOR"),
+                            obj.getInt("ID")
                     )
             );
         }

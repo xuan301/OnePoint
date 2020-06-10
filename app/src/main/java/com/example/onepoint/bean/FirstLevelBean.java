@@ -28,7 +28,7 @@ public class FirstLevelBean implements Parcelable {
     //当前评论的总条数（包括这条一级评论）ps:处于未使用状态
     //private long totalCount;
     //当前一级评论的位置（下标）
-    //private int position;
+    private int position;
     //当前一级评论所在的位置(下标)
     //private int positionCount;
     public FirstLevelBean(/*String id,*/String headImg,String userName,/*String userId,*/String content,String createTime,long likeCount,int isLike,List reply_list/*,long totalCount,int position,int positionCount*/){

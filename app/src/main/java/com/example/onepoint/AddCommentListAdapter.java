@@ -3,6 +3,7 @@ package com.example.onepoint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,11 +26,27 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.makeramen.roundedimageview.RoundedImageView;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Date;
 import java.util.List;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
+import javax.crypto.spec.IvParameterSpec;
 
 
 public class AddCommentListAdapter extends RecyclerView.Adapter<AddCommentListAdapter.ViewHolder>  {
+    public final String token = "75958514";
+    private final String USER_AGENT = "Mozilla/5.0";
     private Context mContext;
     private List<FirstLevelBean> mCommentList;
     RecyclerView recyclerView;
@@ -37,6 +55,7 @@ public class AddCommentListAdapter extends RecyclerView.Adapter<AddCommentListAd
     private float slideOffset=0;
     private ReplyCommentListAdpater adapter;
     private BottomSheetDialog reply_dialog;
+    private String comment;//为了给reply传递索引
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         RoundedImageView UserImage;
@@ -81,6 +100,7 @@ public class AddCommentListAdapter extends RecyclerView.Adapter<AddCommentListAd
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final FirstLevelBean firstLevelBean = mCommentList.get(position);
         //final int islike = firstLevelBean.getIsLike();
+        comment = firstLevelBean.getContent();
         holder.UserName.setText(firstLevelBean.getUserName());
         holder.Comment.setText(firstLevelBean.getContent());
         holder.time.setText(firstLevelBean.getCreateTime());
@@ -139,35 +159,6 @@ public class AddCommentListAdapter extends RecyclerView.Adapter<AddCommentListAd
                 });
             }
         });
-
-        /*holder.cardView.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                int position = holder.getAdapterPosition();
-                if (position<0) return;
-                Comment comment = mCommentList.get(position);
-                Intent intent = new Intent(mContext, RandomKnowledgeActivity.class);
-                //put extra info here, e.g.
-                //intent.putExtra("index",position);
-                //intent.putParcelableArrayListExtra("list", (ArrayList<? extends Parcelable>) mCommentList);
-                //  intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                intent.putExtra("title", comment.getTitle());
-                intent.putExtra("imageSrc", comment.getKnowledgeImagesrc());
-                intent.putExtra("content",comment.getContent());
-                mContext.startActivity(intent);
-            }
-        });
-        holder.delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = holder.getAdapterPosition();
-                if (position<0) return;
-                mCommentList.remove(position);
-                notifyItemRemoved(position);
-                //Intent intent = new Intent(mContext,CommentActivity.class);
-                //mContext.startActivity(intent);
-            }
-        });*/
     }
     private  void show(View view){
         reply_dialog = new BottomSheetDialog(mContext,R.style.dialog);
@@ -205,9 +196,10 @@ public class AddCommentListAdapter extends RecyclerView.Adapter<AddCommentListAd
         if (inputTextMsgDialog == null) {
             inputTextMsgDialog = new InputTextMsgDialog(mContext, R.style.dialog_center);
             inputTextMsgDialog.setmOnTextSendListener(new InputTextMsgDialog.OnTextSendListener() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
                 @Override
-                public void onTextSend(String msg) {
-                    addComment(isReply,headImg,position,msg,replyList);
+                public void onTextSend(String msg) throws Exception {
+                    addReply(isReply,headImg,position,msg,replyList);
                 }
 
                 @Override
@@ -236,17 +228,61 @@ public class AddCommentListAdapter extends RecyclerView.Adapter<AddCommentListAd
             e.printStackTrace();
         }
     }
-    public void addComment(boolean isReply, String headImg, final int position, String msg,List<SecondLevelBean> replyList){
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void addReply(boolean isReply, String headImg, final int position, String msg, List<SecondLevelBean> replyList) throws Exception {
         //首先在评论框内添加评论 有了服务器后要将信息发送给服务器 与相应的阅读知识id相关联
         SecondLevelBean secondLevelBean = new SecondLevelBean(mContext.getString(R.string.xigua_img),"liyifei",msg,0,0);
-        replyList.add(secondLevelBean);
-        /*View view = View.inflate(mContext,R.layout.reply_dialog_bottom_sheet,null);
-        TextView none = view.findViewById(R.id.none);
-        if (none.getText()!=null){
-            none.setText(null);
-            show(view);
-        }*/
+        replyList.add(0,secondLevelBean);
+        adapter.notifyDataSetChanged();
+        recyclerView.scrollToPosition(0);
+        replyOne("username",10,comment);
         //其次在我的评论界面要添加评论 这里需要先向服务器添加相关内容 然后我的评论界面在打开时再向服务器获取mcommentlist
+        //这里无需代码
+    }
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void replyOne(String username, int id, String comment)throws Exception{
+        String url = "http://212.64.70.206:5000/replyone/";
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("User-Agent", USER_AGENT);
+        con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+        Date date=new Date();
+        byte[] cont=String.valueOf(date.getTime()).getBytes();
+        byte [] keyBytes=token.getBytes();
+        DESKeySpec keySpec = new DESKeySpec(keyBytes);
+        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+        SecretKey key = keyFactory.generateSecret(keySpec);
+        Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(keySpec.getKey()));
+        byte[] result = cipher.doFinal(cont);
+        String t = Base64.getEncoder().encodeToString(result);
+        String urlParameters = "username="+username+"&time=\""+t+"\""+"&id="+id+"&comment="+ URLEncoder.encode(comment,"utf-8");
+        con.setDoOutput(true);
+        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+        wr.writeBytes(urlParameters);
+        wr.flush();
+        wr.close();
+        int responseCode = con.getResponseCode();
+        System.out.println("\nSending 'POST' request to URL : " + url);
+        System.out.println("Post parameters : " + urlParameters);
+        System.out.println("Response Code : " + responseCode);
+        BufferedReader in;
+        if(responseCode != 400)
+        {
+            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        }
+        else{
+            in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
+        }
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        System.out.println(response.toString());
     }
     private int getWindowHeight() {
         Resources res = mContext.getResources();

@@ -180,15 +180,15 @@ public class MainActivity extends AppCompatActivity {
     private void initKnowledges() {
         knowledgeList.clear();
         Knowledge[] knowledges = {//不要把这个数组放在函数外面
-                new Knowledge(getString(R.string.xigua_title), getString(R.string.xigua_img), getString(R.string.xigua_content), "网络|developer"),
-                new Knowledge(getString(R.string.famei_title), getString(R.string.famei_img), getString(R.string.famei_content), "网络|developer"),
-                new Knowledge(getString(R.string.chanbu_title), getString(R.string.snow_img), getString(R.string.chanbu_content), "网络|developer" ),
-                new Knowledge(getString(R.string.cola_title), getString(R.string.cola_img), getString(R.string.cola_content), "网络|developer"),
-                new Knowledge(getString(R.string.HCL_title), getString(R.string.HCL_img), getString(R.string.HCL_content), "网络|developer"),
-                new Knowledge(getString(R.string.hug_title), getString(R.string.hug_img), getString(R.string.hug_content), "网络|developer"),
-                new Knowledge(getString(R.string.seli_title), getString(R.string.seli_img), getString(R.string.seli_content), "网络|developer"),
-                new Knowledge(getString(R.string.toubal_title), getString(R.string.toubal_img), getString(R.string.toubal_content), "网络|developer"),
-                new Knowledge(getString(R.string.sanmiao_title), getString(R.string.sanmiao_img), getString(R.string.sanmiao_content), "网络|developer")
+                new Knowledge(getString(R.string.xigua_title), getString(R.string.xigua_img), getString(R.string.xigua_content), "网络|developer", 1),
+                new Knowledge(getString(R.string.famei_title), getString(R.string.famei_img), getString(R.string.famei_content), "网络|developer", 2),
+                new Knowledge(getString(R.string.chanbu_title), getString(R.string.snow_img), getString(R.string.chanbu_content), "网络|developer" , 3),
+                new Knowledge(getString(R.string.cola_title), getString(R.string.cola_img), getString(R.string.cola_content), "网络|developer", 4),
+                new Knowledge(getString(R.string.HCL_title), getString(R.string.HCL_img), getString(R.string.HCL_content), "网络|developer", 5),
+                new Knowledge(getString(R.string.hug_title), getString(R.string.hug_img), getString(R.string.hug_content), "网络|developer", 6),
+                new Knowledge(getString(R.string.seli_title), getString(R.string.seli_img), getString(R.string.seli_content), "网络|developer", 7),
+                new Knowledge(getString(R.string.toubal_title), getString(R.string.toubal_img), getString(R.string.toubal_content), "网络|developer", 8),
+                new Knowledge(getString(R.string.sanmiao_title), getString(R.string.sanmiao_img), getString(R.string.sanmiao_content), "网络|developer", 9)
         };
         Collections.addAll(knowledgeList, knowledges);
 
