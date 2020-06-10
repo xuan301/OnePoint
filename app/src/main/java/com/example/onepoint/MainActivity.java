@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
             knowledgeList.add(
                     new Knowledge(
                             obj.getString("TITLE"), obj.getString("URL"),
-                            obj.getString("CONTENT"), obj.getString("AUTHOR")
+                            obj.getString("CONTENT"), obj.getString("AUTHOR"), obj.getInt("id")
                     )
             );
         }
