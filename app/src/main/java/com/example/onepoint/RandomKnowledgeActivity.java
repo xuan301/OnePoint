@@ -297,39 +297,6 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                 //创建分享的Dialog
                 share_intent =   Intent.createChooser(share_intent,"分享");
                 startActivity(share_intent);
-                /*final BottomSheetDialog mBottomSheetDialog1 = new BottomSheetDialog(this);
-                View view1 = getLayoutInflater().inflate(R.layout.share_dialog_bottom_sheet, null);
-                mBottomSheetDialog1.setContentView(view1);
-                mBottomSheetDialog1.show();
-                ImageView share_close = view1.findViewById(R.id.share_close);
-                share_close.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mBottomSheetDialog1.dismiss();
-                    }
-                });
-                ImageView qqshare = view1.findViewById(R.id.qqshare);
-                qqshare.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent share_intent = new Intent();
-                        share_intent.setAction(Intent.ACTION_SEND);//设置分享行为
-                        share_intent.setType("text/plain");//设置分享内容的类型
-                        share_intent.putExtra(Intent.EXTRA_SUBJECT,"这是一段分享的文字");//添加分享内容标题
-                        share_intent.putExtra(Intent.EXTRA_TEXT,"分享");//添加分享内容
-                        //创建分享的Dialog
-                        share_intent =   Intent.createChooser(share_intent,"分享");
-                        startActivity(share_intent);
-                        final Bundle params = new Bundle();
-                        params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);//分享的类型
-                        params.putString(QQShare.SHARE_TO_QQ_TITLE, "然了个然CSDN博客");//分享标题
-                        params.putString(QQShare.SHARE_TO_QQ_SUMMARY,"不管是怎样的过程,最终目的还是那个理想的结果。");//要分享的内容摘要
-                        params.putString(QQShare.SHARE_TO_QQ_TARGET_URL,"http://blog.csdn.net/sandyran");//内容地址
-                        params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL,"http://avatar.csdn.net/B/3/F/1_sandyran.jpg");//分享的图片URL
-                        params.putString(QQShare.SHARE_TO_QQ_APP_NAME, "测试");//应用名称
-                        mTencent.shareToQQ(RandomKnowledgeActivity.this, params, new ShareUiListener());
-                    }
-                });*/
                 break;
             case R.id.add_comment:
                 View view2 = getLayoutInflater().inflate(R.layout.comment_dialog_bottom_sheet, null);
