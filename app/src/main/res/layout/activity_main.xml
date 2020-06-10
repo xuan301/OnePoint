@@ -44,10 +44,10 @@
             android:layout_alignBottom="@id/randomknowledge"
             android:layout_centerHorizontal="false"
             android:layout_marginStart="225dp"
-            android:layout_marginBottom="-320dp"
+            android:layout_marginLeft="225dp"
+            android:layout_marginBottom="-350dp"
             android:text="个性推荐 "
-            android:textSize="18sp"
-            android:layout_marginLeft="225dp" />
+            android:textSize="18sp" />
     </RelativeLayout>
 
 

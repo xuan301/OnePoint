@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -61,13 +62,19 @@ public class AddKnowledgeActivity extends AppCompatActivity {
                 else if(content.equals("")){Toast.makeText(getApplicationContext(), "内容未填写",Toast.LENGTH_SHORT).show();}
                 else if(phurl == null || phurl.equals("")){Toast.makeText(getApplicationContext(), "图片未添加",Toast.LENGTH_SHORT).show();}
                 else{
-                    try {
-                        System.out.println(title);
-                        System.out.println(content);
-                        System.out.println(phurl);
-                        addKnow("username",title,content,phurl,"1");
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    int SDK_INT = android.os.Build.VERSION.SDK_INT;
+                    if (SDK_INT > 8) {
+                        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                                .permitAll().build();
+                        StrictMode.setThreadPolicy(policy);
+                        try {
+                            System.out.println(title);
+                            System.out.println(content);
+                            System.out.println(phurl);
+                            addKnow("username", title, content, phurl, "1");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
