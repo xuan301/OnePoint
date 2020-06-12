@@ -63,7 +63,6 @@ public class SearchActivity extends AppCompatActivity {
     private ListView mListView;
     private KnowledgeAdapter adapter;
     private List<Knowledge> knowledgeList = new ArrayList<>();
-    public final String token = "75958514";
     private final String USER_AGENT = "Mozilla/5.0";
 
     @Override
@@ -144,7 +143,7 @@ public class SearchActivity extends AppCompatActivity {
                             .permitAll().build();
                     StrictMode.setThreadPolicy(policy);
                     try {
-                        searchKnow("username", 10, query);
+                        searchKnow(LoginActivity.myUsername, 10, query);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -178,7 +177,7 @@ public class SearchActivity extends AppCompatActivity {
         con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
         Date date=new Date();
         byte[] cont=String.valueOf(date.getTime()).getBytes();
-        byte [] keyBytes=token.getBytes();
+        byte [] keyBytes=(LoginActivity.token).getBytes();
         DESKeySpec keySpec = new DESKeySpec(keyBytes);
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
         SecretKey key = keyFactory.generateSecret(keySpec);

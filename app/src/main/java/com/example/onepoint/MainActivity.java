@@ -11,8 +11,10 @@ import android.os.Parcelable;
 import android.os.StrictMode;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
@@ -39,7 +41,6 @@ import javax.crypto.spec.IvParameterSpec;
 
 public class MainActivity extends AppCompatActivity {
 
-    public final String token = "75958514";
     private final String USER_AGENT = "Mozilla/5.0";
     private List<Knowledge> knowledgeList= new ArrayList<>();
 
@@ -88,8 +89,17 @@ public class MainActivity extends AppCompatActivity {
         button_read.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ReadActivity.class);
-                startActivity(intent);
+                SharedPreferences sharedPreferences=getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+                boolean loginState = sharedPreferences.getBoolean("isLogin",false);
+                if(loginState){
+                    Intent intent = new Intent(MainActivity.this, ReadActivity.class);
+                    startActivity(intent);
+                }
+                else {
+                    Toast.makeText(MainActivity.this, "请先登录后使用", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -97,8 +107,17 @@ public class MainActivity extends AppCompatActivity {
         button_like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, LikeActivity.class);
-                startActivity(intent);
+                SharedPreferences sharedPreferences=getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+                boolean loginState = sharedPreferences.getBoolean("isLogin",false);
+                if(loginState){
+                    Intent intent = new Intent(MainActivity.this, LikeActivity.class);
+                    startActivity(intent);
+                }
+                else {
+                    Toast.makeText(MainActivity.this, "请先登录后使用", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
             }
         })
         ;
@@ -107,8 +126,17 @@ public class MainActivity extends AppCompatActivity {
         button_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, CommentActivity.class);
-                startActivity(intent);
+                SharedPreferences sharedPreferences=getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+                boolean loginState = sharedPreferences.getBoolean("isLogin",false);
+                if(loginState){
+                    Intent intent = new Intent(MainActivity.this, CommentActivity.class);
+                    startActivity(intent);
+                }
+                else {
+                    Toast.makeText(MainActivity.this, "请先登录后使用", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
             }
         })
         ;
@@ -117,8 +145,17 @@ public class MainActivity extends AppCompatActivity {
         button_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                startActivity(intent);
+                SharedPreferences sharedPreferences=getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+                boolean loginState = sharedPreferences.getBoolean("isLogin",false);
+                if(loginState){
+                    Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                    startActivity(intent);
+                }
+                else {
+                    Toast.makeText(MainActivity.this, "请先登录后使用", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
             }
         })
         ;
@@ -158,7 +195,6 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(MainActivity.this,InformationActivity.class);
                     startActivity(intent);
                 }
-
             }
         })
         ;

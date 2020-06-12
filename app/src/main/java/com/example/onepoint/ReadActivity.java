@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.speech.RecognizerIntent;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -56,7 +57,6 @@ import java.net.URLEncoder;
 
 public class ReadActivity extends AppCompatActivity {
 
-    public final String token = "75958514";
     private final String USER_AGENT = "Mozilla/5.0";
 
     private DrawerLayout mDrawerLayout;
@@ -136,7 +136,7 @@ public class ReadActivity extends AppCompatActivity {
         con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
         Date date=new Date();
         byte[] cont=String.valueOf(date.getTime()).getBytes();
-        byte [] keyBytes=token.getBytes();
+        byte [] keyBytes=(LoginActivity.token).getBytes();
         DESKeySpec keySpec = new DESKeySpec(keyBytes);
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
         SecretKey key = keyFactory.generateSecret(keySpec);
