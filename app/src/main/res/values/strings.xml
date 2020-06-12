@@ -8,6 +8,13 @@
     <string name="search">搜索</string>
     <string name="rank">排序</string>
     <string name="share">分享</string>
+    <string name="hint_user">请输入用户名</string>
+    <string name="hint_paw">请输入密码</string>
+    <string name="hint_phone">请输入手机号</string>
+    <string name="hint_code">请输入验证码</string>
+    <string name="login">登录</string>
+    <string name="myregister">注册</string>
+    <string name="register">没有账号？注册一下吧！</string>
     <string name="randomreading">随机阅读</string>
     <string name="randomknowledge">随机阅读</string>
     <string name="title">SCP-CN-1559</string>
@@ -70,4 +77,5 @@
     <string name="HCL_img">https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1590505919584&amp;di=b7542b3d07bf143daae8928c7c8b2d55&amp;imgtype=0&amp;src=http%3A%2F%2Fimg1.cache.netease.com%2Fcatchpic%2FB%2FBA%2FBA6A21DC75FB6DC003C2505EF3DFBFE2.jpg</string>
     <string name="famei_img">https://5b0988e595225.cdn.sohucs.com/images/20181227/ceb2bf91923142208a1e69f92a6f740a.jpeg</string>
     <string name="xigua_img">https://n.sinaimg.cn/sinacn11/533/w800h533/20180731/4c09-hhacrce1167436.jpg</string>
+    <string name="send_phone">发送验证码</string>
 </resources>

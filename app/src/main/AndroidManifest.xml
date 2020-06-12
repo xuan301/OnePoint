@@ -23,8 +23,11 @@
         <activity android:name=".RankActivity" />
         <activity android:name=".SearchActivity" />
         <activity android:name=".CommentActivity" />
+        <activity android:name=".RegisterActivity"/>
+        <activity android:name=".LoginActivity"/>
         <activity android:name=".LikeActivity" />
         <activity android:name=".ReadActivity" />
+        <activity android:name=".InformationActivity"/>
         <activity android:name=".MainActivity"
             android:theme="@style/ImageTranslucentTheme">
             <intent-filter>
