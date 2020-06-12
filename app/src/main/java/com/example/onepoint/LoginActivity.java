@@ -43,14 +43,16 @@ import java.util.Random;
 @SuppressLint("Registered")
 public class LoginActivity extends AppCompatActivity {
     private final String USER_AGENT = "Mozilla/5.0";
+    public static String myUsername;
 
-    public String token = null;
+    public static String token = null;
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void login(String username, String password) throws Exception{
 //        String publicKeyFilePath = "public.der";
 //        Path publicKeyPath = Paths.get(publicKeyFilePath);
 //        System.out.println(publicKeyPath.toAbsolutePath());
 //        byte[] publicKeyBytes = Files.readAllBytes(publicKeyPath);
+        myUsername = username;
         String filename = "public.der";
         InputStream inputStream = getResources().getAssets().open(filename);
         byte[] publicKeyBytes = toByteArray(inputStream);
