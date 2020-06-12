@@ -21,6 +21,7 @@
         <activity android:name=".RandomKnowledgeActivity"/>
         <activity android:name=".SettingActivity" />
         <activity android:name=".RankActivity" />
+        <activity android:name=".AddKnowledgeActivity" />
         <activity android:name=".SearchActivity" />
         <activity android:name=".CommentActivity" />
         <activity android:name=".RegisterActivity"/>

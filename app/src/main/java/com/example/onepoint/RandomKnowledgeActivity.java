@@ -1,6 +1,7 @@
 package com.example.onepoint;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,6 +17,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.os.StrictMode;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
@@ -39,8 +41,19 @@ import com.example.onepoint.bean.FirstLevelBean;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 
 import com.example.onepoint.CommentActivity;
@@ -49,7 +62,21 @@ import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
 
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
+import javax.crypto.spec.IvParameterSpec;
+
 public class RandomKnowledgeActivity extends AppCompatActivity {
+    public final String token = "75958514";
+    private final String USER_AGENT = "Mozilla/5.0";
     private Button favorite;
     GestureDetector Detector;
     private List<Knowledge> knowledge_list;
@@ -57,8 +84,12 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
     protected static final float FLIP_DISTANCE = 150;
     BottomSheetBehavior behavior;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //dialog的new创建只能写在Oncreate中或之后
+        mBottomSheetDialog2 = new BottomSheetDialog(this,R.style.dialog);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_random_knowledge);
         if(getSupportActionBar() != null){ getSupportActionBar().hide(); }
@@ -71,23 +102,25 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
         Intent intent = getIntent();
         index = intent.getIntExtra("index",0);
         knowledge_list = intent.getParcelableArrayListExtra("list");
-        String title,imageSrc,text;
-        if(knowledge_list != null) {
+        String title,imageSrc,text,author;
+        if(knowledge_list != null && knowledge_list.size() != 0) {
             Knowledge knowledge = knowledge_list.get(index);
             title = knowledge.getTitle();
             imageSrc = knowledge.getImageSrc();
             text = knowledge.getContent();
+            author = knowledge.getAuthor();
         }
         else{
             title = intent.getStringExtra("title");
             imageSrc = intent.getStringExtra("imageSrc");
             text = intent.getStringExtra("content");
+            author = intent.getStringExtra("author");
         }
             if (title != null && imageSrc != null && text != null) {
                 Glide.with(img_of_knowledge.getContext()).load(imageSrc).into(img_of_knowledge);
                 text_of_knowledge.setText(text);
-                author_of_knowledge.setText(R.string.author);
                 title_of_knowledge.setText(title);
+                if(author != null){author_of_knowledge.setText(author);}else{author_of_knowledge.setText(R.string.author);}
             }
 
         favorite =this.findViewById(R.id.like);
@@ -95,20 +128,31 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
         favorite.setOnClickListener(new View.OnClickListener()
         {//收藏按钮的切换
             boolean isActive = false;
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View view){
                 Drawable liked = getResources().getDrawable(R.drawable.ic_liked);
                 Drawable tolike = getResources().getDrawable(R.drawable.ic_like_black_24dp);
 
                 if(! isActive) {
-                    liked.setBounds(0,0,liked.getMinimumWidth(),liked.getMinimumHeight());
-                    favorite.setCompoundDrawables(null, liked, null, null);
-                    favorite.setText(getResources().getString(R.string.liked));
+                    try {
+                        likeOne("username",10);
+                        liked.setBounds(0,0,liked.getMinimumWidth(),liked.getMinimumHeight());
+                        favorite.setCompoundDrawables(null, liked, null, null);
+                        favorite.setText(getResources().getString(R.string.liked));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 else{
-                    tolike.setBounds(0,0,tolike.getMinimumWidth(),tolike.getMinimumHeight());
-                    favorite.setCompoundDrawables(null, tolike, null, null);
-                    favorite.setText(getResources().getString(R.string.like));
+                    try {
+                        likeOne("username",10);
+                        tolike.setBounds(0,0,tolike.getMinimumWidth(),tolike.getMinimumHeight());
+                        favorite.setCompoundDrawables(null, tolike, null, null);
+                        favorite.setText(getResources().getString(R.string.like));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 isActive = ! isActive;
@@ -155,10 +199,56 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void likeOne(String username, int id)throws Exception {
+        String url = "http://212.64.70.206:5000/likeone/";
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("User-Agent", USER_AGENT);
+        con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+        Date date = new Date();
+        byte[] cont = String.valueOf(date.getTime()).getBytes();
+        byte[] keyBytes = token.getBytes();
+        DESKeySpec keySpec = new DESKeySpec(keyBytes);
+        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+        SecretKey key = keyFactory.generateSecret(keySpec);
+        Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(keySpec.getKey()));
+        byte[] result = cipher.doFinal(cont);
+        String t = Base64.getEncoder().encodeToString(result);
+        String urlParameters = "username=" + username + "&time=\"" + t + "\"" + "&id=" + id;
+        con.setDoOutput(true);
+        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+        wr.writeBytes(urlParameters);
+        wr.flush();
+        wr.close();
+        int responseCode = con.getResponseCode();
+        System.out.println("\nSending 'POST' request to URL : " + url);
+        System.out.println("Post parameters : " + urlParameters);
+        System.out.println("Response Code : " + responseCode);
+        BufferedReader in;
+        if (responseCode != 400) {
+            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        } else {
+            in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+        }
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        System.out.println(response.toString());
+    }
+
     //以下为评论和分享dialog
     //添加评论需要的变量
+
     private AddCommentListAdapter adapter;
     private List<FirstLevelBean> commentList = new ArrayList<>();
+    private BottomSheetDialog mBottomSheetDialog2;
     private InputTextMsgDialog inputTextMsgDialog;
     private int offsetY;
     RecyclerView recyclerView;
@@ -187,54 +277,26 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void doclick(View v)
     {
         switch (v.getId()) {
             case R.id.share:
                 //调用系统的分享功能实现
                 Intent share_intent = new Intent();
-                share_intent.setAction(Intent.ACTION_SEND_MULTIPLE);//设置分享行为
-                share_intent.setType("*/*");//设置分享内容的类型
-                //share_intent.putExtra(Intent.EXTRA_SUBJECT,"这是一段分享的文字");//添加分享内容标题
+                share_intent.setAction(Intent.ACTION_SEND);//设置分享行为
+                share_intent.setType("text/plain");//设置分享内容的类型
+                share_intent.putExtra(Intent.EXTRA_SUBJECT,"这是一段分享的文字");//添加分享内容标题
                 //Uri uri = getImageContentUri(this,"C:\\Users\\97887\\Documents\\GitHub\\OnePoint\\app\\src\\main\\res\\drawable-v24\fig1.png");
                 //share_intent.putExtra(Intent.EXTRA_STREAM,uri);
-                share_intent.putExtra(Intent.EXTRA_TEXT,getString(R.string.toubal_content));//添加分享内容 这里可以为文章的id对应的网址
+                Knowledge knowledge = knowledge_list.get(index);
+                String content = knowledge.getContent();
+                String title  = knowledge.getTitle();
+                String author = knowledge.getAuthor();
+                share_intent.putExtra(Intent.EXTRA_TEXT,"【One Point分享】"+"\n"+title+"\n"+author+"\n"+content);//添加分享内容 这里可以为文章的id对应的网址
                 //创建分享的Dialog
                 share_intent =   Intent.createChooser(share_intent,"分享");
                 startActivity(share_intent);
-                /*final BottomSheetDialog mBottomSheetDialog1 = new BottomSheetDialog(this);
-                View view1 = getLayoutInflater().inflate(R.layout.share_dialog_bottom_sheet, null);
-                mBottomSheetDialog1.setContentView(view1);
-                mBottomSheetDialog1.show();
-                ImageView share_close = view1.findViewById(R.id.share_close);
-                share_close.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mBottomSheetDialog1.dismiss();
-                    }
-                });
-                ImageView qqshare = view1.findViewById(R.id.qqshare);
-                qqshare.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent share_intent = new Intent();
-                        share_intent.setAction(Intent.ACTION_SEND);//设置分享行为
-                        share_intent.setType("text/plain");//设置分享内容的类型
-                        share_intent.putExtra(Intent.EXTRA_SUBJECT,"这是一段分享的文字");//添加分享内容标题
-                        share_intent.putExtra(Intent.EXTRA_TEXT,"分享");//添加分享内容
-                        //创建分享的Dialog
-                        share_intent =   Intent.createChooser(share_intent,"分享");
-                        startActivity(share_intent);
-                        final Bundle params = new Bundle();
-                        params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);//分享的类型
-                        params.putString(QQShare.SHARE_TO_QQ_TITLE, "然了个然CSDN博客");//分享标题
-                        params.putString(QQShare.SHARE_TO_QQ_SUMMARY,"不管是怎样的过程,最终目的还是那个理想的结果。");//要分享的内容摘要
-                        params.putString(QQShare.SHARE_TO_QQ_TARGET_URL,"http://blog.csdn.net/sandyran");//内容地址
-                        params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL,"http://avatar.csdn.net/B/3/F/1_sandyran.jpg");//分享的图片URL
-                        params.putString(QQShare.SHARE_TO_QQ_APP_NAME, "测试");//应用名称
-                        mTencent.shareToQQ(RandomKnowledgeActivity.this, params, new ShareUiListener());
-                    }
-                });*/
                 break;
             case R.id.add_comment:
                 View view2 = getLayoutInflater().inflate(R.layout.comment_dialog_bottom_sheet, null);
@@ -243,7 +305,20 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                 LinearLayoutManager layoutManager = new LinearLayoutManager(this);//创建线性布局
                 layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                 recyclerView.setLayoutManager(layoutManager);//给RecyclerView设置布局管理器
-                commentList.clear();
+                int SDK_INT = android.os.Build.VERSION.SDK_INT;
+                if (SDK_INT > 8)
+                {
+                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                            .permitAll().build();
+                    StrictMode.setThreadPolicy(policy);
+                    try {
+                        getComment("username",10);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                /*commentList.clear();
                 FirstLevelBean[] comments = {
                         new FirstLevelBean(getString(R.string.cola_img),"wulala2580","啊这",System.currentTimeMillis(),10,0),
                         new FirstLevelBean(getString(R.string.famei_img),"jizhe","abababa",System.currentTimeMillis(),20,0),
@@ -251,10 +326,10 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                 };
                 for(int i = 0; i < comments.length; i++) {
                     commentList.add(comments[i]);
-                }
+                }*/
+
                 adapter = new AddCommentListAdapter(commentList);
                 recyclerView.setAdapter(adapter);
-                final BottomSheetDialog mBottomSheetDialog2 = new BottomSheetDialog(this,R.style.dialog);
                 mBottomSheetDialog2.setContentView(view2);
                 mBottomSheetDialog2.setCanceledOnTouchOutside(true);
                 final BottomSheetBehavior mDialogBehavior = BottomSheetBehavior.from((View) view2.getParent());
@@ -305,8 +380,9 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
         if (inputTextMsgDialog == null) {
             inputTextMsgDialog = new InputTextMsgDialog(this, R.style.dialog_center);
             inputTextMsgDialog.setmOnTextSendListener(new InputTextMsgDialog.OnTextSendListener() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
                 @Override
-                public void onTextSend(String msg) {
+                public void onTextSend(String msg) throws Exception {
                     addComment(isReply,headImg,position,msg);
                 }
 
@@ -318,12 +394,17 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
         }
         showInputTextMsgDialog();
     }
-    public void addComment(boolean isReply, String headImg, final int position, String msg){
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void addComment(boolean isReply, String headImg, final int position, String msg) throws Exception {
         //首先在评论框内添加评论 有了服务器后要将信息发送给服务器 与相应的阅读知识id相关联
-        FirstLevelBean firstLevelBean = new FirstLevelBean(getString(R.string.xigua_img),"liyifei",msg,System.currentTimeMillis(),0,0);
-        commentList.add(firstLevelBean);
+        FirstLevelBean firstLevelBean = new FirstLevelBean(getString(R.string.xigua_img),"username",msg,"刚刚",0,0,null);
+        commentList.add(0,firstLevelBean);
+        adapter.notifyDataSetChanged();
+        recyclerView.scrollToPosition(0);
+        commentOne("username",10,msg);
 
         //其次在我的评论界面要添加评论 这里需要先向服务器添加相关内容 然后我的评论界面在打开时再向服务器获取mcommentlist
+        //这里无需代码
     }
     private void dismissInputDialog() {
         if (inputTextMsgDialog != null) {
@@ -373,7 +454,111 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
         DisplayMetrics displayMetrics = res.getDisplayMetrics();
         return displayMetrics.heightPixels;
     }
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void getComment(String username, int id)throws Exception{
+        String url = "http://212.64.70.206:5000/getcomment/";
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("User-Agent", USER_AGENT);
+        con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+        Date date=new Date();
+        byte[] cont=String.valueOf(date.getTime()).getBytes();
+        byte [] keyBytes=token.getBytes();
+        DESKeySpec keySpec = new DESKeySpec(keyBytes);
+        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+        SecretKey key = keyFactory.generateSecret(keySpec);
+        Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(keySpec.getKey()));
+        byte[] result = cipher.doFinal(cont);
+        String t = Base64.getEncoder().encodeToString(result);
+        String urlParameters = "username="+username+"&time=\""+t+"\""+"&id="+id;
+        con.setDoOutput(true);
+        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+        wr.writeBytes(urlParameters);
+        wr.flush();
+        wr.close();
+        int responseCode = con.getResponseCode();
+        System.out.println("\nSending 'POST' request to URL : " + url);
+        System.out.println("Post parameters : " + urlParameters);
+        System.out.println("Response Code : " + responseCode);
+        BufferedReader in;
+        if(responseCode != 400)
+        {
+            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        }
+        else{
+            in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
+        }
+        String inputLine;
+        StringBuffer response = new StringBuffer();
 
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        System.out.println(response.toString());
+        JSONParse(response.toString());
+    }
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void commentOne(String username, int id, String comment)throws Exception{
+        String url = "http://212.64.70.206:5000/commentone/";
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("User-Agent", USER_AGENT);
+        con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+        Date date=new Date();
+        byte[] cont=String.valueOf(date.getTime()).getBytes();
+        byte [] keyBytes=token.getBytes();
+        DESKeySpec keySpec = new DESKeySpec(keyBytes);
+        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+        SecretKey key = keyFactory.generateSecret(keySpec);
+        Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(keySpec.getKey()));
+        byte[] result = cipher.doFinal(cont);
+        String t = Base64.getEncoder().encodeToString(result);
+        String urlParameters = "username="+username+"&time=\""+t+"\""+"&id="+id+"&comment="+ URLEncoder.encode(comment,"utf-8");
+        con.setDoOutput(true);
+        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+        wr.writeBytes(urlParameters);
+        wr.flush();
+        wr.close();
+        int responseCode = con.getResponseCode();
+        System.out.println("\nSending 'POST' request to URL : " + url);
+        System.out.println("Post parameters : " + urlParameters);
+        System.out.println("Response Code : " + responseCode);
+        BufferedReader in;
+        if(responseCode != 400)
+        {
+            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        }
+        else{
+            in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
+        }
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        System.out.println(response.toString());
+    }
+    private void JSONParse(String source) throws JSONException {
+        JSONArray objList = new JSONArray(source);
+        commentList.clear();
+        for(int i = 0; i < objList.length(); i++ ){
+            JSONObject obj =  objList.getJSONObject(i);
+            //FirstLevelBean firstLevelBean = (FirstLevelBean) JSONObject.
+            long j = (int) i;
+            commentList.add(
+                    new FirstLevelBean(
+                            getString(R.string.cola_img),obj.getString("AUTHOR"),obj.getString("COMMENT"),
+                    obj.getString("PUBTIME"),j,0,null)
+            );
+        }
+    }
 //    @Override
 //    public void finish()
 //    {
@@ -400,7 +585,7 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                     intent.putParcelableArrayListExtra("list", (ArrayList<? extends Parcelable>) knowledge_list);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     startActivity(intent);
-                    overridePendingTransition(R.anim.trans_in_right, R.anim.trans_out_alpha);
+                    overridePendingTransition(R.anim.trans_in_alpha, R.anim.trans_out_left);
                 }
                 else{
                     Toast.makeText(getApplicationContext(),"已经是最后一页了",Toast.LENGTH_SHORT).show();

@@ -3,6 +3,8 @@ package com.example.onepoint.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 
 public class FirstLevelBean implements Parcelable {
     //一级评论id
@@ -16,18 +18,20 @@ public class FirstLevelBean implements Parcelable {
     //评论内容
     private String content;
     //创建时间
-    private long createTime;
+    private String createTime;
     //点赞数量
     private long likeCount;
     //是否点赞了  0没有 1点赞
     private int isLike;
+    //评论回复
+    private List reply_list;
     //当前评论的总条数（包括这条一级评论）ps:处于未使用状态
     //private long totalCount;
     //当前一级评论的位置（下标）
-    //private int position;
+    private int position;
     //当前一级评论所在的位置(下标)
     //private int positionCount;
-    public FirstLevelBean(/*String id,*/String headImg,String userName,/*String userId,*/String content,long createTime,long likeCount,int isLike/*,long totalCount,int position,int positionCount*/){
+    public FirstLevelBean(/*String id,*/String headImg,String userName,/*String userId,*/String content,String createTime,long likeCount,int isLike,List reply_list/*,long totalCount,int position,int positionCount*/){
         //this.id=id;
         this.headImg =headImg;
         this.userName = userName;
@@ -35,7 +39,8 @@ public class FirstLevelBean implements Parcelable {
         this.content = content;
         this.createTime = createTime;
         this.likeCount = likeCount;
-        this.isLike  =isLike;
+        this.isLike  = isLike;
+        this.reply_list = reply_list;
         //this.totalCount = totalCount;
         //this.position = position;
         //this.positionCount = positionCount;
@@ -80,11 +85,11 @@ public class FirstLevelBean implements Parcelable {
         this.content = content;
     }
 
-    public long getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(long createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
@@ -102,6 +107,12 @@ public class FirstLevelBean implements Parcelable {
 
     public void setIsLike(int isLike) {
         this.isLike = isLike;
+    }
+    public List getReply_list(){
+        return reply_list;
+    }
+    public void setReply_list(List reply_list){
+        this.reply_list = reply_list;
     }
 
    /* public long getTotalCount() {

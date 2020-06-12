@@ -32,10 +32,22 @@
             android:background="@drawable/roundedrec"
             android:gravity="center"
             android:text="随 机 阅 读"
-            android:textSize="25dp"
+            android:textSize="25sp"
             android:textColor="#404040"/>
 
         <include layout="@layout/bottombar" />
+
+        <Switch
+            android:id="@+id/recommendation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/randomknowledge"
+            android:layout_centerHorizontal="false"
+            android:layout_marginStart="225dp"
+            android:layout_marginBottom="-320dp"
+            android:text="个性推荐 "
+            android:textSize="18sp"
+            android:layout_marginLeft="225dp" />
     </RelativeLayout>
 
 
