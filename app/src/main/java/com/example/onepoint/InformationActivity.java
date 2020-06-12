@@ -9,8 +9,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -20,16 +22,20 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class InformationActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ImageView iv_img;
     private Button bt_camera;
     private Button bt_xiangce;
+    private Uri imageUri;
     private static final int PHOTO_REQUEST_CAREMA = 1;// 拍照
     private static final int PHOTO_REQUEST_GALLERY = 2;// 从相册中选择
     private static final int PHOTO_REQUEST_CUT = 3;// 结果
@@ -44,11 +50,16 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
         setHalfTransparent();
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) actionBar.hide();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+            StrictMode.setVmPolicy(builder.build()); }
 
         SharedPreferences sharedPreferences=getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
         String username_local = sharedPreferences.getString("loginUserName","None");
         TextView username = (TextView) findViewById(R.id.username);
         username.setText(username_local+" ， 你好！");
+
+
 
         Button button_back = (Button) findViewById(R.id.home);
         button_back.setOnClickListener(new View.OnClickListener() {
@@ -90,14 +101,23 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
         switch (v.getId()) {
             case R.id.bt_camera:
                 // 激活相机
-                Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-                // 判断存储卡是否可以用，可用进行存储
-                if (hasSdcard()) {
-                    tempFile = new File(Environment.getExternalStorageDirectory(), PHOTO_FILE_NAME);
-                    // 从文件中创建uri
-                    Uri uri = Uri.fromFile(tempFile);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                File outputImage = new File(getExternalCacheDir(),"out_image.jpg");
+                try{
+                    if(outputImage.exists()){
+                        outputImage.delete();
+                    }
+                    outputImage.createNewFile();
+                }catch (IOException e){
+                    e.printStackTrace();
                 }
+                if(Build.VERSION.SDK_INT>=24){
+                    imageUri = FileProvider.getUriForFile(InformationActivity.this,
+                            "com.example.onepoint.fileprovider", outputImage);
+                }else{
+                    imageUri = Uri.fromFile(outputImage);
+                }
+                Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                 // 开启一个带有返回值的Activity，请求码为PHOTO_REQUEST_CAREMA
                 startActivityForResult(intent, PHOTO_REQUEST_CAREMA);
                 break;
@@ -128,7 +148,15 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
     private void crop(Uri uri) {
         // 裁剪图片意图
         Intent intent = new Intent("com.android.camera.action.CROP");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            //添加这一句表示对目标应用临时授权该Uri所代表的文件
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
         intent.setDataAndType(uri, "image/*");
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
         intent.putExtra("crop", "true");
         // 裁剪框的比例，1：1
         intent.putExtra("aspectX", 1);
@@ -140,8 +168,10 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
         intent.putExtra("outputFormat", "JPEG");// 图片格式
         intent.putExtra("noFaceDetection", true);// 取消人脸识别
         intent.putExtra("return-data", true);
+        Log.e("crop:",uri.toString());
         // 开启一个带有返回值的Activity，请求码为PHOTO_REQUEST_CUT
         startActivityForResult(intent, PHOTO_REQUEST_CUT);
+        System.out.println("crop运行完毕");
     }
 
     /**
@@ -152,47 +182,65 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //防止低版本没有返回确认数据，导致奔溃
-        if(data==null){
-            return;
-        }
+        //防止低版本没有返回确认数据，导致崩溃
+        super.onActivityResult(requestCode, resultCode, data);
+        System.out.println(requestCode);
         if (requestCode == PHOTO_REQUEST_GALLERY) {
+            System.out.println("相册返回");
             // 从相册返回的数据
             if (data != null) {
                 // 得到图片的全路径
                 Uri uri = data.getData();
+                Bitmap bitmap = null;
+                try {
+                    bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+                    iv_img.setImageBitmap(bitmap);
+                    System.out.println("头像设置成功！");
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
                 crop(uri);
+                System.out.println("相册图片剪切成功！");
             }
         } else if (requestCode == PHOTO_REQUEST_CAREMA) {
             // 从相机返回的数据
-            if (hasSdcard()) {
-                crop(Uri.fromFile(tempFile));
+            if (resultCode==RESULT_OK) {
+                Bitmap bitmap = null;
+                try {
+                    bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+                    iv_img.setImageBitmap(bitmap);
+                    System.out.println("头像设置成功！");
+                    saveBitmapToSharedPreferences(bitmap);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                crop(imageUri);
             } else {
                 Toast.makeText(InformationActivity.this, "未找到存储卡，无法存储照片！", Toast.LENGTH_SHORT).show();
             }
         } else if (requestCode == PHOTO_REQUEST_CUT) {
             // 从剪切图片返回的数据
             if (data != null) {
-                Bitmap bitmap = data.getParcelableExtra("data");
-                //防止低版本没有办法获取数据，导致奔溃
-                if(bitmap ==null){
-                    return;
+                try{
+                    Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+                    iv_img.setImageBitmap(bitmap);
+                    //保存到SharedPreferences
+                    saveBitmapToSharedPreferences(bitmap);
+                }catch (FileNotFoundException e){
+                    e.printStackTrace();
                 }
                 /**
                  * 获得图片
                  */
-                iv_img.setImageBitmap(bitmap);
-                //保存到SharedPreferences
-                saveBitmapToSharedPreferences(bitmap);
+
             }
-            try {
-                // 将临时文件删除
-                tempFile.delete();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+
         }
-        super.onActivityResult(requestCode, resultCode, data);
+
+        if(data==null){
+            return;
+        }
     }
 
     //保存图片到SharedPreferences
