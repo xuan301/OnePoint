@@ -101,6 +101,7 @@ public class LikeActivity extends AppCompatActivity {
                     .permitAll().build();
             StrictMode.setThreadPolicy(policy);
             try {
+                System.out.println(LoginActivity.myUsername);
                 getLike(LoginActivity.myUsername);
             } catch (Exception e) {
                 e.printStackTrace();
