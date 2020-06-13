@@ -95,7 +95,7 @@ public class ReadActivity extends AppCompatActivity {
                     .permitAll().build();
             StrictMode.setThreadPolicy(policy);
             try {
-                getView("username");
+                getView(LoginActivity.myUsername);
             } catch (Exception e) {
                 e.printStackTrace();
             }

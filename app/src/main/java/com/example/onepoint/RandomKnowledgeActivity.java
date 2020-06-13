@@ -75,7 +75,7 @@ import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.IvParameterSpec;
 
 public class RandomKnowledgeActivity extends AppCompatActivity {
-    public final String token = "75958514";
+    public final String token = LoginActivity.token;
     private final String USER_AGENT = "Mozilla/5.0";
     private Button favorite;
     GestureDetector Detector;
@@ -146,7 +146,7 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                 }
                 else{
                     try {
-                        likeOne("username",10);
+                        likeOne(LoginActivity.myUsername,10);
                         tolike.setBounds(0,0,tolike.getMinimumWidth(),tolike.getMinimumHeight());
                         favorite.setCompoundDrawables(null, tolike, null, null);
                         favorite.setText(getResources().getString(R.string.like));
