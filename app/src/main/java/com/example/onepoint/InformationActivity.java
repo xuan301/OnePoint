@@ -245,7 +245,7 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
                 }
                 crop(imageUri);
             } else {
-                Toast.makeText(InformationActivity.this, "未找到存储卡，无法存储照片！", Toast.LENGTH_SHORT).show();
+                Toast.makeText(InformationActivity.this, "未设置成功！", Toast.LENGTH_SHORT).show();
             }
         } else if (requestCode == PHOTO_REQUEST_CAREMA) {
             // 从相机返回的数据
@@ -262,7 +262,7 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
 
                 crop(imageUri);
             } else {
-                Toast.makeText(InformationActivity.this, "未找到存储卡，无法存储照片！", Toast.LENGTH_SHORT).show();
+                Toast.makeText(InformationActivity.this, "未设置成功！", Toast.LENGTH_SHORT).show();
             }
         } else if (requestCode == PHOTO_REQUEST_CUT) {
             // 从剪切图片返回的数据
