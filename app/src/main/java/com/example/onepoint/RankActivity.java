@@ -13,6 +13,7 @@ import android.os.StrictMode;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,6 +26,8 @@ public class RankActivity extends AppCompatActivity {
     private List<Knowledge> knowledgeList = new ArrayList<>();
 
     private KnowledgeAdapter adapter;
+
+    private Know know = new Know();
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +59,6 @@ public class RankActivity extends AppCompatActivity {
                     .permitAll().build();
             StrictMode.setThreadPolicy(policy);
             try {
-                Know know = new Know();
                 JSONParse(know.getRank(LoginActivity.myUsername,10));
             } catch (Exception e) {
                 e.printStackTrace();
@@ -70,20 +72,32 @@ public class RankActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
-    private void JSONParse(String source) throws JSONException {
-        JSONArray objList = new JSONArray(source);
-        knowledgeList.clear();
-        for(int i = 0; i < objList.length(); i++ ){
-            JSONObject obj =  objList.getJSONObject(i);
-            knowledgeList.add(
-                    new Knowledge(
-                            obj.getString("TITLE"), obj.getString("URL"),
-                            obj.getString("CONTENT"), obj.getString("AUTHOR"),
-                            obj.getInt("ID")
-                    )
-            );
+    private void JSONParse(String source) throws Exception {
+        try {
+            JSONArray objList = new JSONArray(source);
+            knowledgeList.clear();
+            for (int i = 0; i < objList.length(); i++) {
+                JSONObject obj = objList.getJSONObject(i);
+                knowledgeList.add(
+                        new Knowledge(
+                                obj.getString("TITLE"), obj.getString("URL"),
+                                obj.getString("CONTENT"), obj.getString("AUTHOR"),
+                                obj.getInt("ID")
+                        )
+                );
+            }
+        }
+        catch (JSONException e){
+            JSONObject object = new JSONObject(source);
+            if(object.getString("Message").equals("Error")){
+                Toast.makeText(getApplicationContext(),"暂无数据，请重试",Toast.LENGTH_SHORT).show();
+            }
+            else{
+                throw e;
+            }
         }
     }
+
 
     protected void setHalfTransparent() {
 

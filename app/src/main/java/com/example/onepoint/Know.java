@@ -378,7 +378,7 @@ private void searchKnow(String username, int num, String text)throws Exception{
 
 
 @RequiresApi(api = Build.VERSION_CODES.O)
-String getRank(String username, int num)throws Exception{
+String getRank_origin(String username, int num)throws Exception{
         String url = "http://212.64.70.206:5000/getrank/";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -423,6 +423,20 @@ String getRank(String username, int num)throws Exception{
         System.out.println(response.toString());
         return response.toString();
 }
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    String getRank(String username,int num){
+        String temp;
+        while(true){
+            try{
+                temp = getRank_origin(username,num);
+            }
+            catch(Exception e){
+                continue;
+            }
+            break;
+        }
+        return temp;
+    }
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 private void getOne(String username, int id)throws Exception{
