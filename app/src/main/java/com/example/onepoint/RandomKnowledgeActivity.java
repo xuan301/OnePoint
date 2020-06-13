@@ -112,6 +112,11 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                 if(author != null){author_of_knowledge.setText(author);}else{author_of_knowledge.setText(R.string.author);}
             }
 
+        try {
+            know.viewOne(LoginActivity.myUsername,id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         favorite =this.findViewById(R.id.like);
 
         final int finalId = id;
@@ -137,6 +142,7 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                         favorite.setText(getResources().getString(R.string.liked));
                     } catch (Exception e) {
                         e.printStackTrace();
+                        Toast.makeText(getApplicationContext(),"收藏失败",Toast.LENGTH_SHORT).show();
                     }
                 }
                 else{
@@ -147,6 +153,7 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                         favorite.setText(getResources().getString(R.string.like));
                     } catch (Exception e) {
                         e.printStackTrace();
+                        Toast.makeText(getApplicationContext(),"取消收藏失败",Toast.LENGTH_SHORT).show();
                     }
                 }
             }

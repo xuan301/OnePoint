@@ -323,6 +323,7 @@ private String getKnow_origin(String username, int num)throws Exception{
                            temp = getKnow_origin(username,num);
                    }
                    catch(Exception e){
+                       e.printStackTrace();
                            continue;
                    }
                    break;
@@ -378,7 +379,7 @@ private void searchKnow(String username, int num, String text)throws Exception{
 
 
 @RequiresApi(api = Build.VERSION_CODES.O)
-String getRank_origin(String username, int num)throws Exception{
+private String getRank_origin(String username, int num)throws Exception{
         String url = "http://212.64.70.206:5000/getrank/";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -431,6 +432,7 @@ String getRank_origin(String username, int num)throws Exception{
                 temp = getRank_origin(username,num);
             }
             catch(Exception e){
+                e.printStackTrace();
                 continue;
             }
             break;
@@ -639,6 +641,7 @@ void likeOne(String username, int id)throws Exception{
                                 status = isLike_origin(username,id);
                         }
                         catch (Exception e){
+                            e.printStackTrace();
                                 continue;
                         }
                         break;
@@ -738,7 +741,7 @@ private void replyOne(String username, int id, String comment)throws Exception{
 }
 
 @RequiresApi(api = Build.VERSION_CODES.O)
-private void viewOne(String username, int id)throws Exception{
+void viewOne(String username, int id)throws Exception{
         String url = "http://212.64.70.206:5000/viewone/";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -765,22 +768,25 @@ private void viewOne(String username, int id)throws Exception{
         System.out.println("\nSending 'POST' request to URL : " + url);
         System.out.println("Post parameters : " + urlParameters);
         System.out.println("Response Code : " + responseCode);
-        BufferedReader in;
-        if(responseCode != 400)
-        {
-            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        if(responseCode != 200){
+            throw new Exception();
         }
-        else{
-            in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
-        }
-        String inputLine;
-        StringBuilder response = new StringBuilder();
-
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-        System.out.println(response.toString());
+//        BufferedReader in;
+//        if(responseCode != 400)
+//        {
+//            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+//        }
+//        else{
+//            in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
+//        }
+//        String inputLine;
+//        StringBuilder response = new StringBuilder();
+//
+//        while ((inputLine = in.readLine()) != null) {
+//            response.append(inputLine);
+//        }
+//        in.close();
+//        System.out.println(response.toString());
 }
 
         @RequiresApi(api = Build.VERSION_CODES.O)
@@ -838,6 +844,7 @@ private void viewOne(String username, int id)throws Exception{
                                 temp = getLike_origin(username);
                         }
                         catch(Exception e){
+                            e.printStackTrace();
                                 continue;
                         }
                         break;
@@ -899,6 +906,7 @@ private String getView_origin(String username)throws Exception{
                                 temp = getView_origin(username);
                         }
                         catch(Exception e){
+                            e.printStackTrace();
                                 continue;
                         }
                         break;
