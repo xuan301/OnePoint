@@ -1,10 +1,13 @@
 package com.example.onepoint;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,6 +29,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
 import java.io.ByteArrayInputStream;
@@ -40,12 +44,13 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
     private Button bt_camera;
     private Button bt_xiangce;
     private Uri imageUri;
+    private Uri uritempFile;
     private static final int PHOTO_REQUEST_CAREMA = 1;// 拍照
     private static final int PHOTO_REQUEST_GALLERY = 2;// 从相册中选择
     private static final int PHOTO_REQUEST_CUT = 3;// 结果
-    /* 头像名称 */
-    private static final String PHOTO_FILE_NAME = "temp_photo.jpg";
-    private File tempFile;
+
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +67,6 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
         String username_local = sharedPreferences.getString("loginUserName","None");
         TextView username = (TextView) findViewById(R.id.username);
         username.setText(username_local+" ， 你好！");
-
 
 
         Button button_back = (Button) findViewById(R.id.home);
@@ -105,7 +109,7 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
         switch (v.getId()) {
             case R.id.bt_camera:
                 // 激活相机
-                File outputImage = new File(getExternalCacheDir(),"out_image.jpg");
+                File outputImage = new File(getExternalCacheDir(),"out_image1.jpg");
                 try{
                     if(outputImage.exists()){
                         outputImage.delete();
@@ -129,9 +133,29 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
                 break;
             case R.id.bt_xiangce:
                 // 激活系统图库，选择一张图片
+                File outputImage1 = new File(getExternalCacheDir(),"out_image1.jpg");
+                try{
+                    if(outputImage1.exists()){
+                        outputImage1.delete();
+                    }
+                    outputImage1.createNewFile();
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+                if(Build.VERSION.SDK_INT>=24){
+                    imageUri = FileProvider.getUriForFile(InformationActivity.this,
+                            "com.example.onepoint.fileprovider", outputImage1);
+                    Log.e("imageUri SDK_INT >=24" ,imageUri.toString());
+                }else{
+                    imageUri = Uri.fromFile(outputImage1);
+                    Log.e("imageUri SDK_INT <24" ,imageUri.toString());
+                }
                 Intent intent1 = new Intent(Intent.ACTION_PICK);
+                //intent1.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                 intent1.setType("image/*");
-                // 开启一个带有返回值的Activity，请求码为PHOTO_REQUEST_GALLERY
+                /*Intent intent1 = new Intent(Intent.ACTION_PICK);
+                intent1.setType("image/*");
+                // 开启一个带有返回值的Activity，请求码为PHOTO_REQUEST_GALLERY*/
                 startActivityForResult(intent1, PHOTO_REQUEST_GALLERY);
                 break;
         }
@@ -178,10 +202,16 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
         intent.putExtra("outputX", 250);
         intent.putExtra("outputY", 250);
 
-        intent.putExtra("outputFormat", "JPEG");// 图片格式
+
         intent.putExtra("noFaceDetection", true);// 取消人脸识别
-        intent.putExtra("return-data", true);
-        Log.e("crop:",uri.toString());
+        //intent.putExtra("return-data", true);
+
+        uritempFile = Uri.parse("file://" + "/" + getExternalCacheDir().getPath()
+                + "/" + "out_image.jpg");
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uritempFile);
+        Log.e("crop:",uritempFile.toString());
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+
         // 开启一个带有返回值的Activity，请求码为PHOTO_REQUEST_CUT
         startActivityForResult(intent, PHOTO_REQUEST_CUT);
         System.out.println("crop运行完毕");
@@ -202,20 +232,20 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
         if (requestCode == PHOTO_REQUEST_GALLERY) {
             System.out.println("相册返回");
             // 从相册返回的数据
-            if (data != null) {
-                // 得到图片的全路径
-                Uri uri = data.getData();
+            if (resultCode==RESULT_OK) {
                 Bitmap bitmap = null;
                 try {
-                    System.out.println("imageuri: "+uri.toString());
-                    bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+                    imageUri = data.getData();
+                    bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+                    Log.e("xiangceuri:",imageUri.toString());
                     iv_img.setImageBitmap(bitmap);
                     System.out.println("头像设置成功！");
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
-                crop(uri);
-                System.out.println("相册图片剪切成功！");
+                crop(imageUri);
+            } else {
+                Toast.makeText(InformationActivity.this, "未找到存储卡，无法存储照片！", Toast.LENGTH_SHORT).show();
             }
         } else if (requestCode == PHOTO_REQUEST_CAREMA) {
             // 从相机返回的数据
@@ -238,8 +268,8 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
             // 从剪切图片返回的数据
             if (data != null) {
                 try{
-                    Log.e("request3", imageUri.toString());
-                    Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+                    verifyStoragePermissions(this);
+                    Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uritempFile));
                     iv_img.setImageBitmap(bitmap);
                     //保存到SharedPreferences
                     saveBitmapToSharedPreferences(bitmap);
@@ -319,93 +349,18 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
         }
 
     }
-    @SuppressLint("NewApi")
-    public static String getPath(final Context context, final Uri uri) {
-        final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
-        // DocumentProvider
-        if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
-            // ExternalStorageProvider
-            if (isExternalStorageDocument(uri)) {
-                final String docId = DocumentsContract.getDocumentId(uri);
-                final String[] split = docId.split(":");
-                final String type = split[0];
-                if ("primary".equalsIgnoreCase(type)) {
-                    return Environment.getExternalStorageDirectory() + "/" + split[1];
-                }
-            }
-            // DownloadsProvider
-            else if (isDownloadsDocument(uri)) {
-                final String id = DocumentsContract.getDocumentId(uri);
-                final Uri contentUri = ContentUris.withAppendedId(
-                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
-                return getDataColumn(context, contentUri, null, null);
-            }
-            // MediaProvider
-            else if (isMediaDocument(uri)) {
-                final String docId = DocumentsContract.getDocumentId(uri);
-                final String[] split = docId.split(":");
-                final String type = split[0];
-                Uri contentUri = null;
-                if ("image".equals(type)) {
-                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                } else if ("video".equals(type)) {
-                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-                } else if ("audio".equals(type)) {
-                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-                }
-                final String selection = "_id=?";
-                final String[] selectionArgs = new String[] { split[1] };
-                return getDataColumn(context, contentUri, selection, selectionArgs);
-            }
-        }
-        // MediaStore (and general)
-        else if ("content".equalsIgnoreCase(uri.getScheme())) {
-            // Return the remote address
-            if (isGooglePhotosUri(uri))
-                return uri.getLastPathSegment();
-            return getDataColumn(context, uri, null, null);
-        }
-        // File
-        else if ("file".equalsIgnoreCase(uri.getScheme())) {
-            return uri.getPath();
-        }
-        return null;
-    }
 
-    public static String getDataColumn(Context context, Uri uri, String selection,
-                                       String[] selectionArgs) {
-        Cursor cursor = null;
-        final String column = "_data";
-        final String[] projection = {
-                column
-        };
-        try {
-            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
-                    null);
-            if (cursor != null && cursor.moveToFirst()) {
-                final int index = cursor.getColumnIndexOrThrow(column);
-                return cursor.getString(index);
-            }
-        } finally {
-            if (cursor != null)
-                cursor.close();
+
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE);
         }
-        return null;
-    }
-
-    public static boolean isExternalStorageDocument(Uri uri) {
-        return "com.android.externalstorage.documents".equals(uri.getAuthority());
-    }
-    public static boolean isDownloadsDocument(Uri uri) {
-        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
-    }
-
-    public static boolean isMediaDocument(Uri uri) {
-        return "com.android.providers.media.documents".equals(uri.getAuthority());
-    }
-
-    public static boolean isGooglePhotosUri(Uri uri) {
-        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 
     protected void setHalfTransparent() {
@@ -421,5 +376,7 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
             // getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
     }
+
+
 
 }
