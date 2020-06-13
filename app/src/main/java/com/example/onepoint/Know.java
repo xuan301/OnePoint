@@ -49,7 +49,7 @@ public class Know {
         //know.getComment("username",10);
         //know.searchKnow("username",10,"垃圾");
     }
-    public final String token = "75958514";
+    public final String token = LoginActivity.token;
    @RequiresApi(api = Build.VERSION_CODES.O)
    private void addKnow(String username, String title, String content, String phurl, String tags)throws Exception{
         String url = "http://212.64.70.206:5000/addknow/";
