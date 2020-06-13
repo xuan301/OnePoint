@@ -4,32 +4,22 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.Date;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.security.*;
-import java.security.spec.*;
-import javax.crypto.Cipher;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.KeyFactory;
-import java.security.PublicKey;
-import java.security.spec.X509EncodedKeySpec;
-import javax.crypto.spec.IvParameterSpec;
+import java.net.URLEncoder;
+import java.util.Base64;
+import java.util.Date;
+
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
-import java.util.Base64;
-import java.util.Base64.Decoder;
-import java.util.Base64.Encoder;
-import java.util.Random;
-import java.net.URLEncoder;
+import javax.crypto.spec.IvParameterSpec;
 
   
 public class Know {
@@ -279,7 +269,7 @@ private void auditFail(String username, int id)throws Exception{
         System.out.println(response.toString());
 }
 @RequiresApi(api = Build.VERSION_CODES.O)
-String getKnow(String username, int num)throws Exception{
+private String getKnow_origin(String username, int num)throws Exception{
         String url = "http://212.64.70.206:5000/getknow/";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -324,6 +314,21 @@ String getKnow(String username, int num)throws Exception{
         System.out.println(response.toString());
         return response.toString();
 }
+
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        String getKnow(String username, int num){
+           String temp;
+           while(true){
+                   try{
+                           temp = getKnow_origin(username,num);
+                   }
+                   catch(Exception e){
+                           continue;
+                   }
+                   break;
+           }
+           return temp;
+        }
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 private void searchKnow(String username, int num, String text)throws Exception{
@@ -765,7 +770,7 @@ private void viewOne(String username, int id)throws Exception{
 }
 
         @RequiresApi(api = Build.VERSION_CODES.O)
-        private void getLike(String username)throws Exception{
+        private String getLike_origin(String username)throws Exception{
                 String url = "http://212.64.70.206:5000/getlike/";
                 URL obj = new URL(url);
                 HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -808,10 +813,26 @@ private void viewOne(String username, int id)throws Exception{
                 }
                 in.close();
                 System.out.println(response.toString());
+                return response.toString();
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        String getLike(String username){
+                String temp;
+                while(true){
+                        try{
+                                temp = getLike_origin(username);
+                        }
+                        catch(Exception e){
+                                continue;
+                        }
+                        break;
+                }
+                return temp;
         }
 
 @RequiresApi(api = Build.VERSION_CODES.O)
-private void getView(String username)throws Exception{
+private String getView_origin(String username)throws Exception{
         String url = "http://212.64.70.206:5000/getview/";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -854,7 +875,22 @@ private void getView(String username)throws Exception{
         }
         in.close();
         System.out.println(response.toString());
+        return response.toString();
 }
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        String getView(String username){
+                String temp;
+                while(true){
+                        try{
+                                temp = getView_origin(username);
+                        }
+                        catch(Exception e){
+                                continue;
+                        }
+                        break;
+                }
+                return temp;
+        }
 
 
 
