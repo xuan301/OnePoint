@@ -56,7 +56,7 @@ public class ReadActivity extends AppCompatActivity {
         button_setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ReadActivity.this, SettingActivity.class);
+                Intent intent = new Intent(ReadActivity.this, InformationActivity.class);
                 startActivity(intent);
             }
         });

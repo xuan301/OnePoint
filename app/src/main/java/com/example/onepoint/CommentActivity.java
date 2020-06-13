@@ -73,7 +73,7 @@ public class CommentActivity extends AppCompatActivity {
         button_setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CommentActivity.this, SettingActivity.class);
+                Intent intent = new Intent(CommentActivity.this, InformationActivity.class);
                 startActivity(intent);
             }
         });

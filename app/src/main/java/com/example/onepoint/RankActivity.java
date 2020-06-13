@@ -47,7 +47,7 @@ public class RankActivity extends AppCompatActivity {
         button_setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(RankActivity.this, SettingActivity.class);
+                Intent intent = new Intent(RankActivity.this, InformationActivity.class);
                 startActivity(intent);
             }
         });

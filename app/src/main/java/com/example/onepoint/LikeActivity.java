@@ -56,7 +56,7 @@ public class LikeActivity extends AppCompatActivity {
         button_setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LikeActivity.this, SettingActivity.class);
+                Intent intent = new Intent(LikeActivity.this, InformationActivity.class);
                 startActivity(intent);
             }
         });
