@@ -1,28 +1,23 @@
 package com.example.onepoint;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.speech.RecognizerIntent;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.GridLayout;
+import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,30 +25,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.util.Date;
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.security.*;
-import java.security.spec.*;
-import javax.crypto.Cipher;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.KeyFactory;
-import java.security.PublicKey;
-import java.security.spec.X509EncodedKeySpec;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.DESKeySpec;
-import java.util.Base64;
-import java.util.Base64.Decoder;
-import java.util.Base64.Encoder;
-import java.util.Random;
-import java.net.URLEncoder;
 
 public class ReadActivity extends AppCompatActivity {
 
@@ -64,6 +35,8 @@ public class ReadActivity extends AppCompatActivity {
     private List<Knowledge> knowledgeList = new ArrayList<>();
 
     private KnowledgeAdapter adapter;
+
+    private Know know = new Know();
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -95,7 +68,7 @@ public class ReadActivity extends AppCompatActivity {
                     .permitAll().build();
             StrictMode.setThreadPolicy(policy);
             try {
-                getView("username");
+                JSONParse(know.getView(LoginActivity.myUsername));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -126,65 +99,29 @@ public class ReadActivity extends AppCompatActivity {
         }
     }*/
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void getView(String username)throws Exception{
-        String url = "http://212.64.70.206:5000/getview/";
-        URL obj = new URL(url);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-        con.setRequestMethod("POST");
-        con.setRequestProperty("User-Agent", USER_AGENT);
-        con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-        Date date=new Date();
-        byte[] cont=String.valueOf(date.getTime()).getBytes();
-        byte [] keyBytes=(LoginActivity.token).getBytes();
-        DESKeySpec keySpec = new DESKeySpec(keyBytes);
-        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
-        SecretKey key = keyFactory.generateSecret(keySpec);
-        Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
-        cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(keySpec.getKey()));
-        byte[] result = cipher.doFinal(cont);
-        String t = Base64.getEncoder().encodeToString(result);
-        String urlParameters = "username="+username+"&time=\""+t+"\"";
-        con.setDoOutput(true);
-        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-        wr.writeBytes(urlParameters);
-        wr.flush();
-        wr.close();
-        int responseCode = con.getResponseCode();
-        System.out.println("\nSending 'POST' request to URL : " + url);
-        System.out.println("Post parameters : " + urlParameters);
-        System.out.println("Response Code : " + responseCode);
-        BufferedReader in;
-        if(responseCode != 400)
-        {
-            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+    private void JSONParse(String source) throws Exception {
+        try {
+            JSONArray objList = new JSONArray(source);
+            knowledgeList.clear();
+            for (int i = 0; i < objList.length(); i++) {
+                JSONObject obj = objList.getJSONObject(i);
+                knowledgeList.add(
+                        new Knowledge(
+                                obj.getString("TITLE"), obj.getString("URL"),
+                                obj.getString("CONTENT"), obj.getString("AUTHOR"),
+                                obj.getInt("ID")
+                        )
+                );
+            }
         }
-        else{
-            in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
-        }
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-        System.out.println(response.toString());
-        JSONParse(response.toString());
-    }
-
-    private void JSONParse(String source) throws JSONException {
-        JSONArray objList = new JSONArray(source);
-        knowledgeList.clear();
-        for(int i = 0; i < objList.length(); i++ ){
-            JSONObject obj =  objList.getJSONObject(i);
-            knowledgeList.add(
-                    new Knowledge(
-                            obj.getString("TITLE"), obj.getString("URL"),
-                            obj.getString("CONTENT"), obj.getString("AUTHOR"),
-                            obj.getInt("ID")
-                    )
-            );
+        catch (JSONException e){
+            JSONObject object = new JSONObject(source);
+            if(object.getString("Message").equals("Error")){
+                Toast.makeText(getApplicationContext(),"无已读数据",Toast.LENGTH_SHORT).show();
+            }
+            else{
+                throw e;
+            }
         }
     }
     /**
