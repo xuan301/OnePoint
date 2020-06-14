@@ -26,6 +26,10 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.makeramen.roundedimageview.RoundedImageView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
@@ -55,6 +59,7 @@ public class AddCommentListAdapter extends RecyclerView.Adapter<AddCommentListAd
     private ReplyCommentListAdpater adapter;
     private BottomSheetDialog reply_dialog;
     private String comment;//为了给reply传递索引
+    private int commentid;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         RoundedImageView UserImage;
@@ -98,8 +103,8 @@ public class AddCommentListAdapter extends RecyclerView.Adapter<AddCommentListAd
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final FirstLevelBean firstLevelBean = mCommentList.get(position);
-        //final int islike = firstLevelBean.getIsLike();
         comment = firstLevelBean.getContent();
+        commentid  = firstLevelBean.getCommentid();
         holder.UserName.setText(firstLevelBean.getUserName());
         holder.Comment.setText(firstLevelBean.getContent());
         holder.time.setText(firstLevelBean.getCreateTime());
@@ -133,11 +138,17 @@ public class AddCommentListAdapter extends RecyclerView.Adapter<AddCommentListAd
                 recyclerView.setLayoutManager(layoutManager);//给RecyclerView设置布局管理器
                 final List<SecondLevelBean> replyList = new ArrayList<>();
                 //输入数据
-                //init_relpy_list
-
-                /*if (replyList.size()==0){
-                    none.setText("暂无回复，快来抢沙发！");
-                }*/
+                JSONArray reply_list = firstLevelBean.getReply();
+                for (int i = 0;i<reply_list.length();++i){
+                    try {
+                        JSONObject reply = reply_list.getJSONObject(i);
+                        replyList.add(
+                                new SecondLevelBean(mContext.getString(R.string.cola_img),reply.getString("AUTHOR"),reply.getString("REPLY"),10,1)
+                        );
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
                 //设置adapter
                 adapter = new ReplyCommentListAdpater(replyList);
                 recyclerView.setAdapter(adapter);
@@ -230,11 +241,11 @@ public class AddCommentListAdapter extends RecyclerView.Adapter<AddCommentListAd
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void addReply(boolean isReply, String headImg, final int position, String msg, List<SecondLevelBean> replyList) throws Exception {
         //首先在评论框内添加评论 有了服务器后要将信息发送给服务器 与相应的阅读知识id相关联
-        SecondLevelBean secondLevelBean = new SecondLevelBean(mContext.getString(R.string.xigua_img),"liyifei",msg,0,0);
+        SecondLevelBean secondLevelBean = new SecondLevelBean(mContext.getString(R.string.cola_img),LoginActivity.myUsername,msg,0,0);
         replyList.add(0,secondLevelBean);
         adapter.notifyDataSetChanged();
         recyclerView.scrollToPosition(0);
-        replyOne(LoginActivity.myUsername,10,comment);
+        replyOne(LoginActivity.myUsername,commentid,msg);
         //其次在我的评论界面要添加评论 这里需要先向服务器添加相关内容 然后我的评论界面在打开时再向服务器获取mcommentlist
         //这里无需代码
     }

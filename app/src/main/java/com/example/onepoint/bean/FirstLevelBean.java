@@ -3,13 +3,18 @@ package com.example.onepoint.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.List;
+
 
 
 public class FirstLevelBean implements Parcelable {
     //一级评论id
     //private String id;
     //一级评论头像
+    private int commentid;
     private String headImg;
     //一级评论的用户名
     private String userName;
@@ -24,15 +29,16 @@ public class FirstLevelBean implements Parcelable {
     //是否点赞了  0没有 1点赞
     private int isLike;
     //评论回复
-    private List reply_list;
+    private JSONArray reply;
     //当前评论的总条数（包括这条一级评论）ps:处于未使用状态
     //private long totalCount;
     //当前一级评论的位置（下标）
     private int position;
     //当前一级评论所在的位置(下标)
     //private int positionCount;
-    public FirstLevelBean(/*String id,*/String headImg,String userName,/*String userId,*/String content,String createTime,long likeCount,int isLike,List reply_list/*,long totalCount,int position,int positionCount*/){
+    public FirstLevelBean(/*String id,*/int commentid,String headImg,String userName,/*String userId,*/String content,String createTime,long likeCount,int isLike,JSONArray reply/*,long totalCount,int position,int positionCount*/){
         //this.id=id;
+        this.commentid = commentid;
         this.headImg =headImg;
         this.userName = userName;
         //this.userId  =userId;
@@ -40,7 +46,7 @@ public class FirstLevelBean implements Parcelable {
         this.createTime = createTime;
         this.likeCount = likeCount;
         this.isLike  = isLike;
-        this.reply_list = reply_list;
+        this.reply = reply;
         //this.totalCount = totalCount;
         //this.position = position;
         //this.positionCount = positionCount;
@@ -108,12 +114,14 @@ public class FirstLevelBean implements Parcelable {
     public void setIsLike(int isLike) {
         this.isLike = isLike;
     }
-    public List getReply_list(){
-        return reply_list;
+    public JSONArray getReply(){
+        return reply;
     }
-    public void setReply_list(List reply_list){
-        this.reply_list = reply_list;
+    public void setReply(List reply_list){
+        this.reply = reply;
     }
+    public int getCommentid(){return commentid;}
+    public void setCommentid(int commentid){this.commentid = commentid;}
 
    /* public long getTotalCount() {
         return totalCount;

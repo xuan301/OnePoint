@@ -418,7 +418,7 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void addComment(boolean isReply, String headImg, final int position, String msg) throws Exception {
         //首先在评论框内添加评论 有了服务器后要将信息发送给服务器 与相应的阅读知识id相关联
-        FirstLevelBean firstLevelBean = new FirstLevelBean(getString(R.string.xigua_img),LoginActivity.myUsername,msg,"刚刚",0,0,null);
+        FirstLevelBean firstLevelBean = new FirstLevelBean(0,getString(R.string.cola_img),LoginActivity.myUsername,msg,"刚刚",0,0,null);
         commentList.add(0,firstLevelBean);
         adapter.notifyDataSetChanged();
         recyclerView.scrollToPosition(0);
@@ -578,11 +578,12 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
         commentList.clear();
         for(int i = 0; i < objList.length(); i++ ){
             JSONObject obj =  objList.getJSONObject(i);
+            JSONArray reply = obj.getJSONArray("REPLY");
             //FirstLevelBean firstLevelBean = (FirstLevelBean) JSONObject.
             commentList.add(
                     new FirstLevelBean(
-                            getString(R.string.cola_img),obj.getString("AUTHOR"),obj.getString("COMMENT"),
-                    obj.getString("PUBTIME"), (long) i,0,null)
+                            obj.getInt("COMMENTID"),getString(R.string.cola_img),obj.getString("AUTHOR"),obj.getString("COMMENT"),
+                    obj.getString("PUBTIME"), (long) i,0,reply)
             );
         }
     }
