@@ -45,7 +45,6 @@ import javax.crypto.spec.IvParameterSpec;
 
 
 public class AddCommentListAdapter extends RecyclerView.Adapter<AddCommentListAdapter.ViewHolder>  {
-    public final String token = "75958514";
     private final String USER_AGENT = "Mozilla/5.0";
     private Context mContext;
     private List<FirstLevelBean> mCommentList;
@@ -235,7 +234,7 @@ public class AddCommentListAdapter extends RecyclerView.Adapter<AddCommentListAd
         replyList.add(0,secondLevelBean);
         adapter.notifyDataSetChanged();
         recyclerView.scrollToPosition(0);
-        replyOne("username",10,comment);
+        replyOne(LoginActivity.myUsername,10,comment);
         //其次在我的评论界面要添加评论 这里需要先向服务器添加相关内容 然后我的评论界面在打开时再向服务器获取mcommentlist
         //这里无需代码
     }
@@ -249,7 +248,7 @@ public class AddCommentListAdapter extends RecyclerView.Adapter<AddCommentListAd
         con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
         Date date=new Date();
         byte[] cont=String.valueOf(date.getTime()).getBytes();
-        byte [] keyBytes=token.getBytes();
+        byte [] keyBytes=LoginActivity.token.getBytes();
         DESKeySpec keySpec = new DESKeySpec(keyBytes);
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
         SecretKey key = keyFactory.generateSecret(keySpec);

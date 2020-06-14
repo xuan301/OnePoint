@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -47,7 +48,6 @@ import static com.example.onepoint.R.string.xigua_title;
 public class CommentActivity extends AppCompatActivity {
 
     //private DrawerLayout mDrawerLayout;
-    public final String token = "75958514";
     private final String USER_AGENT = "Mozilla/5.0";
 
     private List<Comment> commentList = new ArrayList<>();
@@ -87,7 +87,7 @@ public class CommentActivity extends AppCompatActivity {
                     .permitAll().build();
             StrictMode.setThreadPolicy(policy);
             try {
-                getComment("username",10);
+                getmyComment(LoginActivity.myUsername);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -101,10 +101,9 @@ public class CommentActivity extends AppCompatActivity {
         adapter = new CommentListAdapter(commentList);
         recyclerView.setAdapter(adapter);
     }
-
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void getComment(String username, int id)throws Exception{
-        String url = "http://212.64.70.206:5000/getcomment/";
+    private void getmyComment(String username)throws Exception{
+        String url = "http://212.64.70.206:5000/getmycomment/";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("POST");
@@ -112,7 +111,70 @@ public class CommentActivity extends AppCompatActivity {
         con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
         Date date=new Date();
         byte[] cont=String.valueOf(date.getTime()).getBytes();
-        byte [] keyBytes=token.getBytes();
+        byte [] keyBytes= LoginActivity.token.getBytes();
+        DESKeySpec keySpec = new DESKeySpec(keyBytes);
+        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+        SecretKey key = keyFactory.generateSecret(keySpec);
+        Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(keySpec.getKey()));
+        byte[] result = cipher.doFinal(cont);
+        String t = Base64.getEncoder().encodeToString(result);
+        String urlParameters = "username="+username+"&time=\""+t+"\"";
+        con.setDoOutput(true);
+        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+        wr.writeBytes(urlParameters);
+        wr.flush();
+        wr.close();
+        int responseCode = con.getResponseCode();
+        System.out.println("\nSending 'POST' request to URL : " + url);
+        System.out.println("Post parameters : " + urlParameters);
+        System.out.println("Response Code : " + responseCode);
+        BufferedReader in;
+        if(responseCode != 400)
+        {
+            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        }
+        else{
+            in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
+        }
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        System.out.println(response.toString());
+        JSONParse1(response.toString());
+    }
+    String title;
+    String imagesrc;
+    String content;
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void JSONParse1(String source) throws Exception {
+        JSONArray objList = new JSONArray(source);
+        commentList.clear();
+        for(int i = 0; i < objList.length(); i++ ){
+            JSONObject obj =  objList.getJSONObject(i);
+            int knowid = obj.getInt("KNOWLEDGEID");
+            getOne(LoginActivity.myUsername,knowid);
+            commentList.add(
+                    new Comment(title,imagesrc,getString(R.string.cola_img),LoginActivity.myUsername,
+                            obj.getString("COMMENT"),content,obj.getString("AUTHOR"),knowid,obj.getString("PUBTIME"))
+            );
+        }
+    }
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void getOne(String username, int id)throws Exception{
+        String url = "http://212.64.70.206:5000/getone/";
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("User-Agent", USER_AGENT);
+        con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+        Date date=new Date();
+        byte[] cont=String.valueOf(date.getTime()).getBytes();
+        byte [] keyBytes=LoginActivity.token.getBytes();
         DESKeySpec keySpec = new DESKeySpec(keyBytes);
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
         SecretKey key = keyFactory.generateSecret(keySpec);
@@ -146,38 +208,14 @@ public class CommentActivity extends AppCompatActivity {
         }
         in.close();
         System.out.println(response.toString());
-        //JSONParse(response.toString());
+        JSONParse2(response.toString());
     }
-
-    /*private void JSONParse(String source) throws JSONException {
-        JSONArray objList = new JSONArray(source);
-        commentList.clear();
-        for(int i = 0; i < objList.length(); i++ ){
-            JSONObject obj =  objList.getJSONObject(i);
-            commentList.add(
-                    new Comment(
-                            obj.getString("TITLE"), obj.getString("URL"),R.drawable.fig1,
-                            obj.getString("CONTENT"), obj.getString("AUTHOR")
-                    )
-            );
-        }
-    }*/
-
-    /*private void initComments() {
-        commentList.clear();
-         Comment[] comments = {
-                new Comment(getString(xigua_title),
-                        getString(R.string.xigua_img),R.drawable.fig1,"wulala2580","啊这",getString(R.string.xigua_content)),
-                new Comment(getString(R.string.famei_title),
-                        getString(R.string.famei_img),R.drawable.fig1,"wulala2580","啊吧啊吧啊吧",getString(R.string.famei_content)),
-                new Comment(getString(R.string.chanbu_title),
-                        getString(R.string.snow_img),R.drawable.fig1,"wulala2580","不会真有人以为...",getString(R.string.chanbu_content)),
-        };
-        for(int i = 0; i < comments.length; i++) {
-            commentList.add(comments[i]);
-        }
-    }*/
-
+    private void JSONParse2(String source) throws JSONException {
+        JSONObject obj = new JSONObject(source);
+        title = obj.getString("TITLE");
+        imagesrc = obj.getString("URL");
+        content = obj.getString("CONTENT");
+    }
     /**
      * 全透状态栏
      */

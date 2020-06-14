@@ -75,7 +75,7 @@ import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.IvParameterSpec;
 
 public class RandomKnowledgeActivity extends AppCompatActivity {
-    public final String token = "75958514";
+   // public final String token = "75958514";
     private final String USER_AGENT = "Mozilla/5.0";
     private Button favorite;
     GestureDetector Detector;
@@ -209,7 +209,7 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
         con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
         Date date = new Date();
         byte[] cont = String.valueOf(date.getTime()).getBytes();
-        byte[] keyBytes = token.getBytes();
+        byte[] keyBytes = LoginActivity.token.getBytes();
         DESKeySpec keySpec = new DESKeySpec(keyBytes);
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
         SecretKey key = keyFactory.generateSecret(keySpec);
@@ -282,21 +282,30 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
     {
         switch (v.getId()) {
             case R.id.share:
-                //调用系统的分享功能实现
-                Intent share_intent = new Intent();
-                share_intent.setAction(Intent.ACTION_SEND);//设置分享行为
-                share_intent.setType("text/plain");//设置分享内容的类型
-                share_intent.putExtra(Intent.EXTRA_SUBJECT,"这是一段分享的文字");//添加分享内容标题
-                //Uri uri = getImageContentUri(this,"C:\\Users\\97887\\Documents\\GitHub\\OnePoint\\app\\src\\main\\res\\drawable-v24\fig1.png");
-                //share_intent.putExtra(Intent.EXTRA_STREAM,uri);
-                Knowledge knowledge = knowledge_list.get(index);
-                String content = knowledge.getContent();
-                String title  = knowledge.getTitle();
-                String author = knowledge.getAuthor();
-                share_intent.putExtra(Intent.EXTRA_TEXT,"【One Point分享】"+"\n"+title+"\n"+author+"\n"+content);//添加分享内容 这里可以为文章的id对应的网址
-                //创建分享的Dialog
-                share_intent =   Intent.createChooser(share_intent,"分享");
-                startActivity(share_intent);
+                String title,author,content;
+                if (knowledge_list!=null && knowledge_list.size()!=0){
+                    Knowledge knowledge = knowledge_list.get(index);
+                    content = knowledge.getContent();
+                    title  = knowledge.getTitle();
+                    author = knowledge.getAuthor();
+                }
+                else{
+                    Intent intent = getIntent();
+                    title = intent.getStringExtra("title");
+                    content = intent.getStringExtra("content");
+                    author = intent.getStringExtra("author");
+                }
+               // if(title!=null && content!=null && author!=null){
+                    //调用系统的分享功能实现
+                    Intent share_intent = new Intent();
+                    share_intent.setAction(Intent.ACTION_SEND);//设置分享行为
+                    share_intent.setType("text/plain");//设置分享内容的类型
+                    share_intent.putExtra(Intent.EXTRA_SUBJECT,"这是一段分享的文字");//添加分享内容标题
+                    share_intent.putExtra(Intent.EXTRA_TEXT,"【One Point分享】"+"\n"+"《"+title+"》"+"\n"+author+"\n"+content);//添加分享内容 这里可以为文章的id对应的网址
+                    //创建分享的Dialog
+                    share_intent =   Intent.createChooser(share_intent,"分享");
+                    startActivity(share_intent);
+                //}
                 break;
             case R.id.add_comment:
                 View view2 = getLayoutInflater().inflate(R.layout.comment_dialog_bottom_sheet, null);
@@ -312,7 +321,14 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                             .permitAll().build();
                     StrictMode.setThreadPolicy(policy);
                     try {
-                        getComment("username",10);
+                        int know_id;
+                        if (knowledge_list!=null){
+                            know_id = knowledge_list.get(index).getId();
+                        }else{
+                            Intent intent = getIntent();
+                            know_id = intent.getIntExtra("id",0);
+                        }
+                        getComment(LoginActivity.myUsername,know_id);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -397,11 +413,18 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void addComment(boolean isReply, String headImg, final int position, String msg) throws Exception {
         //首先在评论框内添加评论 有了服务器后要将信息发送给服务器 与相应的阅读知识id相关联
-        FirstLevelBean firstLevelBean = new FirstLevelBean(getString(R.string.xigua_img),"username",msg,"刚刚",0,0,null);
+        FirstLevelBean firstLevelBean = new FirstLevelBean(getString(R.string.xigua_img),LoginActivity.myUsername,msg,"刚刚",0,0,null);
         commentList.add(0,firstLevelBean);
         adapter.notifyDataSetChanged();
         recyclerView.scrollToPosition(0);
-        commentOne("username",10,msg);
+        Intent intent = getIntent();
+        int know_id;
+        if (knowledge_list!=null){
+            know_id = knowledge_list.get(index).getId();
+        }else{
+            know_id=  intent.getIntExtra("id",0);
+        }
+        commentOne(LoginActivity.myUsername,know_id,msg);
 
         //其次在我的评论界面要添加评论 这里需要先向服务器添加相关内容 然后我的评论界面在打开时再向服务器获取mcommentlist
         //这里无需代码
@@ -464,7 +487,7 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
         con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
         Date date=new Date();
         byte[] cont=String.valueOf(date.getTime()).getBytes();
-        byte [] keyBytes=token.getBytes();
+        byte [] keyBytes=LoginActivity.token.getBytes();
         DESKeySpec keySpec = new DESKeySpec(keyBytes);
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
         SecretKey key = keyFactory.generateSecret(keySpec);
@@ -510,7 +533,7 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
         con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
         Date date=new Date();
         byte[] cont=String.valueOf(date.getTime()).getBytes();
-        byte [] keyBytes=token.getBytes();
+        byte [] keyBytes=LoginActivity.token.getBytes();
         DESKeySpec keySpec = new DESKeySpec(keyBytes);
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
         SecretKey key = keyFactory.generateSecret(keySpec);

@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                     StrictMode.setThreadPolicy(policy);
                     try {
                         Know know = new Know();
-                        JSONParse(know.getKnow("username", 10));
+                        JSONParse(know.getKnow(LoginActivity.myUsername, 10));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

@@ -6,25 +6,34 @@ import android.os.Parcelable;
 public class Comment implements Parcelable{
     private String title;
     private String knowledgeImagesrc;
-    private int userImageId;
+    private String userImage;
     private String user;
     private  String comment;
     private  String content;
+    private String author;
+    private int knowid;
+    private String time;
 
-    public Comment(String title,String knowledgeImagesrc,int userImageId,String user,String comment,String content){
+    public Comment(String title,String knowledgeImagesrc,String userImage,String user,String comment,String content,String author,int id,String time){
         this.title = title;
         this.knowledgeImagesrc = knowledgeImagesrc;
-        this.userImageId = userImageId;
+        this.userImage = userImage;
         this.user = user;
         this.comment = comment;
         this.content = content;
+        this.author = author;
+        this.knowid = id;
+        this.time = time;
     }
     public String getTitle(){return title;}
     public String getKnowledgeImagesrc(){return knowledgeImagesrc;}
-    public int getUserImageId(){return userImageId;}
+    public String getUserImage(){return userImage;}
     public String getUser(){return user;}
     public String getComment(){return comment;}
     public String getContent(){return content;}
+    public String getAuthor(){return author;}
+    public int getKnowid(){return knowid;}
+    public String getTime(){return time;}
     //Parcel序列化所需函数
     private Comment(Parcel in) {//作用是？？？
         //title = in.readString();

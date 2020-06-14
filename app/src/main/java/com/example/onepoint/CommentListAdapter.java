@@ -28,6 +28,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
         TextView UserName;
         TextView Comment;
         TextView delete;
+        TextView time;
 
 
 
@@ -41,6 +42,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
             knowledgeTitle = (TextView) view.findViewById(R.id.knowledge_title);
             cardView = view.findViewById(R.id.knowledge);
             delete = view.findViewById(R.id.delete);
+            time = view.findViewById(R.id.time);
         }
     }
 
@@ -72,8 +74,9 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
         }
         holder.UserName.setText(comment.getUser());
         holder.Comment.setText(comment.getComment());
+        holder.time.setText(comment.getTime());
         Glide.with(mContext).load(comment.getKnowledgeImagesrc()).into(holder.knowledgeImage);
-        Glide.with(mContext).load(comment.getUserImageId()).into(holder.UserImage);
+        Glide.with(mContext).load(comment.getUserImage()).into(holder.UserImage);
         holder.cardView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -88,6 +91,8 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                 intent.putExtra("title", comment.getTitle());
                 intent.putExtra("imageSrc", comment.getKnowledgeImagesrc());
                 intent.putExtra("content",comment.getContent());
+                intent.putExtra("author",comment.getAuthor());
+                intent.putExtra("id",comment.getKnowid());
                 mContext.startActivity(intent);
             }
         });
