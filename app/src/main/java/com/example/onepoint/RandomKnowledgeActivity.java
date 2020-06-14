@@ -1,12 +1,5 @@
 package com.example.onepoint;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -18,7 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.StrictMode;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.view.GestureDetector;
@@ -26,20 +18,29 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.onepoint.dialog.InputTextMsgDialog;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.example.onepoint.bean.FirstLevelBean;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.onepoint.bean.FirstLevelBean;
+import com.example.onepoint.dialog.InputTextMsgDialog;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.tencent.tauth.IUiListener;
+import com.tencent.tauth.UiError;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -47,26 +48,11 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
-
-import com.example.onepoint.CommentActivity;
-import com.tencent.connect.share.QQShare;
-import com.tencent.tauth.IUiListener;
-import com.tencent.tauth.Tencent;
-import com.tencent.tauth.UiError;
-
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -75,7 +61,7 @@ import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.IvParameterSpec;
 
 public class RandomKnowledgeActivity extends AppCompatActivity {
-   // public final String token = "75958514";
+    public final String token = LoginActivity.token;
     private final String USER_AGENT = "Mozilla/5.0";
     private Button favorite;
     GestureDetector Detector;
@@ -83,8 +69,9 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
     private int index;
     protected static final float FLIP_DISTANCE = 150;
     BottomSheetBehavior behavior;
+    private Know know = new Know();
 
-
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //dialog的new创建只能写在Oncreate中或之后
@@ -103,12 +90,14 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
         index = intent.getIntExtra("index",0);
         knowledge_list = intent.getParcelableArrayListExtra("list");
         String title,imageSrc,text,author;
+        int id = 0;
         if(knowledge_list != null && knowledge_list.size() != 0) {
             Knowledge knowledge = knowledge_list.get(index);
             title = knowledge.getTitle();
             imageSrc = knowledge.getImageSrc();
             text = knowledge.getContent();
             author = knowledge.getAuthor();
+            id = knowledge.getId();
         }
         else{
             title = intent.getStringExtra("title");
@@ -123,39 +112,50 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                 if(author != null){author_of_knowledge.setText(author);}else{author_of_knowledge.setText(R.string.author);}
             }
 
+        try {
+            know.viewOne(LoginActivity.myUsername,id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         favorite =this.findViewById(R.id.like);
 
+        final int finalId = id;
+        final boolean isActive = know.isLike(LoginActivity.myUsername,finalId);
+        final Drawable liked = getResources().getDrawable(R.drawable.ic_liked);
+        final Drawable tolike = getResources().getDrawable(R.drawable.ic_like_black_24dp);
+        if(isActive){
+            liked.setBounds(0,0,liked.getMinimumWidth(),liked.getMinimumHeight());
+            favorite.setCompoundDrawables(null, liked, null, null);
+            favorite.setText(getResources().getString(R.string.liked));
+        }
         favorite.setOnClickListener(new View.OnClickListener()
         {//收藏按钮的切换
-            boolean isActive = false;
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View view){
-                Drawable liked = getResources().getDrawable(R.drawable.ic_liked);
-                Drawable tolike = getResources().getDrawable(R.drawable.ic_like_black_24dp);
 
                 if(! isActive) {
                     try {
-                        likeOne("username",10);
+                        know.likeOne(LoginActivity.myUsername, finalId);
                         liked.setBounds(0,0,liked.getMinimumWidth(),liked.getMinimumHeight());
                         favorite.setCompoundDrawables(null, liked, null, null);
                         favorite.setText(getResources().getString(R.string.liked));
                     } catch (Exception e) {
                         e.printStackTrace();
+                        Toast.makeText(getApplicationContext(),"收藏失败",Toast.LENGTH_SHORT).show();
                     }
                 }
                 else{
                     try {
-                        likeOne("username",10);
+                        know.likeOne(LoginActivity.myUsername,finalId);
                         tolike.setBounds(0,0,tolike.getMinimumWidth(),tolike.getMinimumHeight());
                         favorite.setCompoundDrawables(null, tolike, null, null);
                         favorite.setText(getResources().getString(R.string.like));
                     } catch (Exception e) {
                         e.printStackTrace();
+                        Toast.makeText(getApplicationContext(),"取消收藏失败",Toast.LENGTH_SHORT).show();
                     }
                 }
-
-                isActive = ! isActive;
             }
         });
 
@@ -514,7 +514,7 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
             in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
         }
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
 
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
@@ -560,7 +560,7 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
             in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
         }
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
 
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
@@ -574,11 +574,10 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
         for(int i = 0; i < objList.length(); i++ ){
             JSONObject obj =  objList.getJSONObject(i);
             //FirstLevelBean firstLevelBean = (FirstLevelBean) JSONObject.
-            long j = (int) i;
             commentList.add(
                     new FirstLevelBean(
                             getString(R.string.cola_img),obj.getString("AUTHOR"),obj.getString("COMMENT"),
-                    obj.getString("PUBTIME"),j,0,null)
+                    obj.getString("PUBTIME"), (long) i,0,null)
             );
         }
     }

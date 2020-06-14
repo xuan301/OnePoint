@@ -164,7 +164,17 @@ public class LoginActivity extends AppCompatActivity {
                         EditText et_password = (EditText) findViewById(R.id.et_paw);
                         String username = et_username.getText().toString().trim();
                         String password = et_password.getText().toString().trim();
-                        login(username,password);
+                        while(true) {
+                            try {
+                                login(username, password);
+                            }
+                            catch (Exception e){
+                                e.printStackTrace();
+                                continue;
+                            }
+                            break;
+                        }
+                        //login(username,password);
                         Toast.makeText(getApplicationContext(),"登录成功",Toast.LENGTH_LONG).show();
                         saveLoginStatus(true,username);
                         finish();

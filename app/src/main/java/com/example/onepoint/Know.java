@@ -4,34 +4,27 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
-import java.util.Date;
-import java.io.*;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.security.*;
-import java.security.spec.*;
-import javax.crypto.Cipher;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.KeyFactory;
-import java.security.PublicKey;
-import java.security.spec.X509EncodedKeySpec;
-import javax.crypto.spec.IvParameterSpec;
+import java.net.URLEncoder;
+import java.util.Base64;
+import java.util.Date;
+
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
-import java.util.Base64;
-import java.util.Base64.Decoder;
-import java.util.Base64.Encoder;
-import java.util.Random;
-import java.net.URLEncoder;
+import javax.crypto.spec.IvParameterSpec;
 
   
 public class Know {
     private final String USER_AGENT = "Mozilla/5.0";
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         Know know=new Know();
         //know.addKnow("username","这是一个我写的垃圾","这是简单的内容","http://testurl","1");
         //know.getAudit("username");
@@ -49,7 +42,7 @@ public class Know {
         //know.getComment("username",10);
         //know.searchKnow("username",10,"垃圾");
     }
-    public final String token = "75958514";
+    private final String token = LoginActivity.token;
    @RequiresApi(api = Build.VERSION_CODES.O)
    private void addKnow(String username, String title, String content, String phurl, String tags)throws Exception{
         String url = "http://212.64.70.206:5000/addknow/";
@@ -87,7 +80,7 @@ public class Know {
             in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
         }
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
 
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
@@ -132,7 +125,7 @@ private void isAdmin(String username)throws Exception{
             in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
         }
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
 
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
@@ -177,7 +170,7 @@ private void getAudit(String username)throws Exception{
             in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
         }
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
 
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
@@ -222,7 +215,7 @@ private void auditPass(String username, int id)throws Exception{
             in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
         }
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
 
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
@@ -267,7 +260,7 @@ private void auditFail(String username, int id)throws Exception{
             in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
         }
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
 
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
@@ -276,7 +269,7 @@ private void auditFail(String username, int id)throws Exception{
         System.out.println(response.toString());
 }
 @RequiresApi(api = Build.VERSION_CODES.O)
-String getKnow(String username, int num)throws Exception{
+private String getKnow_origin(String username, int num)throws Exception{
         String url = "http://212.64.70.206:5000/getknow/";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -312,7 +305,7 @@ String getKnow(String username, int num)throws Exception{
             in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
         }
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
 
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
@@ -321,6 +314,22 @@ String getKnow(String username, int num)throws Exception{
         System.out.println(response.toString());
         return response.toString();
 }
+
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        String getKnow(String username, int num){
+           String temp;
+           while(true){
+                   try{
+                           temp = getKnow_origin(username,num);
+                   }
+                   catch(Exception e){
+                       e.printStackTrace();
+                           continue;
+                   }
+                   break;
+           }
+           return temp;
+        }
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 private void searchKnow(String username, int num, String text)throws Exception{
@@ -359,7 +368,7 @@ private void searchKnow(String username, int num, String text)throws Exception{
             in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
         }
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
 
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
@@ -370,7 +379,7 @@ private void searchKnow(String username, int num, String text)throws Exception{
 
 
 @RequiresApi(api = Build.VERSION_CODES.O)
-private void getRank(String username, int num)throws Exception{
+private String getRank_origin(String username, int num)throws Exception{
         String url = "http://212.64.70.206:5000/getrank/";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -406,14 +415,30 @@ private void getRank(String username, int num)throws Exception{
             in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
         }
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
 
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
         }
         in.close();
         System.out.println(response.toString());
+        return response.toString();
 }
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    String getRank(String username,int num){
+        String temp;
+        while(true){
+            try{
+                temp = getRank_origin(username,num);
+            }
+            catch(Exception e){
+                e.printStackTrace();
+                continue;
+            }
+            break;
+        }
+        return temp;
+    }
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 private void getOne(String username, int id)throws Exception{
@@ -452,7 +477,7 @@ private void getOne(String username, int id)throws Exception{
             in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
         }
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
 
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
@@ -497,7 +522,7 @@ private void getComment(String username, int id)throws Exception{
             in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
         }
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
 
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
@@ -508,7 +533,7 @@ private void getComment(String username, int id)throws Exception{
 
 
 @RequiresApi(api = Build.VERSION_CODES.O)
-private void likeOne(String username, int id)throws Exception{
+void likeOne(String username, int id)throws Exception{
         String url = "http://212.64.70.206:5000/likeone/";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -535,23 +560,95 @@ private void likeOne(String username, int id)throws Exception{
         System.out.println("\nSending 'POST' request to URL : " + url);
         System.out.println("Post parameters : " + urlParameters);
         System.out.println("Response Code : " + responseCode);
-        BufferedReader in;
-        if(responseCode != 400)
-        {
-            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        if(responseCode != 200){
+                throw new Exception();
         }
-        else{
-            in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
-        }
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-        System.out.println(response.toString());
+//        BufferedReader in;
+//        if(responseCode != 400)
+//        {
+//            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+//        }
+//        else{
+//            in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
+//        }
+//        String inputLine;
+//        StringBuffer response = new StringBuffer();
+//
+//        while ((inputLine = in.readLine()) != null) {
+//            response.append(inputLine);
+//        }
+//        in.close();
+//        System.out.println(response.toString());
 }
+
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        private Boolean isLike_origin(String username, int id)throws Exception{
+                String url = "http://212.64.70.206:5000/islike/";
+                URL obj = new URL(url);
+                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                con.setRequestMethod("POST");
+                con.setRequestProperty("User-Agent", USER_AGENT);
+                con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+                Date date=new Date();
+                byte[] cont=String.valueOf(date.getTime()).getBytes();
+                byte [] keyBytes=token.getBytes();
+                DESKeySpec keySpec = new DESKeySpec(keyBytes);
+                SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+                SecretKey key = keyFactory.generateSecret(keySpec);
+                Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
+                cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(keySpec.getKey()));
+                byte[] result = cipher.doFinal(cont);
+                String t = Base64.getEncoder().encodeToString(result);
+                String urlParameters = "username="+username+"&time=\""+t+"\""+"&id="+id;
+                con.setDoOutput(true);
+                DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+                wr.writeBytes(urlParameters);
+                wr.flush();
+                wr.close();
+                int responseCode = con.getResponseCode();
+                System.out.println("\nSending 'POST' request to URL : " + url);
+                System.out.println("Post parameters : " + urlParameters);
+                System.out.println("Response Code : " + responseCode);
+                BufferedReader in;
+                if(responseCode != 400)
+                {
+                        in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                }
+                else{
+                        in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
+                }
+                String inputLine;
+                StringBuilder response = new StringBuilder();
+
+                while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+                }
+                in.close();
+                System.out.println(response.toString());
+
+
+                //JSON Parse
+                JSONObject object = new JSONObject(response.toString());
+                return (object.getString("Status").equals("Like"));
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        Boolean isLike(String username, int id){
+           Boolean status;
+                while(true)
+                {
+                        try{
+                                status = isLike_origin(username,id);
+                        }
+                        catch (Exception e){
+                            e.printStackTrace();
+                                continue;
+                        }
+                        break;
+                }
+                return status;
+        }
+
 @RequiresApi(api = Build.VERSION_CODES.O)
 private void commentOne(String username, int id, String comment)throws Exception{
         String url = "http://212.64.70.206:5000/commentone/";
@@ -589,7 +686,7 @@ private void commentOne(String username, int id, String comment)throws Exception
             in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
         }
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
 
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
@@ -634,7 +731,7 @@ private void replyOne(String username, int id, String comment)throws Exception{
             in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
         }
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
 
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
@@ -644,7 +741,7 @@ private void replyOne(String username, int id, String comment)throws Exception{
 }
 
 @RequiresApi(api = Build.VERSION_CODES.O)
-private void viewOne(String username, int id)throws Exception{
+void viewOne(String username, int id)throws Exception{
         String url = "http://212.64.70.206:5000/viewone/";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -671,71 +768,92 @@ private void viewOne(String username, int id)throws Exception{
         System.out.println("\nSending 'POST' request to URL : " + url);
         System.out.println("Post parameters : " + urlParameters);
         System.out.println("Response Code : " + responseCode);
-        BufferedReader in;
-        if(responseCode != 400)
-        {
-            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        if(responseCode != 200){
+            throw new Exception();
         }
-        else{
-            in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
-        }
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-        System.out.println(response.toString());
+//        BufferedReader in;
+//        if(responseCode != 400)
+//        {
+//            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+//        }
+//        else{
+//            in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
+//        }
+//        String inputLine;
+//        StringBuilder response = new StringBuilder();
+//
+//        while ((inputLine = in.readLine()) != null) {
+//            response.append(inputLine);
+//        }
+//        in.close();
+//        System.out.println(response.toString());
 }
 
-@RequiresApi(api = Build.VERSION_CODES.O)
-private void getLike(String username)throws Exception{
-        String url = "http://212.64.70.206:5000/getlike/";
-        URL obj = new URL(url);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-        con.setRequestMethod("POST");
-        con.setRequestProperty("User-Agent", USER_AGENT);
-        con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-        Date date=new Date();
-        byte[] cont=String.valueOf(date.getTime()).getBytes();
-        byte [] keyBytes=token.getBytes();
-        DESKeySpec keySpec = new DESKeySpec(keyBytes);
-        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
-        SecretKey key = keyFactory.generateSecret(keySpec);
-        Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
-        cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(keySpec.getKey()));
-        byte[] result = cipher.doFinal(cont);
-        String t = Base64.getEncoder().encodeToString(result);
-        String urlParameters = "username="+username+"&time=\""+t+"\"";
-        con.setDoOutput(true);
-        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-        wr.writeBytes(urlParameters);
-        wr.flush();
-        wr.close();
-        int responseCode = con.getResponseCode();
-        System.out.println("\nSending 'POST' request to URL : " + url);
-        System.out.println("Post parameters : " + urlParameters);
-        System.out.println("Response Code : " + responseCode);
-        BufferedReader in;
-        if(responseCode != 400)
-        {
-            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        }
-        else{
-            in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
-        }
-        String inputLine;
-        StringBuffer response = new StringBuffer();
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        private String getLike_origin(String username)throws Exception{
+                String url = "http://212.64.70.206:5000/getlike/";
+                URL obj = new URL(url);
+                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                con.setRequestMethod("POST");
+                con.setRequestProperty("User-Agent", USER_AGENT);
+                con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+                Date date=new Date();
+                byte[] cont=String.valueOf(date.getTime()).getBytes();
+                byte [] keyBytes=token.getBytes();
+                DESKeySpec keySpec = new DESKeySpec(keyBytes);
+                SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+                SecretKey key = keyFactory.generateSecret(keySpec);
+                Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
+                cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(keySpec.getKey()));
+                byte[] result = cipher.doFinal(cont);
+                String t = Base64.getEncoder().encodeToString(result);
+                String urlParameters = "username="+username+"&time=\""+t+"\"";
+                con.setDoOutput(true);
+                DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+                wr.writeBytes(urlParameters);
+                wr.flush();
+                wr.close();
+                int responseCode = con.getResponseCode();
+                System.out.println("\nSending 'POST' request to URL : " + url);
+                System.out.println("Post parameters : " + urlParameters);
+                System.out.println("Response Code : " + responseCode);
+                BufferedReader in;
+                if(responseCode != 400)
+                {
+                        in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                }
+                else{
+                        in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
+                }
+                String inputLine;
+                StringBuilder response = new StringBuilder();
 
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
+                while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+                }
+                in.close();
+                System.out.println(response.toString());
+                return response.toString();
         }
-        in.close();
-        System.out.println(response.toString());
-}
+
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        String getLike(String username){
+                String temp;
+                while(true){
+                        try{
+                                temp = getLike_origin(username);
+                        }
+                        catch(Exception e){
+                            e.printStackTrace();
+                                continue;
+                        }
+                        break;
+                }
+                return temp;
+        }
+
 @RequiresApi(api = Build.VERSION_CODES.O)
-private void getView(String username)throws Exception{
+private String getView_origin(String username)throws Exception{
         String url = "http://212.64.70.206:5000/getview/";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -771,13 +889,14 @@ private void getView(String username)throws Exception{
             in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
         }
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
 
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
         }
         in.close();
         System.out.println(response.toString());
+        return response.toString();
 }
         @RequiresApi(api = Build.VERSION_CODES.O)
         private void getmyComment(String username)throws Exception{
@@ -823,6 +942,19 @@ private void getView(String username)throws Exception{
                 }
                 in.close();
                 System.out.println(response.toString());
+        String getView(String username){
+                String temp;
+                while(true){
+                        try{
+                                temp = getView_origin(username);
+                        }
+                        catch(Exception e){
+                            e.printStackTrace();
+                                continue;
+                        }
+                        break;
+                }
+                return temp;
         }
 
 
