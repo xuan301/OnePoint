@@ -1,6 +1,7 @@
 package com.example.onepoint;
 
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -14,6 +15,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Objects;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -42,9 +44,9 @@ public class Know {
         //know.getComment("username",10);
         //know.searchKnow("username",10,"垃圾");
     }
-    private final String token = LoginActivity.token;
+    private String token = LoginActivity.token;
    @RequiresApi(api = Build.VERSION_CODES.O)
-   private void addKnow(String username, String title, String content, String phurl, String tags)throws Exception{
+   void addKnow(String username, String title, String content, String phurl, String tags)throws Exception{
         String url = "http://212.64.70.206:5000/addknow/";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -89,7 +91,7 @@ public class Know {
         System.out.println(response.toString());
 }
 @RequiresApi(api = Build.VERSION_CODES.O)
-private void isAdmin(String username)throws Exception{
+boolean isAdmin_origin(String username)throws Exception{
         String url = "http://212.64.70.206:5000/isadmin/";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -98,6 +100,7 @@ private void isAdmin(String username)throws Exception{
         con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
         Date date=new Date();
         byte[] cont=String.valueOf(date.getTime()).getBytes();
+        token = LoginActivity.token;
         byte [] keyBytes=token.getBytes();
         DESKeySpec keySpec = new DESKeySpec(keyBytes);
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
@@ -132,9 +135,31 @@ private void isAdmin(String username)throws Exception{
         }
         in.close();
         System.out.println(response.toString());
+
+        JSONObject object = new JSONObject(response.toString());
+        return (object.getString("is_admin").equals("true"));
+}
+
+@RequiresApi(api = Build.VERSION_CODES.O)
+boolean isAdmin(String username){
+       boolean result = false;
+       while (true){
+           try{
+               result = isAdmin_origin(username);
+           }catch (Exception e){
+               if(Objects.equals(e.getMessage(), "unexpected end of stream")){
+                   continue;
+               }
+               else{
+                   e.printStackTrace();
+               }
+           }
+           break;
+       }
+       return result;
 }
 @RequiresApi(api = Build.VERSION_CODES.O)
-private void getAudit(String username)throws Exception{
+private String getAudit_origin(String username)throws Exception{
         String url = "http://212.64.70.206:5000/getaudit/";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -177,9 +202,29 @@ private void getAudit(String username)throws Exception{
         }
         in.close();
         System.out.println(response.toString());
+        return response.toString();
+}
+
+@RequiresApi(api = Build.VERSION_CODES.O)
+String getAudit(String username){
+    String result = "";
+    while (true){
+        try{
+            result = getAudit_origin(username);
+        }catch (Exception e){
+            if(Objects.equals(e.getMessage(), "unexpected end of stream")){
+                continue;
+            }
+            else{
+                e.printStackTrace();
+            }
+        }
+        break;
+    }
+    return result;
 }
 @RequiresApi(api = Build.VERSION_CODES.O)
-private void auditPass(String username, int id)throws Exception{
+void auditPass(String username, int id)throws Exception{
         String url = "http://212.64.70.206:5000/auditpass/";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -206,25 +251,28 @@ private void auditPass(String username, int id)throws Exception{
         System.out.println("\nSending 'POST' request to URL : " + url);
         System.out.println("Post parameters : " + urlParameters);
         System.out.println("Response Code : " + responseCode);
-        BufferedReader in;
-        if(responseCode != 400)
-        {
-            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        if(responseCode != 200){
+            throw new Exception();
         }
-        else{
-            in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
-        }
-        String inputLine;
-        StringBuilder response = new StringBuilder();
-
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-        System.out.println(response.toString());
+//        BufferedReader in;
+//        if(responseCode != 400)
+//        {
+//            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+//        }
+//        else{
+//            in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
+//        }
+//        String inputLine;
+//        StringBuilder response = new StringBuilder();
+//
+//        while ((inputLine = in.readLine()) != null) {
+//            response.append(inputLine);
+//        }
+//        in.close();
+//        System.out.println(response.toString());
 }
 @RequiresApi(api = Build.VERSION_CODES.O)
-private void auditFail(String username, int id)throws Exception{
+void auditFail(String username, int id)throws Exception{
         String url = "http://212.64.70.206:5000/auditfail/";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -251,22 +299,25 @@ private void auditFail(String username, int id)throws Exception{
         System.out.println("\nSending 'POST' request to URL : " + url);
         System.out.println("Post parameters : " + urlParameters);
         System.out.println("Response Code : " + responseCode);
-        BufferedReader in;
-        if(responseCode != 400)
-        {
-            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        if(responseCode != 200){
+            throw new Exception();
         }
-        else{
-            in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
-        }
-        String inputLine;
-        StringBuilder response = new StringBuilder();
-
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-        System.out.println(response.toString());
+//        BufferedReader in;
+//        if(responseCode != 400)
+//        {
+//            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+//        }
+//        else{
+//            in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
+//        }
+//        String inputLine;
+//        StringBuilder response = new StringBuilder();
+//
+//        while ((inputLine = in.readLine()) != null) {
+//            response.append(inputLine);
+//        }
+//        in.close();
+//        System.out.println(response.toString());
 }
 @RequiresApi(api = Build.VERSION_CODES.O)
 private String getKnow_origin(String username, int num)throws Exception{
@@ -317,14 +368,22 @@ private String getKnow_origin(String username, int num)throws Exception{
 
         @RequiresApi(api = Build.VERSION_CODES.O)
         String getKnow(String username, int num){
-           String temp;
+           String temp = "";
            while(true){
                    try{
                            temp = getKnow_origin(username,num);
                    }
-                   catch(Exception e){
-                       e.printStackTrace();
+                   catch (Exception e){
+                       if(Objects.equals(e.getMessage(), "unexpected end of stream")){
                            continue;
+                       }
+                       else if(Objects.equals(e.getMessage(), "Attempt to invoke virtual method 'byte[] java.lang.String.getBytes()' on a null object reference"))
+                       {
+                           temp = "登陆过期";
+                       }
+                       else{
+                           e.printStackTrace();
+                       }
                    }
                    break;
            }
@@ -426,14 +485,18 @@ private String getRank_origin(String username, int num)throws Exception{
 }
     @RequiresApi(api = Build.VERSION_CODES.O)
     String getRank(String username,int num){
-        String temp;
+        String temp = "";
         while(true){
             try{
                 temp = getRank_origin(username,num);
             }
-            catch(Exception e){
-                e.printStackTrace();
-                continue;
+            catch (Exception e){
+                if(Objects.equals(e.getMessage(), "unexpected end of stream")){
+                    continue;
+                }
+                else{
+                    e.printStackTrace();
+                }
             }
             break;
         }
@@ -634,15 +697,19 @@ void likeOne(String username, int id)throws Exception{
 
         @RequiresApi(api = Build.VERSION_CODES.O)
         Boolean isLike(String username, int id){
-           Boolean status;
+           Boolean status = false;
                 while(true)
                 {
                         try{
                                 status = isLike_origin(username,id);
                         }
                         catch (Exception e){
-                            e.printStackTrace();
+                            if(Objects.equals(e.getMessage(), "unexpected end of stream")){
                                 continue;
+                            }
+                            else{
+                                e.printStackTrace();
+                            }
                         }
                         break;
                 }
@@ -838,14 +905,22 @@ void viewOne(String username, int id)throws Exception{
 
         @RequiresApi(api = Build.VERSION_CODES.O)
         String getLike(String username){
-                String temp;
+                String temp = "";
                 while(true){
                         try{
                                 temp = getLike_origin(username);
                         }
-                        catch(Exception e){
-                            e.printStackTrace();
+                        catch (Exception e){
+                            if(Objects.equals(e.getMessage(), "unexpected end of stream")){
                                 continue;
+                            }
+                            else if(Objects.equals(e.getMessage(), "Attempt to invoke virtual method 'byte[] java.lang.String.getBytes()' on a null object reference"))
+                            {
+                                temp = "登陆过期";
+                            }
+                            else{
+                                e.printStackTrace();
+                            }
                         }
                         break;
                 }
@@ -943,14 +1018,22 @@ private String getView_origin(String username)throws Exception{
         }
         @RequiresApi(api = Build.VERSION_CODES.O)
         String getView(String username){
-                String temp;
+                String temp = "";
                 while(true){
                         try{
                                 temp = getView_origin(username);
                         }
-                        catch(Exception e){
-                            e.printStackTrace();
+                        catch (Exception e){
+                            if(Objects.equals(e.getMessage(), "unexpected end of stream")){
                                 continue;
+                            }
+                            else if(Objects.equals(e.getMessage(), "Attempt to invoke virtual method 'byte[] java.lang.String.getBytes()' on a null object reference"))
+                            {
+                                temp = "登陆过期";
+                            }
+                            else{
+                                e.printStackTrace();
+                            }
                         }
                         break;
                 }

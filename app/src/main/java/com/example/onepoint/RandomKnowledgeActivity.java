@@ -90,7 +90,7 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
         index = intent.getIntExtra("index",0);
         knowledge_list = intent.getParcelableArrayListExtra("list");
         String title,imageSrc,text,author;
-        int id = 0;
+        int id;
         if(knowledge_list != null && knowledge_list.size() != 0) {
             Knowledge knowledge = knowledge_list.get(index);
             title = knowledge.getTitle();
@@ -104,6 +104,7 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
             imageSrc = intent.getStringExtra("imageSrc");
             text = intent.getStringExtra("content");
             author = intent.getStringExtra("author");
+            id = intent.getIntExtra("id",0);
         }
             if (title != null && imageSrc != null && text != null) {
                 Glide.with(img_of_knowledge.getContext()).load(imageSrc).into(img_of_knowledge);
@@ -119,7 +120,7 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
         }
         final int finalId;
         favorite =this.findViewById(R.id.like);
-        if (knowledge_list!=null){
+        if (knowledge_list!=null && knowledge_list.size()!=0){
             finalId = knowledge_list.get(index).getId();
         }else{
             Intent intent1 = getIntent();

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".VerifyKnowledgeActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/background_dark">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="-8dp"
+            android:layout_marginRight="-8dp"
+            android:layout_marginBottom="65dp"
+            android:orientation="vertical"
+            android:background="@android:color/background_dark">
+
+
+            <ScrollView
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="22dp"
+                android:layout_marginEnd="8dp"
+                android:fillViewport="true"
+                app:layout_constraintBottom_toBottomOf="@id/divider"
+                app:layout_constraintEnd_toEndOf="@id/divider"
+                app:layout_constraintStart_toStartOf="@id/divider"
+                app:layout_constraintTop_toTopOf="@id/divider">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/image_of_knowledge"
+                        android:layout_width="match_parent"
+                        android:layout_height="237dp"
+                        android:contentDescription="@string/title"
+                        android:scaleType="centerCrop"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/fig5"
+                        tools:srcCompat="@tools:sample/backgrounds/scenic[4]" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/title_of_knowledge"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginLeft="30dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="30dp"
+                            android:lineSpacingMultiplier="1.2"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:text="@string/cola_title"
+                            android:textColor="@android:color/primary_text_dark_nodisable"
+                            android:textSize="30sp"
+                            android:typeface="normal"
+                            tools:text="@string/cola_title" />
+
+                        <TextView
+                            android:id="@+id/author_of_knowledge"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginLeft="30dp"
+                            android:layout_marginRight="30dp"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:text="@string/author"
+                            android:textColor="@android:color/secondary_text_dark"
+                            android:textSize="18sp"
+                            android:typeface="normal"
+                            tools:text="@string/author" />
+
+                        <TextView
+                            android:id="@+id/textView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="20dp"
+                            android:lineSpacingMultiplier="1.2"
+                            android:text="@string/sampleknowledge"
+                            android:textColor="@android:color/tertiary_text_dark"
+                            android:textSize="18sp"
+                            android:typeface="normal"
+                            tools:text="@string/sampleknowledge" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </ScrollView>
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="?android:attr/listDivider" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:foregroundGravity="bottom"
+            android:gravity="center"
+            android:paddingTop="5dp"
+            android:background="@android:color/background_dark">
+
+            <include layout="@layout/verifying_bar" />
+        </LinearLayout>
+    </RelativeLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

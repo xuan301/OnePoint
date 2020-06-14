@@ -37,6 +37,7 @@ import javax.crypto.spec.DESKeySpec;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.Base64.Encoder;
+import java.util.Objects;
 import java.util.Random;
 
 
@@ -169,8 +170,12 @@ public class LoginActivity extends AppCompatActivity {
                                 login(username, password);
                             }
                             catch (Exception e){
-                                e.printStackTrace();
-                                continue;
+                                if(Objects.equals(e.getMessage(), "unexpected end of stream")){
+                                    continue;
+                                }
+                                else{
+                                    e.printStackTrace();
+                                }
                             }
                             break;
                         }

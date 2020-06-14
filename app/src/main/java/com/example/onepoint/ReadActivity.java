@@ -100,6 +100,10 @@ public class ReadActivity extends AppCompatActivity {
     }*/
 
     private void JSONParse(String source) throws Exception {
+        if(source.equals("登陆过期")){
+            Toast.makeText(getApplicationContext(),"登录已过期，请重新登录",Toast.LENGTH_SHORT).show();
+            return;
+        }
         try {
             JSONArray objList = new JSONArray(source);
             knowledgeList.clear();
@@ -116,7 +120,7 @@ public class ReadActivity extends AppCompatActivity {
         }
         catch (JSONException e){
             JSONObject object = new JSONObject(source);
-            if(object.getString("Message").equals("Error")){
+            if(object.optString("Message").equals("Error")){
                 Toast.makeText(getApplicationContext(),"无已读数据",Toast.LENGTH_SHORT).show();
             }
             else{

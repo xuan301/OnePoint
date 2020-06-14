@@ -1,6 +1,5 @@
 package com.example.onepoint;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,7 +13,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
-import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
@@ -22,27 +20,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.DESKeySpec;
-import javax.crypto.spec.IvParameterSpec;
 
 public class MainActivity extends AppCompatActivity {
 
     private final String USER_AGENT = "Mozilla/5.0";
     private List<Knowledge> knowledgeList= new ArrayList<>();
+    Know know = new Know();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,8 +149,17 @@ public class MainActivity extends AppCompatActivity {
         button_rank.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, RankActivity.class);
-                startActivity(intent);
+                SharedPreferences sharedPreferences=getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+                boolean loginState = sharedPreferences.getBoolean("isLogin",false);
+                if(loginState){
+                    Intent intent = new Intent(MainActivity.this, RankActivity.class);
+                    startActivity(intent);
+                }
+                else {
+                    Toast.makeText(MainActivity.this, "请先登录后使用", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
             }
         })
         ;
@@ -187,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 SharedPreferences sharedPreferences=getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
                 boolean loginState = sharedPreferences.getBoolean("isLogin",false);
-                if(loginState==false){
+                if(!loginState){
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     startActivity(intent);
                 }
@@ -203,14 +197,67 @@ public class MainActivity extends AppCompatActivity {
         button_addKnowledge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, AddKnowledgeActivity.class);
-                startActivity(intent);
+                SharedPreferences sharedPreferences=getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+                boolean loginState = sharedPreferences.getBoolean("isLogin",false);
+                if(loginState){
+                    Intent intent = new Intent(MainActivity.this, AddKnowledgeActivity.class);
+                    startActivity(intent);
+                }
+                else {
+                    Toast.makeText(MainActivity.this, "请先登录后使用", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
             }
         })
         ;
+
+        Button button_verify_knowledge = findViewById(R.id.verifyKnowledge);
+        button_verify_knowledge.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sharedPreferences=getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+                boolean loginState = sharedPreferences.getBoolean("isLogin",false);
+                if(loginState){
+                    if(know.isAdmin(LoginActivity.myUsername)) {
+                        try {
+                            JSONObject object = new JSONObject(know.getAudit(LoginActivity.myUsername));
+                            if(!object.optString("Message").equals("NO Knowledge Waiting to be Audited")) {
+                                Intent intent = new Intent(MainActivity.this, VerifyKnowledgeActivity.class);
+                                intent.putExtra("title", object.getString("TITLE"));
+                                intent.putExtra("content", object.getString("CONTENT"));
+                                intent.putExtra("imageSrc", object.getString("URL"));
+                                intent.putExtra("author", object.getString("AUTHOR"));
+                                intent.putExtra("id", object.getInt("ID"));
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                                startActivity(intent);
+                            }
+                            else {
+                                Toast.makeText(MainActivity.this, "无可审核的知识", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else{
+                        Toast.makeText(MainActivity.this, "非管理员", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else {
+                    Toast.makeText(MainActivity.this, "请先登录后使用", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
     }
 
     private void JSONParse(String source) throws JSONException {
+        if(source.equals("登陆过期")){
+            Toast.makeText(getApplicationContext(),"登录已过期，请重新登录",Toast.LENGTH_SHORT).show();
+            return;
+        }
         JSONArray objList = new JSONArray(source);
         knowledgeList.clear();
         for(int i = 0; i < objList.length(); i++ ){
@@ -222,22 +269,5 @@ public class MainActivity extends AppCompatActivity {
                     )
             );
         }
-    }
-
-    private void initKnowledges() {
-        knowledgeList.clear();
-        Knowledge[] knowledges = {//不要把这个数组放在函数外面
-                new Knowledge(getString(R.string.xigua_title), getString(R.string.xigua_img), getString(R.string.xigua_content), "网络|developer", 1),
-                new Knowledge(getString(R.string.famei_title), getString(R.string.famei_img), getString(R.string.famei_content), "网络|developer", 2),
-                new Knowledge(getString(R.string.chanbu_title), getString(R.string.snow_img), getString(R.string.chanbu_content), "网络|developer" , 3),
-                new Knowledge(getString(R.string.cola_title), getString(R.string.cola_img), getString(R.string.cola_content), "网络|developer", 4),
-                new Knowledge(getString(R.string.HCL_title), getString(R.string.HCL_img), getString(R.string.HCL_content), "网络|developer", 5),
-                new Knowledge(getString(R.string.hug_title), getString(R.string.hug_img), getString(R.string.hug_content), "网络|developer", 6),
-                new Knowledge(getString(R.string.seli_title), getString(R.string.seli_img), getString(R.string.seli_content), "网络|developer", 7),
-                new Knowledge(getString(R.string.toubal_title), getString(R.string.toubal_img), getString(R.string.toubal_content), "网络|developer", 8),
-                new Knowledge(getString(R.string.sanmiao_title), getString(R.string.sanmiao_img), getString(R.string.sanmiao_content), "网络|developer", 9)
-        };
-        Collections.addAll(knowledgeList, knowledges);
-
     }
 }

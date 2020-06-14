@@ -103,6 +103,10 @@ public class LikeActivity extends AppCompatActivity {
     }*/
 
     private void JSONParse(String source) throws Exception {
+        if(source.equals("登陆过期")){
+            Toast.makeText(getApplicationContext(),"登录已过期，请重新登录",Toast.LENGTH_SHORT).show();
+            return;
+        }
         try {
             JSONArray objList = new JSONArray(source);
             knowledgeList.clear();

@@ -14,6 +14,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
@@ -22,6 +26,10 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Objects;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -32,7 +40,9 @@ import javax.crypto.spec.IvParameterSpec;
 public class AddKnowledgeActivity extends AppCompatActivity {
     public final String token = "75958514";
     private final String USER_AGENT = "Mozilla/5.0";
-    String title,content,phurl;
+    String title,content,phurl,id;
+    Know know = new Know();
+    Tag tag = new Tag();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +59,18 @@ public class AddKnowledgeActivity extends AppCompatActivity {
             }
         });
 
+        Button button_set_tags = findViewById(R.id.select_tag);
+        button_set_tags.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+            @Override
+            public void onClick(View v) {
+                try {
+                    getTag();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         Button button_finish = findViewById(R.id.finish);
         button_finish.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -61,6 +83,7 @@ public class AddKnowledgeActivity extends AppCompatActivity {
                 if(title.equals("")){Toast.makeText(getApplicationContext(), "题目未填写",Toast.LENGTH_SHORT).show();}
                 else if(content.equals("")){Toast.makeText(getApplicationContext(), "内容未填写",Toast.LENGTH_SHORT).show();}
                 else if(phurl == null || phurl.equals("")){Toast.makeText(getApplicationContext(), "图片未添加",Toast.LENGTH_SHORT).show();}
+                else if(id == null || id.equals("")){Toast.makeText(getApplicationContext(), "标签未添加",Toast.LENGTH_SHORT).show();}
                 else{
                     int SDK_INT = android.os.Build.VERSION.SDK_INT;
                     if (SDK_INT > 8) {
@@ -71,9 +94,15 @@ public class AddKnowledgeActivity extends AppCompatActivity {
                             System.out.println(title);
                             System.out.println(content);
                             System.out.println(phurl);
-                            addKnow("username", title, content, phurl, "1");
+                            know.addKnow(LoginActivity.myUsername, title, content, phurl, id);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            if(Objects.equals(e.getMessage(), "Attempt to invoke virtual method 'byte[] java.lang.String.getBytes()' on a null object reference"))
+                            {
+                                Toast.makeText(getApplicationContext(),"登录已过期，请重新登录",Toast.LENGTH_SHORT).show();
+                            }
+                            else {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
@@ -107,51 +136,80 @@ public class AddKnowledgeActivity extends AppCompatActivity {
         editDialog.create().show();
     }
 
+    private void sendTag(){
+        final EditText edit = new EditText(this);
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void addKnow(String username, String title, String content, String phurl, String tags)throws Exception{
-        String url = "http://212.64.70.206:5000/addknow/";
-        URL obj = new URL(url);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-        con.setRequestMethod("POST");
-        con.setRequestProperty("User-Agent", USER_AGENT);
-        con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-        Date date=new Date();
-        byte[] cont=String.valueOf(date.getTime()).getBytes();
-        byte [] keyBytes=token.getBytes();
-        DESKeySpec keySpec = new DESKeySpec(keyBytes);
-        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
-        SecretKey key = keyFactory.generateSecret(keySpec);
-        Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
-        cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(keySpec.getKey()));
-        byte[] result = cipher.doFinal(cont);
-        String t = Base64.getEncoder().encodeToString(result);
-        String urlParameters = "username="+username+"&title="+ URLEncoder.encode(title,"utf-8")+"&content="+URLEncoder.encode(content,"utf-8")+"&url="+phurl+"&tags="+tags+"&time=\""+t+"\"";
-        con.setDoOutput(true);
-        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-        wr.writeBytes(urlParameters);
-        wr.flush();
-        wr.close();
-        int responseCode = con.getResponseCode();
-        System.out.println("\nSending 'POST' request to URL : " + url);
-        System.out.println("Post parameters : " + urlParameters);
-        System.out.println("Response Code : " + responseCode);
-        BufferedReader in;
-        if(responseCode != 400)
-        {
-            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        }
-        else{
-            in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
-        }
-        String inputLine;
-        StringBuffer response = new StringBuffer();
+        AlertDialog.Builder editDialog = new AlertDialog.Builder(this);
+        editDialog.setTitle("输入标签");
 
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
+        //设置dialog布局
+        editDialog.setView(edit);
+
+        //设置按钮
+        editDialog.setPositiveButton("确认"
+                , new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            tag.addTag(edit.getText().toString().trim());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        Toast.makeText(getApplicationContext(),
+                                "添加标签: "+edit.getText().toString().trim(),Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    }
+                });
+
+        editDialog.create().show();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private void getTag() throws JSONException {
+        JSONObject tags = new JSONObject(tag.showTags());
+        final String[] items = new String[tags.length()];
+        final Map<Integer, String> idTable = new HashMap<>();
+        int i=0;
+        for (Iterator<String> it = tags.keys(); it.hasNext(); ) {
+            String key = it.next();
+            items[i] = tags.getString(key);
+            idTable.put(i,key);
+            i++;
         }
-        in.close();
-        System.out.println(response.toString());
+
+        final boolean[] checkState = new boolean[items.length];
+        final AlertDialog.Builder builder4 = new AlertDialog.Builder(this);
+        builder4.setTitle("选择标签");
+        // 设置多选选项，并绑定点击事件
+        builder4.setMultiChoiceItems(items, new boolean[items.length],
+                new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                        checkState[which] = isChecked;
+                    }
+                });
+        // 点击“确定”按钮后输出选中的选项
+        builder4.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String message = "";
+                for (int i = 0; i < items.length; i++) {
+                    if (checkState[i]) {
+                        message += idTable.get(i) +",";
+                    }
+                }
+                id = message;
+                Toast.makeText(getApplicationContext(), "选择标签：" + message, Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder4.setNegativeButton("取消", null);
+        builder4.setNeutralButton("添加新标签", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                sendTag();
+            }
+        });
+        builder4.create().show();
     }
 
     protected void setHalfTransparent() {
