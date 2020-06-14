@@ -117,9 +117,14 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        final int finalId;
         favorite =this.findViewById(R.id.like);
-
-        final int finalId = id;
+        if (knowledge_list!=null){
+            finalId = knowledge_list.get(index).getId();
+        }else{
+            Intent intent1 = getIntent();
+            finalId = intent.getIntExtra("id",0);
+        }
         final boolean isActive = know.isLike(LoginActivity.myUsername,finalId);
         final Drawable liked = getResources().getDrawable(R.drawable.ic_liked);
         final Drawable tolike = getResources().getDrawable(R.drawable.ic_like_black_24dp);
