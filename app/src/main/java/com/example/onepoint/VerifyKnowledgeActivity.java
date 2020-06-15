@@ -87,6 +87,7 @@ public class VerifyKnowledgeActivity extends AppCompatActivity {
                     }
                     else {
                         Toast.makeText(VerifyKnowledgeActivity.this, "无可审核的知识", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -113,6 +114,7 @@ public class VerifyKnowledgeActivity extends AppCompatActivity {
                     }
                     else {
                         Toast.makeText(VerifyKnowledgeActivity.this, "无可审核的知识", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
