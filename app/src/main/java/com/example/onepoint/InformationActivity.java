@@ -27,16 +27,29 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Date;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
+import javax.crypto.spec.IvParameterSpec;
 
 public class InformationActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -45,6 +58,7 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
     private Button bt_xiangce;
     private Uri imageUri;
     private Uri uritempFile;
+    private final String USER_AGENT = "Mozilla/5.0";
     private static final int PHOTO_REQUEST_CAREMA = 1;// 拍照
     private static final int PHOTO_REQUEST_GALLERY = 2;// 从相册中选择
     private static final int PHOTO_REQUEST_CUT = 3;// 结果
@@ -223,6 +237,7 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
      * @param resultCode
      * @param data
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //防止低版本没有返回确认数据，导致崩溃
@@ -273,7 +288,15 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
                     iv_img.setImageBitmap(bitmap);
                     //保存到SharedPreferences
                     saveBitmapToSharedPreferences(bitmap);
-                }catch (FileNotFoundException e){
+
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream);
+                    //第二步:利用Base64将字节数组输出流中的数据转换成字符串String
+                    byte[] byteArray = byteArrayOutputStream.toByteArray();
+                    String imageString = new String(Base64.encodeToString(byteArray, Base64.DEFAULT));
+
+                    changePhoto(LoginActivity.myUsername,imageString);
+                }catch (Exception e){
                     e.printStackTrace();
                 }
                 /**
@@ -375,6 +398,52 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
             //虚拟键盘也透明
             // getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void changePhoto(String username, String imageString)throws Exception{
+        String url = "http://212.64.70.206:5000/changephoto/";
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("User-Agent", USER_AGENT);
+        con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+        Date date=new Date();
+        byte[] cont=String.valueOf(date.getTime()).getBytes();
+        byte [] keyBytes=(LoginActivity.token).getBytes();
+        DESKeySpec keySpec = new DESKeySpec(keyBytes);
+        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+        SecretKey key = keyFactory.generateSecret(keySpec);
+        Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(keySpec.getKey()));
+        byte[] result = cipher.doFinal(cont);
+        String t = java.util.Base64.getEncoder().encodeToString(result);
+        String urlParameters = "username="+username+"&time=\""+t+"\""+"&pic="+imageString;
+        con.setDoOutput(true);
+        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+        wr.writeBytes(urlParameters);
+        wr.flush();
+        wr.close();
+        int responseCode = con.getResponseCode();
+        System.out.println("\nSending 'POST' request to URL : " + url);
+        System.out.println("Post parameters : " + urlParameters);
+        System.out.println("Response Code : " + responseCode);
+        BufferedReader in;
+        if(responseCode != 400)
+        {
+            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        }
+        else{
+            in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
+        }
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        System.out.println(response.toString());
     }
 
 
