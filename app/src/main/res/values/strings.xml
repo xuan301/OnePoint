@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">OnePoint</string>
+    <string name="app_name">一点</string>
     <string name="read">已读</string>
     <string name="like">收藏</string>
     <string name="liked">已收藏</string>
