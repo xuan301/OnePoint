@@ -35,6 +35,7 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 import javax.crypto.Cipher;
@@ -157,7 +158,19 @@ public class CommentActivity extends AppCompatActivity {
         for(int i = 0; i < objList.length(); i++ ){
             JSONObject obj =  objList.getJSONObject(i);
             int knowid = obj.getInt("KNOWLEDGEID");
-            getOne(LoginActivity.myUsername,knowid);
+            while(true) {
+                try {
+                    getOne(LoginActivity.myUsername, knowid);
+                } catch (Exception e) {
+                    if (Objects.equals(e.getMessage(), "unexpected end of stream")) {
+                        continue;
+                    }
+                    else{
+                        e.printStackTrace();
+                    }
+                }
+                break;
+            }
             commentList.add(
                     new Comment(title,imagesrc,getString(R.string.cola_img),LoginActivity.myUsername,
                             obj.getString("COMMENT"),content,obj.getString("AUTHOR"),knowid,obj.getString("PUBTIME"))

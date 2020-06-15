@@ -168,21 +168,27 @@ public class LoginActivity extends AppCompatActivity {
                         while(true) {
                             try {
                                 login(username, password);
+                                Toast.makeText(getApplicationContext(),"登录成功",Toast.LENGTH_LONG).show();
+                                saveLoginStatus(true,username);
+                                finish();
                             }
                             catch (Exception e){
                                 if(Objects.equals(e.getMessage(), "unexpected end of stream")){
                                     continue;
                                 }
+                                else if(Objects.equals(e.getMessage(), "Illegal base64 character 22")){
+                                    Toast.makeText(getApplicationContext(),"用户名/密码错误，请重试",Toast.LENGTH_LONG).show();
+                                }
+                                else if(Objects.equals(e.getMessage(), "Connection reset")){
+                                    Toast.makeText(getApplicationContext(),"服务器未启动",Toast.LENGTH_LONG).show();
+                                }
                                 else{
                                     e.printStackTrace();
+                                    Toast.makeText(getApplicationContext(),"未知错误，请查看日志",Toast.LENGTH_LONG).show();
                                 }
                             }
                             break;
                         }
-                        //login(username,password);
-                        Toast.makeText(getApplicationContext(),"登录成功",Toast.LENGTH_LONG).show();
-                        saveLoginStatus(true,username);
-                        finish();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
