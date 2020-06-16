@@ -63,7 +63,7 @@ public class Know {
         cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(keySpec.getKey()));
         byte[] result = cipher.doFinal(cont);
         String t = Base64.getEncoder().encodeToString(result);
-        String urlParameters = "username="+username+"&title="+URLEncoder.encode(title,"utf-8")+"&content="+URLEncoder.encode(content,"utf-8")+"&url="+phurl+"&tags="+tags+"&time=\""+t+"\"";
+        String urlParameters = "username="+username+"&title="+URLEncoder.encode(title,"utf-8")+"&content="+URLEncoder.encode(content,"utf-8")+"&pic="+phurl+"&tags="+tags+"&time=\""+t+"\"";
         con.setDoOutput(true);
         DataOutputStream wr = new DataOutputStream(con.getOutputStream());
         wr.writeBytes(urlParameters);
