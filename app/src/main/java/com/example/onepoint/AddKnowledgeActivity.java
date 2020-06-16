@@ -95,6 +95,8 @@ public class AddKnowledgeActivity extends AppCompatActivity {
                             System.out.println(imgString);
                             System.out.println(id);
                             know.addKnow(LoginActivity.myUsername, title, content, imgString, id);
+                            Toast.makeText(AddKnowledgeActivity.this, "上传成功", Toast.LENGTH_SHORT).show();
+                            finish();
                         } catch (Exception e) {
                             if(Objects.equals(e.getMessage(), "Attempt to invoke virtual method 'byte[] java.lang.String.getBytes()' on a null object reference"))
                             {
@@ -241,11 +243,11 @@ public class AddKnowledgeActivity extends AppCompatActivity {
 
         intent.putExtra("crop", "true");
         // 裁剪框的比例，1：1
-        intent.putExtra("aspectX", 1);
-        intent.putExtra("aspectY", 1);
+        intent.putExtra("aspectX", 410);
+        intent.putExtra("aspectY", 237);
         // 裁剪后输出图片的尺寸大小
-        intent.putExtra("outputX", 250);
-        intent.putExtra("outputY", 250);
+        intent.putExtra("outputX", 410);
+        intent.putExtra("outputY", 237);
 
 
         intent.putExtra("noFaceDetection", true);// 取消人脸识别
@@ -337,8 +339,10 @@ public class AddKnowledgeActivity extends AppCompatActivity {
                     //第二步:利用Base64将字节数组输出流中的数据转换成字符串String
                     byte[] byteArray = byteArrayOutputStream.toByteArray();
                     imgString = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
                 }catch (Exception e){
                     e.printStackTrace();
+                    Toast.makeText(AddKnowledgeActivity.this, "图片设置成功", Toast.LENGTH_SHORT).show();
                 }
                 /**
                  * 获得图片
