@@ -73,22 +73,28 @@ public class Know {
         System.out.println("\nSending 'POST' request to URL : " + url);
         System.out.println("Post parameters : " + urlParameters);
         System.out.println("Response Code : " + responseCode);
-        BufferedReader in;
-        if(responseCode != 400)
-        {
-            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        }
-        else{
-            in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
-        }
-        String inputLine;
-        StringBuilder response = new StringBuilder();
+        try {
+            BufferedReader in;
+            if (responseCode != 400) {
+                in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            } else {
+                in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+            }
+            String inputLine;
+            StringBuilder response = new StringBuilder();
 
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+            System.out.println(response.toString());
+        }catch (Exception e){
+            if(Objects.equals(e.getMessage(), "unexpected end of stream") && responseCode == 200){
+            }
+            else{
+                throw e;
+            }
         }
-        in.close();
-        System.out.println(response.toString());
 }
 @RequiresApi(api = Build.VERSION_CODES.O)
 boolean isAdmin_origin(String username)throws Exception{

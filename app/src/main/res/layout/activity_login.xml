@@ -89,11 +89,12 @@
                 android:layout_toRightOf="@id/iv_paw"
                 android:background="@null"
                 android:cursorVisible="false"
-                android:inputType="none"
+                android:inputType="textPassword"
                 android:hint="@string/hint_paw"
                 android:textColor="#000"
                 android:textColorHint="#717070"
                 android:textSize="15dp"/>
+
 
 
         </RelativeLayout>

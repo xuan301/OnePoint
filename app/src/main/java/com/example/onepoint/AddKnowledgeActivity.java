@@ -102,8 +102,12 @@ public class AddKnowledgeActivity extends AppCompatActivity {
                             {
                                 Toast.makeText(getApplicationContext(),"登录已过期，请重新登录",Toast.LENGTH_SHORT).show();
                             }
+                            else if(Objects.equals(e.getMessage(), "Connection reset")){
+                                Toast.makeText(getApplicationContext(),"服务器未启动",Toast.LENGTH_SHORT).show();
+                            }
                             else {
                                 e.printStackTrace();
+                                Toast.makeText(AddKnowledgeActivity.this, "上传失败", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -316,7 +320,6 @@ public class AddKnowledgeActivity extends AppCompatActivity {
                 try {
                     bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
                     System.out.println("图片设置成功！");
-                    saveBitmapToSharedPreferences(bitmap);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -331,8 +334,6 @@ public class AddKnowledgeActivity extends AppCompatActivity {
                 try{
                     verifyStoragePermissions(this);
                     Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uritempFile));
-                    //保存到SharedPreferences
-                    saveBitmapToSharedPreferences(bitmap);
 
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream);
