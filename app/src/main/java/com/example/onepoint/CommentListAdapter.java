@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,7 +22,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
     private List<Comment> mCommentList;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        CardView cardView;
+        RelativeLayout knowledge;
         ImageView knowledgeImage;
         ImageView UserImage;
         TextView knowledgeTitle;
@@ -40,7 +41,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
             UserName = view.findViewById(R.id.username);
             Comment = view.findViewById(R.id.comment);
             knowledgeTitle = (TextView) view.findViewById(R.id.knowledge_title);
-            cardView = view.findViewById(R.id.knowledge);
+            knowledge = view.findViewById(R.id.linear2);
             delete = view.findViewById(R.id.delete);
             time = view.findViewById(R.id.time);
         }
@@ -55,7 +56,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
         if (mContext == null) {
             mContext = parent.getContext();
         }
-        View view = LayoutInflater.from(mContext).inflate(R.layout.mycomment_item,
+        View view = LayoutInflater.from(mContext).inflate(R.layout.mcomment,
                 parent, false);
         final ViewHolder holder = new ViewHolder(view);
         return new ViewHolder(view);
@@ -77,7 +78,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
         holder.time.setText(comment.getTime());
         Glide.with(mContext).load(comment.getKnowledgeImagesrc()).into(holder.knowledgeImage);
         Glide.with(mContext).load(comment.getUserImage()).into(holder.UserImage);
-        holder.cardView.setOnClickListener(new View.OnClickListener(){
+        holder.knowledge.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 int position = holder.getAdapterPosition();

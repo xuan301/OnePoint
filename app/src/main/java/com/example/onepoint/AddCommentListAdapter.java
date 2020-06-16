@@ -2,6 +2,7 @@ package com.example.onepoint;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
 import android.util.DisplayMetrics;
@@ -61,6 +62,7 @@ public class AddCommentListAdapter extends RecyclerView.Adapter<AddCommentListAd
     private BottomSheetDialog reply_dialog;
     private String comment;//为了给reply传递索引
     private int commentid;
+
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         RoundedImageView UserImage;
@@ -276,6 +278,9 @@ public class AddCommentListAdapter extends RecyclerView.Adapter<AddCommentListAd
         replyList.add(0,secondLevelBean);
         adapter.notifyDataSetChanged();
         recyclerView.scrollToPosition(0);
+        Know know = new Know();
+        SharedPreferences sharedPreferences= mContext.getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+        know.token = sharedPreferences.getString("token",null);
         replyOne(LoginActivity.myUsername,commentid,msg);
         //其次在我的评论界面要添加评论 这里需要先向服务器添加相关内容 然后我的评论界面在打开时再向服务器获取mcommentlist
         //这里无需代码

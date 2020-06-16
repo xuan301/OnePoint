@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.drm.DrmStore;
 import android.graphics.Color;
 import android.os.Build;
@@ -55,7 +57,7 @@ public class CommentActivity extends AppCompatActivity {
     private List<Comment> commentList = new ArrayList<>();
 
     private CommentListAdapter adapter;
-
+    private Know know = new Know();
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,8 @@ public class CommentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_comment);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar!=null) actionBar.hide();
+        SharedPreferences sharedPreferences= getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+        know.token = sharedPreferences.getString("token",null);
         Button button_back = findViewById(R.id.home);
         button_back.setOnClickListener(new View.OnClickListener() {
             @Override
