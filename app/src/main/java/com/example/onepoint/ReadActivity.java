@@ -1,6 +1,8 @@
 package com.example.onepoint;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -43,6 +45,8 @@ public class ReadActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read);
+        SharedPreferences sharedPreferences= getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+        know.token = sharedPreferences.getString("token",null);
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) actionBar.hide();
         Button button_back = (Button) findViewById(R.id.home);

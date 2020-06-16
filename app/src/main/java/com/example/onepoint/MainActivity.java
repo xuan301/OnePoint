@@ -57,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
                     StrictMode.setThreadPolicy(policy);
                     try {
                         Know know = new Know();
+                        SharedPreferences sharedPreferences= getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+                        know.token = sharedPreferences.getString("token",null);
                         JSONParse(know.getKnow(LoginActivity.myUsername, 10));
                     } catch (Exception e) {
                         e.printStackTrace();

@@ -3,6 +3,7 @@ package com.example.onepoint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
@@ -81,6 +82,9 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_random_knowledge);
         if(getSupportActionBar() != null){ getSupportActionBar().hide(); }
         setHalfTransparent();
+
+        SharedPreferences sharedPreferences= getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+        know.token = sharedPreferences.getString("token",null);
 
         ImageView img_of_knowledge = this.findViewById(R.id.image_of_knowledge);
         TextView title_of_knowledge = this.findViewById(R.id.title_of_knowledge);

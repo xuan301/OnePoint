@@ -47,7 +47,7 @@ public class Know {
         //know.searchKnow("username",10,"垃圾");
     }
 
-    private String token = LoginActivity.token;
+    public String token = null;
    @RequiresApi(api = Build.VERSION_CODES.O)
    void addKnow(String username, String title, String content, String phurl, String tags)throws Exception{
         String url = "http://212.64.70.206:5000/addknow/";
