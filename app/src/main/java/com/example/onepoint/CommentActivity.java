@@ -125,6 +125,7 @@ public class CommentActivity extends AppCompatActivity {
         con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
         Date date=new Date();
         byte[] cont=String.valueOf(date.getTime()).getBytes();
+
         byte [] keyBytes= LoginActivity.token.getBytes();
         DESKeySpec keySpec = new DESKeySpec(keyBytes);
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
