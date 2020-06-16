@@ -212,6 +212,7 @@ public class AddKnowledgeActivity extends AppCompatActivity {
 
                     }
                 }
+                if(message.equals("")){message = "未选择标签";}
                 Toast.makeText(getApplicationContext(), "选择标签：" + message, Toast.LENGTH_SHORT).show();
                 System.out.println(id);
             }

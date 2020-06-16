@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -87,10 +88,22 @@ public class CommentActivity extends AppCompatActivity {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                     .permitAll().build();
             StrictMode.setThreadPolicy(policy);
-            try {
-                getmyComment(LoginActivity.myUsername);
-            } catch (Exception e) {
-                e.printStackTrace();
+            while(true) {
+                try {
+                    getmyComment(LoginActivity.myUsername);
+                } catch (Exception e) {
+                    if (Objects.equals(e.getMessage(), "unexpected end of stream")) {
+                        continue;
+                    }
+                    else if(Objects.equals(e.getMessage(), "Attempt to invoke virtual method 'byte[] java.lang.String.getBytes()' on a null object reference"))
+                    {
+                        Toast.makeText(getApplicationContext(),"登录已过期，请重新登录",Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        e.printStackTrace();
+                    }
+                }
+                break;
             }
 
         }
