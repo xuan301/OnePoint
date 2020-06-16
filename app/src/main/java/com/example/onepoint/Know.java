@@ -400,7 +400,7 @@ private String getKnow_origin(String username, int num)throws Exception{
         }
 
 @RequiresApi(api = Build.VERSION_CODES.O)
-private void searchKnow(String username, int num, String text)throws Exception{
+private String searchKnow(String username, int num, String text)throws Exception{
         String url = "http://212.64.70.206:5000/searchknow/";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -442,7 +442,7 @@ private void searchKnow(String username, int num, String text)throws Exception{
             response.append(inputLine);
         }
         in.close();
-        System.out.println(response.toString());
+        return response.toString();
 }
 
 

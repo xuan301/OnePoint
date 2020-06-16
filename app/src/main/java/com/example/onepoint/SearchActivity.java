@@ -6,13 +6,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.text.Html;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -143,7 +146,10 @@ public class SearchActivity extends AppCompatActivity {
                             .permitAll().build();
                     StrictMode.setThreadPolicy(policy);
                     try {
-                        searchKnow(LoginActivity.myUsername, 10, query);
+                        SharedPreferences sharedPreferences= getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+                        String token = sharedPreferences.getString("token",null);
+                        String username = sharedPreferences.getString("loginUserName",null);
+                        searchKnow(username, 10, query);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -169,6 +175,8 @@ public class SearchActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void searchKnow(String username, int num, String text)throws Exception{
+        SharedPreferences sharedPreferences= getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+        String token = sharedPreferences.getString("token",null);
         String url = "http://212.64.70.206:5000/searchknow/";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -177,7 +185,7 @@ public class SearchActivity extends AppCompatActivity {
         con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
         Date date=new Date();
         byte[] cont=String.valueOf(date.getTime()).getBytes();
-        byte [] keyBytes=(LoginActivity.token).getBytes();
+        byte [] keyBytes=(token).getBytes();
         DESKeySpec keySpec = new DESKeySpec(keyBytes);
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
         SecretKey key = keyFactory.generateSecret(keySpec);
@@ -215,8 +223,8 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void JSONParse(String source) throws JSONException {
-        JSONArray objList = new JSONArray(source);
         knowledgeList.clear();
+        JSONArray objList = new JSONArray(source);
         for(int i = 0; i < objList.length(); i++ ){
             JSONObject obj =  objList.getJSONObject(i);
             knowledgeList.add(
@@ -226,6 +234,7 @@ public class SearchActivity extends AppCompatActivity {
                             obj.getInt("ID")
                     )
             );
+            Log.d("Showing content", "JSONParse: "+knowledgeList.toString());
         }
     }
 
