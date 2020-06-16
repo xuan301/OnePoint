@@ -117,7 +117,7 @@ public class SearchActivity extends AppCompatActivity {
         }
 
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         adapter = new KnowledgeAdapter(knowledgeList);
@@ -139,7 +139,10 @@ public class SearchActivity extends AppCompatActivity {
                         new Knowledge(getString(R.string.xigua_title), getString(R.string.xigua_img), getString(R.string.xigua_content),"网络|developer"),
                         new Knowledge(getString(R.string.famei_title), getString(R.string.famei_img), getString(R.string.famei_content),"网络|developer")
                 };*/
+                int size = knowledgeList.size();
                 knowledgeList.clear();
+                adapter.notifyItemRangeRemoved(0, size);
+                recyclerView.setItemViewCacheSize(0);
                 int SDK_INT = android.os.Build.VERSION.SDK_INT;
                 if (SDK_INT > 8)
                 {
@@ -161,7 +164,9 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                int size = knowledgeList.size();
                 knowledgeList.clear();
+                adapter.notifyItemRangeRemoved(0, size);
                 return false;
             }
         });
@@ -169,7 +174,9 @@ public class SearchActivity extends AppCompatActivity {
         mSearchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int size = knowledgeList.size();
                 knowledgeList.clear();
+                adapter.notifyItemRangeRemoved(0, size);
             }
         });
     }
