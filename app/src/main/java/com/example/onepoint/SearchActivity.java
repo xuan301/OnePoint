@@ -122,6 +122,7 @@ public class SearchActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         adapter = new KnowledgeAdapter(knowledgeList);
         recyclerView.setAdapter(adapter);
+        recyclerView.setItemViewCacheSize(0);
 
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -223,7 +224,9 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void JSONParse(String source) throws JSONException {
+        int size = knowledgeList.size();
         knowledgeList.clear();
+        adapter.notifyItemRangeRemoved(0, size);
         JSONArray objList = new JSONArray(source);
         for(int i = 0; i < objList.length(); i++ ){
             JSONObject obj =  objList.getJSONObject(i);
