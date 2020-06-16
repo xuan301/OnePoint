@@ -53,6 +53,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -326,19 +327,31 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                     StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                             .permitAll().build();
                     StrictMode.setThreadPolicy(policy);
-                    try {
-                        int know_id;
-                        if (knowledge_list!=null){
-                            know_id = knowledge_list.get(index).getId();
-                        }else{
-                            Intent intent = getIntent();
-                            know_id = intent.getIntExtra("id",0);
+                    while (true) {
+                        try {
+                            int know_id;
+                            if (knowledge_list != null) {
+                                know_id = knowledge_list.get(index).getId();
+                            } else {
+                                Intent intent = getIntent();
+                                know_id = intent.getIntExtra("id", 0);
+                            }
+                            getComment(LoginActivity.myUsername, know_id);
+                        } catch (Exception e) {
+                            if (Objects.equals(e.getMessage(), "unexpected end of stream")) {
+                                continue;
+                            }
+                            else if(Objects.equals(e.getMessage(), "Attempt to invoke virtual method 'byte[] java.lang.String.getBytes()' on a null object reference"))
+                            {
+                                Toast.makeText(getApplicationContext(),"登录已过期，请重新登录",Toast.LENGTH_SHORT).show();
+                            }
+                            else {
+                                e.printStackTrace();
+                            }
+                            e.printStackTrace();
                         }
-                        getComment(LoginActivity.myUsername,know_id);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                        break;
                     }
-
                 }
                 /*commentList.clear();
                 FirstLevelBean[] comments = {
@@ -419,7 +432,20 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void addComment(boolean isReply, String headImg, final int position, String msg) throws Exception {
         //首先在评论框内添加评论 有了服务器后要将信息发送给服务器 与相应的阅读知识id相关联
-        FirstLevelBean firstLevelBean = new FirstLevelBean(0,getString(R.string.cola_img),LoginActivity.myUsername,msg,"刚刚",0,0,null);
+        while (true){
+            try {
+                imagesrc = getPhoto(LoginActivity.myUsername,LoginActivity.myUsername);
+            }catch (Exception e){
+                if (Objects.equals(e.getMessage(), "unexpected end of stream")) {
+                    continue;
+                }
+                else{
+                    e.printStackTrace();
+                }
+            }
+            break;
+        }
+        FirstLevelBean firstLevelBean = new FirstLevelBean(0,getPhoto(LoginActivity.myUsername,LoginActivity.myUsername),LoginActivity.myUsername,msg,"刚刚",0,0,null);
         commentList.add(0,firstLevelBean);
         adapter.notifyDataSetChanged();
         recyclerView.scrollToPosition(0);
@@ -574,34 +600,85 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
         in.close();
         System.out.println(response.toString());
     }
-    private void JSONParse(String source) throws JSONException {
+    String imagesrc;
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void JSONParse(String source) throws Exception {
         JSONArray objList = new JSONArray(source);
         commentList.clear();
         for(int i = 0; i < objList.length(); i++ ){
             JSONObject obj =  objList.getJSONObject(i);
             JSONArray reply = obj.getJSONArray("REPLY");
+            String comment_author = obj.getString("AUTHOR");
+            while (true){
+                try {
+                    imagesrc = getPhoto(LoginActivity.myUsername,comment_author);
+                }catch (Exception e){
+                    if (Objects.equals(e.getMessage(), "unexpected end of stream")) {
+                        continue;
+                    }
+                    else{
+                        e.printStackTrace();
+                    }
+                }
+                break;
+            }
             //FirstLevelBean firstLevelBean = (FirstLevelBean) JSONObject.
             commentList.add(
                     new FirstLevelBean(
-                            obj.getInt("COMMENTID"),getString(R.string.cola_img),obj.getString("AUTHOR"),obj.getString("COMMENT"),
+                            obj.getInt("COMMENTID"),imagesrc,obj.getString("AUTHOR"),obj.getString("COMMENT"),
                     obj.getString("PUBTIME"), (long) i,0,reply)
             );
         }
     }
-//    @Override
-//    public void finish()
-//    {
-//        Intent intent = getIntent();
-//        boolean fromLeft = intent.getBooleanExtra("prev",false);
-//        boolean fromRight = intent.getBooleanExtra("next",false);
-//        super.finish();
-//        if(fromLeft){
-//            overridePendingTransition(R.anim.trans_in_alpha,R.anim.trans_out_left);
-//        }
-//        else if(fromRight){
-//            overridePendingTransition(R.anim.trans_in_alpha,R.anim.trans_out_right);
-//        }
-//    }
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private String getPhoto(String username,String query)throws Exception{
+        String url = "http://212.64.70.206:5000/getphoto/";
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("User-Agent", USER_AGENT);
+        con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+        Date date=new Date();
+        byte[] cont=String.valueOf(date.getTime()).getBytes();
+        byte [] keyBytes=(LoginActivity.token).getBytes();
+        DESKeySpec keySpec = new DESKeySpec(keyBytes);
+        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+        SecretKey key = keyFactory.generateSecret(keySpec);
+        Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(keySpec.getKey()));
+        byte[] result = cipher.doFinal(cont);
+        String t = java.util.Base64.getEncoder().encodeToString(result);
+        String urlParameters = "username="+username+"&time=\""+t+"\""+"&query="+query;
+        con.setDoOutput(true);
+        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+        wr.writeBytes(urlParameters);
+        wr.flush();
+        wr.close();
+        int responseCode = con.getResponseCode();
+        System.out.println("\nSending 'POST' request to URL : " + url);
+        System.out.println("Post parameters : " + urlParameters);
+        System.out.println("Response Code : " + responseCode);
+        BufferedReader in;
+        if(responseCode != 400)
+        {
+            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        }
+        else{
+            in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
+        }
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        System.out.println(response.toString());
+        String str = response.toString();
+        String regexp = "\"";
+        str = str.replaceAll(regexp, "");
+        return str;
+    }
 
     private boolean left_or_right(MotionEvent e1, MotionEvent e2)
     {
