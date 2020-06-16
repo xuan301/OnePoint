@@ -11,7 +11,7 @@
     <include layout="@layout/setting_and_nightmode"/>
 
     <RelativeLayout
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_width="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -35,19 +35,18 @@
             android:textSize="25sp"
             android:textColor="#404040"/>
 
-        <include layout="@layout/bottombar" />
 
         <Switch
             android:id="@+id/recommendation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/randomknowledge"
-            android:layout_centerHorizontal="false"
-            android:layout_marginStart="225dp"
-            android:layout_marginLeft="225dp"
-            android:layout_marginBottom="-350dp"
+            android:layout_marginTop="16dp"
+            android:layout_below="@id/randomknowledge"
+            android:layout_toRightOf="@id/randomknowledge"
             android:text="个性推荐 "
             android:textSize="18sp" />
+
+        <include layout="@layout/bottombar" />
     </RelativeLayout>
 
 

@@ -78,4 +78,5 @@
     <string name="famei_img">https://5b0988e595225.cdn.sohucs.com/images/20181227/ceb2bf91923142208a1e69f92a6f740a.jpeg</string>
     <string name="xigua_img">https://n.sinaimg.cn/sinacn11/533/w800h533/20180731/4c09-hhacrce1167436.jpg</string>
     <string name="send_phone">发送验证码</string>
+    <string name="personalRecommend">个性推荐</string>
 </resources>
