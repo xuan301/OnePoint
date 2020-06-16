@@ -5,12 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
+    <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/user_image"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
+        app:riv_corner_radius="18dp"
+        app:riv_border_width="0.8dp"
+        app:riv_border_color="@color/gray_d8"
         app:layout_constraintBottom_toTopOf="@+id/guideline5"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
