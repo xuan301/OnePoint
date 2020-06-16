@@ -1,5 +1,7 @@
 package com.example.onepoint;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 
@@ -44,6 +46,7 @@ public class Know {
         //know.getComment("username",10);
         //know.searchKnow("username",10,"垃圾");
     }
+
     private String token = LoginActivity.token;
    @RequiresApi(api = Build.VERSION_CODES.O)
    void addKnow(String username, String title, String content, String phurl, String tags)throws Exception{

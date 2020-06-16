@@ -367,7 +367,7 @@ public class AddKnowledgeActivity extends AppCompatActivity {
         //第三步:将String保持至SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("image", imageString);
+        editor.putString("addimage", imageString);
         editor.apply();
 
         //上传头像

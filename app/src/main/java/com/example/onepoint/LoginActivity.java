@@ -2,6 +2,7 @@ package com.example.onepoint;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -39,6 +40,7 @@ import java.util.Base64.Decoder;
 import java.util.Base64.Encoder;
 import java.util.Objects;
 import java.util.Random;
+import java.util.ResourceBundle;
 
 
 @SuppressLint("Registered")
@@ -47,6 +49,8 @@ public class LoginActivity extends AppCompatActivity {
     public static String myUsername;
 
     public static String token = null;
+
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void login(String username, String password) throws Exception{
 //        String publicKeyFilePath = "public.der";
@@ -129,6 +133,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         setHalfTransparent();
+        SharedPreferences sharedPreferences=getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+        token=sharedPreferences.getString("token", "");
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) actionBar.hide();
 
@@ -169,7 +175,7 @@ public class LoginActivity extends AppCompatActivity {
                             try {
                                 login(username, password);
                                 Toast.makeText(getApplicationContext(),"登录成功",Toast.LENGTH_LONG).show();
-                                saveLoginStatus(true,username);
+                                saveLoginStatus(true,username,token);
                                 finish();
                             }
                             catch (Exception e){
@@ -238,7 +244,7 @@ public class LoginActivity extends AppCompatActivity {
     /**
      *保存登录状态和登录用户名到SharedPreferences中
      */
-    private void saveLoginStatus(boolean status,String userName){
+    private void saveLoginStatus(boolean status,String userName,String token){
         //loginInfo表示文件名  SharedPreferences sp=getSharedPreferences("loginInfo", MODE_PRIVATE);
         SharedPreferences sp=getSharedPreferences("loginInfo", MODE_PRIVATE);
         //获取编辑器
@@ -248,6 +254,7 @@ public class LoginActivity extends AppCompatActivity {
         //存入登录状态时的用户名
         editor.putString("loginUserName", userName);
         //提交修改
+        editor.putString("token",token);
         editor.apply();
     }
 
