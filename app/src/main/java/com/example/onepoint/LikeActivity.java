@@ -150,6 +150,9 @@ public class LikeActivity extends AppCompatActivity {
         catch (JSONException e){
             JSONObject object = new JSONObject(source);
             if(object.getString("Message").equals("Error")){
+                int size = knowledgeList.size();
+                knowledgeList.clear();
+                if(size != 0) adapter.notifyItemRangeRemoved(0, size);
                 Toast.makeText(getApplicationContext(),"无收藏数据",Toast.LENGTH_SHORT).show();
             }
             else{
