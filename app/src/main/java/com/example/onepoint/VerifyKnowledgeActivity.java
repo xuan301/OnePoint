@@ -1,6 +1,8 @@
 package com.example.onepoint;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -73,6 +75,8 @@ public class VerifyKnowledgeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
+                    SharedPreferences sharedPreferences= getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+                    know.token = sharedPreferences.getString("token",null);
                     know.auditPass(LoginActivity.myUsername, finalId);
                     JSONObject object = new JSONObject(know.getAudit(LoginActivity.myUsername));
                     if(!object.optString("Message").equals("NO Knowledge Waiting to be Audited")) {
@@ -100,6 +104,8 @@ public class VerifyKnowledgeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
+                    SharedPreferences sharedPreferences= getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+                    know.token = sharedPreferences.getString("token",null);
                     know.auditFail(LoginActivity.myUsername, finalId);
                     JSONObject object = new JSONObject(know.getAudit(LoginActivity.myUsername));
                     if(!object.optString("Message").equals("NO Knowledge Waiting to be Audited")) {

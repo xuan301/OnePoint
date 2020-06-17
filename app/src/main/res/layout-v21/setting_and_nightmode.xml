@@ -18,8 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:drawableEnd="@drawable/ic_comment_black_24dp"
-        android:textColor="#737373"/>
+        android:drawableEnd="@drawable/ic_plus"
+        android:textColor="#737373" />
 
     <Button
         android:id="@+id/nightmode"
