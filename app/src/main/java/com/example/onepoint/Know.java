@@ -632,25 +632,22 @@ void likeOne(String username, int id)throws Exception{
         System.out.println("\nSending 'POST' request to URL : " + url);
         System.out.println("Post parameters : " + urlParameters);
         System.out.println("Response Code : " + responseCode);
-        if(responseCode != 200){
-                throw new Exception();
+        BufferedReader in;
+        if(responseCode != 400)
+        {
+            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
         }
-//        BufferedReader in;
-//        if(responseCode != 400)
-//        {
-//            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-//        }
-//        else{
-//            in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
-//        }
-//        String inputLine;
-//        StringBuffer response = new StringBuffer();
-//
-//        while ((inputLine = in.readLine()) != null) {
-//            response.append(inputLine);
-//        }
-//        in.close();
-//        System.out.println(response.toString());
+        else{
+            in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
+        }
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        System.out.println(response.toString());
 }
 
         @RequiresApi(api = Build.VERSION_CODES.O)

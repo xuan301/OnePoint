@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -231,6 +232,14 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void JSONParse(String source) throws JSONException {
+        try{
+            JSONObject object = new JSONObject(source);
+            if(object.getString("Message").equals("Error")){
+                Toast.makeText(getApplicationContext(),"无搜索结果",Toast.LENGTH_SHORT).show();
+            }
+        }catch(Exception ignored){
+
+        }
         int size = knowledgeList.size();
         knowledgeList.clear();
         adapter.notifyItemRangeRemoved(0, size);
