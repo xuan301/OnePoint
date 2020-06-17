@@ -27,7 +27,7 @@ import java.util.List;
 public class RankActivity extends AppCompatActivity {
     private List<Knowledge> knowledgeList = new ArrayList<>();
 
-    private KnowledgeAdapter adapter;
+    private RankingListAdapter adapter;
 
     private Know know = new Know();
 
@@ -73,7 +73,7 @@ public class RankActivity extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new KnowledgeAdapter(knowledgeList);
+        adapter = new RankingListAdapter(knowledgeList);
         recyclerView.setAdapter(adapter);
     }
 
@@ -87,7 +87,7 @@ public class RankActivity extends AppCompatActivity {
                         new Knowledge(
                                 obj.getString("TITLE"), obj.getString("URL"),
                                 obj.getString("CONTENT"), obj.getString("AUTHOR"),
-                                obj.getInt("ID")
+                                obj.getInt("ID"),obj.getInt("LIKENUM")
                         )
                 );
             }

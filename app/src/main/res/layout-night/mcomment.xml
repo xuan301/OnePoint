@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/user_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="10dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            app:riv_border_color="@color/gray_d8"
+            app:riv_border_width="0.8dp"
+            app:riv_corner_radius="18dp" />
+
+
+        <LinearLayout
+            android:id="@+id/linear1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@id/user_image"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="用户名"
+                android:textColor="#0080FF" />
+
+            <TextView
+                android:id="@+id/comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="用户所发评论"
+                android:textColor="@android:color/background_light"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/linear2"
+            android:layout_width="340dp"
+            android:layout_height="80dp"
+            android:layout_below="@id/linear1"
+            android:layout_alignLeft="@id/linear1"
+            android:layout_marginTop="10dp"
+            android:background="@color/black_21">
+
+            <ImageView
+                android:id="@+id/knowledge_image"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:id="@+id/knowledge_title"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="18dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="25dp"
+                android:layout_toEndOf="@+id/knowledge_image"
+                android:layout_toRightOf="@+id/knowledge_image"
+                android:text="TextView"
+                android:textColor="@android:color/background_light"
+                android:textSize="20sp" />
+
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/linear2"
+            android:layout_alignLeft="@id/linear2"
+            android:layout_marginTop="5dp"
+            android:text="30分钟前"
+            android:textColor="@color/color_6f" />
+
+        <TextView
+            android:id="@+id/delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/linear2"
+            android:layout_alignRight="@+id/linear2"
+            android:layout_alignBottom="@+id/time"
+            android:layout_marginEnd="-1dp"
+            android:layout_marginRight="0dp"
+            android:text="删除"
+            android:textColor="#0080FF" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/time"
+            android:layout_marginTop="10dp" />
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

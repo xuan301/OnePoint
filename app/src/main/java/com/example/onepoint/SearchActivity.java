@@ -250,7 +250,7 @@ public class SearchActivity extends AppCompatActivity {
                     new Knowledge(
                             obj.getString("TITLE"), obj.getString("URL"),
                             obj.getString("CONTENT"), obj.getString("AUTHOR"),
-                            obj.getInt("ID")
+                            obj.getInt("ID"),obj.getInt("LIKENUM")
                     )
             );
             Log.d("Showing content", "JSONParse: "+knowledgeList.toString());
