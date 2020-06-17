@@ -94,6 +94,8 @@ public class AddKnowledgeActivity extends AppCompatActivity {
                             System.out.println(content);
                             System.out.println(imgString);
                             System.out.println(id);
+                            SharedPreferences sharedPreferences= getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+                            know.token = sharedPreferences.getString("token",null);
                             know.addKnow(LoginActivity.myUsername, title, content, imgString, id);
                             Toast.makeText(AddKnowledgeActivity.this, "上传成功", Toast.LENGTH_SHORT).show();
                             finish();
