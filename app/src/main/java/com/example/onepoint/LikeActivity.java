@@ -40,6 +40,25 @@ public class LikeActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        int SDK_INT = android.os.Build.VERSION.SDK_INT;
+        if (SDK_INT > 8)
+        {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                    .permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+            try {
+                JSONParse(know.getLike(LoginActivity.myUsername));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_like);
@@ -82,6 +101,7 @@ public class LikeActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         adapter = new KnowledgeAdapter(knowledgeList);
         recyclerView.setAdapter(adapter);
+        recyclerView.setItemViewCacheSize(0);
 
     }
 
@@ -112,7 +132,10 @@ public class LikeActivity extends AppCompatActivity {
         }
         try {
             JSONArray objList = new JSONArray(source);
+            int size = knowledgeList.size();
             knowledgeList.clear();
+            if(size != 0) adapter.notifyItemRangeRemoved(0, size);
+            else {}
             for (int i = 0; i < objList.length(); i++) {
                 JSONObject obj = objList.getJSONObject(i);
                 knowledgeList.add(
