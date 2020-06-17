@@ -69,6 +69,7 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE };
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,6 +111,7 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
         initView();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void initView() {
         iv_img = (ImageView) findViewById(R.id.iv_img);
         bt_camera = (Button) findViewById(R.id.bt_camera);
