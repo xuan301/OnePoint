@@ -393,7 +393,11 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
             }
             break;
         }
-        Glide.with(this).load(imgsrc).into(iv_img);
+        if (imgsrc == null){
+            iv_img.setImageResource(R.mipmap.ic_launcher);
+        }else {
+            Glide.with(this).load(imgsrc).into(iv_img);
+        }
     }
 
 
