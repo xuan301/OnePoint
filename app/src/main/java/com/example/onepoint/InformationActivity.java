@@ -33,6 +33,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
+import com.bumptech.glide.Glide;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,6 +46,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
+import java.util.Objects;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -112,7 +115,9 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
         bt_camera = (Button) findViewById(R.id.bt_camera);
         bt_xiangce = (Button) findViewById(R.id.bt_xiangce);
         //从SharedPreferences获取图片
-        getBitmapFromSharedPreferences();
+       // getBitmapFromSharedPreferences();
+        //从服务器获取图片
+        setiv_image();
         //监听两个按钮，相册按钮和相机按钮
         bt_camera.setOnClickListener(this);
         bt_xiangce.setOnClickListener(this);
@@ -355,7 +360,7 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
     }*/
 
     //从SharedPreferences获取图片
-    private void getBitmapFromSharedPreferences(){
+    /*private void getBitmapFromSharedPreferences(){
         SharedPreferences sharedPreferences=getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
         //第一步:取出字符串形式的Bitmap
         String imageString=sharedPreferences.getString("image", "");
@@ -371,6 +376,24 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
             iv_img.setImageBitmap(bitmap);
         }
 
+    }*/
+    String imgsrc;
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void setiv_image(){
+        while(true) {
+            try {
+                imgsrc = getPhoto(LoginActivity.myUsername, LoginActivity.myUsername);
+            } catch (Exception e) {
+                if (Objects.equals(e.getMessage(), "unexpected end of stream")) {
+                    continue;
+                }
+                else{
+                    e.printStackTrace();
+                }
+            }
+            break;
+        }
+        Glide.with(this).load(imgsrc).into(iv_img);
     }
 
 
@@ -446,6 +469,55 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
         System.out.println(response.toString());
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private String getPhoto(String username,String query)throws Exception{
+        String url = "http://212.64.70.206:5000/getphoto/";
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("User-Agent", USER_AGENT);
+        con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+        Date date=new Date();
+        byte[] cont=String.valueOf(date.getTime()).getBytes();
+        byte [] keyBytes=(LoginActivity.token).getBytes();
+        DESKeySpec keySpec = new DESKeySpec(keyBytes);
+        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+        SecretKey key = keyFactory.generateSecret(keySpec);
+        Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(keySpec.getKey()));
+        byte[] result = cipher.doFinal(cont);
+        String t = java.util.Base64.getEncoder().encodeToString(result);
+        String urlParameters = "username="+username+"&time=\""+t+"\""+"&query="+query;
+        con.setDoOutput(true);
+        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+        wr.writeBytes(urlParameters);
+        wr.flush();
+        wr.close();
+        int responseCode = con.getResponseCode();
+        System.out.println("\nSending 'POST' request to URL : " + url);
+        System.out.println("Post parameters : " + urlParameters);
+        System.out.println("Response Code : " + responseCode);
+        BufferedReader in;
+        if(responseCode != 400)
+        {
+            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        }
+        else{
+            in =new BufferedReader(new InputStreamReader(con.getErrorStream()));
+        }
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        System.out.println(response.toString());
+        String str = response.toString();
+        String regexp = "\"";
+        str = str.replaceAll(regexp, "");
+        return str;
+    }
 
 
 }

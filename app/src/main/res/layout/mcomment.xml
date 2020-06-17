@@ -88,7 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/linear2"
-            android:layout_alignLeft="@id/linear1"
+            android:layout_alignLeft="@id/linear2"
             android:layout_marginTop="5dp"
             android:text="30分钟前" />
 
