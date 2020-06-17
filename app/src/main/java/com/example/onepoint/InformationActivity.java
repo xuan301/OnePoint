@@ -296,14 +296,19 @@ public class InformationActivity extends AppCompatActivity implements View.OnCli
                     //保存到SharedPreferences
                     saveBitmapToSharedPreferences(bitmap);
 
+                    SharedPreferences sharedPreferences=getSharedPreferences("loginInfo", Context.MODE_PRIVATE);
+                    //第一步:取出字符串形式的Bitmap
+                    String here_username=sharedPreferences.getString("loginUserName", "");
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream);
                     //第二步:利用Base64将字节数组输出流中的数据转换成字符串String
                     byte[] byteArray = byteArrayOutputStream.toByteArray();
                     String imageString = new String(Base64.encodeToString(byteArray, Base64.DEFAULT));
+                    changePhoto(here_username,imageString);
 
-                    changePhoto(LoginActivity.myUsername,imageString);
-                }catch (Exception e){
+                }catch (FileNotFoundException e){
+                    e.printStackTrace();
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 /**
