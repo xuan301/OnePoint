@@ -13,8 +13,9 @@ public class Comment implements Parcelable{
     private String author;
     private int knowid;
     private String time;
+    private int commentID;
 
-    public Comment(String title,String knowledgeImagesrc,String userImage,String user,String comment,String content,String author,int id,String time){
+    public Comment(String title,String knowledgeImagesrc,String userImage,String user,String comment,String content,String author,int id,String time,int commentID){
         this.title = title;
         this.knowledgeImagesrc = knowledgeImagesrc;
         this.userImage = userImage;
@@ -24,6 +25,7 @@ public class Comment implements Parcelable{
         this.author = author;
         this.knowid = id;
         this.time = time;
+        this.commentID = commentID;
     }
     public String getTitle(){return title;}
     public String getKnowledgeImagesrc(){return knowledgeImagesrc;}
@@ -34,6 +36,7 @@ public class Comment implements Parcelable{
     public String getAuthor(){return author;}
     public int getKnowid(){return knowid;}
     public String getTime(){return time;}
+    public int getCommentID(){return commentID;}
     //Parcel序列化所需函数
     private Comment(Parcel in) {//作用是？？？
         //title = in.readString();

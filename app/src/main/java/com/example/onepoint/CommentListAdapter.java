@@ -2,6 +2,8 @@ package com.example.onepoint;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,6 +23,7 @@ import java.util.List;
 public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.ViewHolder> {
     private Context mContext;
     private List<Comment> mCommentList;
+    private String mToken;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         RelativeLayout knowledge;
@@ -47,8 +51,9 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
         }
     }
 
-    public CommentListAdapter(List<Comment> commentList ){
+    public CommentListAdapter(List<Comment> commentList ,String token){
         mCommentList = commentList;
+        mToken = token;
     }
 
     @Override
@@ -65,7 +70,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        Comment comment = mCommentList.get(position);
+        final Comment comment = mCommentList.get(position);
         String title = comment.getTitle();
         if (title.length()>8){
             holder.knowledgeTitle.setText(title.substring(0,8)+"...");
@@ -98,12 +103,20 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
             }
         });
         holder.delete.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 if (position<0) return;
-                mCommentList.remove(position);
-                notifyItemRemoved(position);
+                Know know = new Know();
+                know.token = mToken;
+                try {
+                    know.deleteComment(LoginActivity.myUsername,comment.getCommentID());
+                    mCommentList.remove(position);
+                    notifyItemRemoved(position);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 //Intent intent = new Intent(mContext,CommentActivity.class);
                 //mContext.startActivity(intent);
             }

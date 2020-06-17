@@ -116,7 +116,7 @@ public class CommentActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);//创建线性布局
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);//给RecyclerView设置布局管理器
-        adapter = new CommentListAdapter(commentList);
+        adapter = new CommentListAdapter(commentList,know.token);
         recyclerView.setAdapter(adapter);
     }
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -191,7 +191,7 @@ public class CommentActivity extends AppCompatActivity {
             }
             commentList.add(
                     new Comment(title,imagesrc,getPhoto(LoginActivity.myUsername,LoginActivity.myUsername),LoginActivity.myUsername,
-                            obj.getString("COMMENT"),content,obj.getString("AUTHOR"),knowid,obj.getString("PUBTIME"))
+                            obj.getString("COMMENT"),content,obj.getString("AUTHOR"),knowid,obj.getString("PUBTIME"),obj.getInt("COMMENTID"))
             );
         }
     }
