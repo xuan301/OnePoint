@@ -30,7 +30,6 @@ import java.util.List;
 
 public class LikeActivity extends AppCompatActivity {
 
-    private final String USER_AGENT = "Mozilla/5.0";
     private DrawerLayout mDrawerLayout;
 
     private List<Knowledge> knowledgeList = new ArrayList<>();

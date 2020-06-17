@@ -100,7 +100,7 @@ public class Know {
         }
 }
 @RequiresApi(api = Build.VERSION_CODES.O)
-boolean isAdmin_origin(String username)throws Exception{
+private boolean isAdmin_origin(String username)throws Exception{
         String url = "http://212.64.70.206:5000/isadmin/";
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();

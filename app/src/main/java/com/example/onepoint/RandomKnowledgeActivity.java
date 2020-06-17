@@ -131,10 +131,10 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
             Intent intent1 = getIntent();
             finalId = intent.getIntExtra("id",0);
         }
-        final boolean isActive = know.isLike(LoginActivity.myUsername,finalId);
+        final boolean[] isActive = {know.isLike(LoginActivity.myUsername, finalId)};
         final Drawable liked = getResources().getDrawable(R.drawable.ic_liked);
         final Drawable tolike = getResources().getDrawable(R.drawable.ic_like_black_24dp);
-        if(isActive){
+        if(isActive[0]){
             liked.setBounds(0,0,liked.getMinimumWidth(),liked.getMinimumHeight());
             favorite.setCompoundDrawables(null, liked, null, null);
             favorite.setText(getResources().getString(R.string.liked));
@@ -145,12 +145,13 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
 
-                if(! isActive) {
+                if(!isActive[0]) {
                     try {
                         know.likeOne(LoginActivity.myUsername, finalId);
                         liked.setBounds(0,0,liked.getMinimumWidth(),liked.getMinimumHeight());
                         favorite.setCompoundDrawables(null, liked, null, null);
                         favorite.setText(getResources().getString(R.string.liked));
+                        isActive[0] = !isActive[0];
                     } catch (Exception e) {
                         e.printStackTrace();
                         Toast.makeText(getApplicationContext(),"收藏失败",Toast.LENGTH_SHORT).show();
@@ -162,6 +163,7 @@ public class RandomKnowledgeActivity extends AppCompatActivity {
                         tolike.setBounds(0,0,tolike.getMinimumWidth(),tolike.getMinimumHeight());
                         favorite.setCompoundDrawables(null, tolike, null, null);
                         favorite.setText(getResources().getString(R.string.like));
+                        isActive[0] = !isActive[0];
                     } catch (Exception e) {
                         e.printStackTrace();
                         Toast.makeText(getApplicationContext(),"取消收藏失败",Toast.LENGTH_SHORT).show();
